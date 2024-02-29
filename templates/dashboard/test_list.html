@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}home.html{% endblock %}
+
+{% block content %}
+<h1>Test Files</h1>
+<ul>
+    {% for file_path in file_paths %}
+    <li><a href="{{ file_path }}" download>Download {{ file_path|slice:15: }}</a></li>
+    {% endfor %}
+</ul>
+{% endblock %}
+
+{% block extra-script %}
+{% include 'include/student_list_vue.html' %}
+{% endblock %}

@@ -1,0 +1,119 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %}student_detail.html{% endblock %}
+
+{% block content %}
+<!-- Student Detail Grid-->
+<div class="page-section bg-light" id="student">
+  <div class="container mt-5">
+    <div class="row">
+      <div class="col-lg-10">
+        <!-- Test Lists -->
+        <div>
+          <!-- Test Lists header-->
+          <header class="mb-4">
+            <!-- Student Name -->
+            <div class="row">
+              <div class="col-lg-9">
+                <h1 class="fw-bolder mb-1">[[ studentname ]]</h1>
+              </div>
+              <div class="col-lg-3 d-flex justify-content-end">
+                <button class="btn btn-primary" id="button-search" type="button">시험 추가</button>
+              </div>
+            </div>
+          </header>
+          <hr>
+          <!-- Test Lists Table -->
+          <div class="mb-5">
+            <div class="mb-3 fs-4 table-top-line container text-center">
+              <div class="row align-items-start">
+                <div class="col-2">번호</div>
+                <div class="col-2">시험</div>
+                <div class="col-2">시험날짜</div>
+                <div class="col-2">보고서</div>
+                <div class="col-2">상담일</div>
+                <div class="col-2">상담여부</div>
+              </div>
+            </div>
+            <hr>
+            <!--   -->
+            <div v-for="(test, index) in TestList" :key="index"
+              class="mt-3 mb-3 fs-5 table-top-line container text-center">
+              <div class="row align-items-center justify-content-center">
+                <div class="col-2">[[ index+1 ]]</div>
+                <div class="col-2">[[ test.name ]]</div>
+                <div class="col-2">[[ test.test_date ]]</div>
+                <div class="col-2">보고서</div>
+                <div class="col-2">[[ test.consulting_date ]]</div>
+                <div class="col-2">[[ test.consulting_status ]]</div>
+              </div>
+              <hr>
+            </div>
+          </div>
+          <!-- Test Lists footer -->
+          <footer class="mb-4">
+            <!-- Student Name -->
+            <div class="row">
+              <div class="d-flex justify-content-center">
+                <button class="btn btn-primary" id="button-search" type="button"><a
+                    href="{% url 'home' %}#page-top">학생목록</a></button>
+              </div>
+            </div>
+          </footer>
+        </div>
+      </div>
+      <!-- Side widgets-->
+      <div class="col-lg-2">
+        <!-- Preview Student widget-->
+        <div class="card mb-4">
+          <div class="card-header">Preview Student</div>
+          <div class="card-body">
+            This is previous
+          </div>
+        </div>
+        <!-- Next Student widget-->
+        <div class="card mb-4">
+          <div class="card-header">Next Student</div>
+          <div class="card-body">
+            This is next
+          </div>
+        </div>
+        <!-- Categories widget-->
+        <div class="card mb-4">
+          <div class="card-header">Categories</div>
+          <div class="card-body">
+            <div class="row">
+              <div class="col-sm-6">
+                <ul class="list-unstyled mb-0">
+                  <li><a href="#!">Web Design</a></li>
+                  <li><a href="#!">HTML</a></li>
+                  <li><a href="#!">Freebies</a></li>
+                </ul>
+              </div>
+              <div class="col-sm-6">
+                <ul class="list-unstyled mb-0">
+                  <li><a href="#!">JavaScript</a></li>
+                  <li><a href="#!">CSS</a></li>
+                  <li><a href="#!">Tutorials</a></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Side widget-->
+        <div class="card mb-4">
+          <div class="card-header">Side Widget</div>
+          <div class="card-body">You can put anything you want inside of these side widgets. They are easy
+            to use, and feature the Bootstrap 5 card component!</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra-script %}
+{% include 'include/student_detail_vue.html' %}
+{% endblock %}

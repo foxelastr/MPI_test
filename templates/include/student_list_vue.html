@@ -1,0 +1,33 @@
+<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+<script>
+    const StudentListApp = {
+        delimiters: ['[[', ']]'],
+        data() {
+            return {
+                studentList: [],
+            }
+        },
+        created() {
+            console.log("created()...");
+            this.fetchStudentList();
+        },
+        methods: {
+            fetchStudentList() {
+                console.log("fetchStudentList()...");
+                axios.get('/api/student/list')
+                    .then(res => {
+                        console.log("FETCH STUDENTLIST GET RES", res);
+                        this.studentList = res.data;
+                    })
+                    .catch(err => {
+                        console.log("FETCH STUDENTLIST GET ERR.RESPONSE", err.response);
+                        alert(`${err.response.status} ${err.response.statusText}`);
+                    });
+            }
+        }
+    }
+
+    Vue.createApp(StudentListApp).mount('#page-top')
+</script>
