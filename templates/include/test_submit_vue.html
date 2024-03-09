@@ -1,0 +1,52 @@
+<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+<script>
+  const TestSubmitApp = {
+    delimiters: ['[[', ']]'],
+    data() {
+      return {
+        csrfToken: document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+        ExamYearSemester: "",
+        ExamGrade: "",
+        region: "",
+        answers: [],
+        answerList: Array.from({ length: 5 }, () => Array(5).fill(null)),
+        studentId: '',
+      };
+    },
+    created() {
+      console.log("created()...");
+      this.studentId = location.pathname.split('/')[3]
+      console.log("studentId : ", this.studentId)
+    },
+    methods: {
+      submitForm() {
+        const postData = {
+          ExamYearSemester: this.ExamYearSemester,
+          ExamGrade: this.ExamGrade,
+          region: this.region,
+          answerList: this.answerList.flat(),
+          studentId: this.studentId,
+        };
+        
+        axios.post(`/api/report/result/${this.studentId}/`, postData, {
+          headers: {
+            'X-CSRFToken': this.csrfToken // CSRF 토큰 헤더에 추가
+          }
+        })
+        .then(response => {
+          console.log("Submit response:", response);
+          // 요청 성공 후 추가적인 작업을 여기에 구현
+          // 시험 시기, 학년, 지역, 학생의 답 리스트를 api로 보내기
+          window.location.href = `/report/result/${this.studentId}/`;
+        })
+        .catch(error => {
+          console.error("Submit error:", error.response);
+          alert(`${error.response.status} ${error.response.statusText}`);
+        });
+      }
+    },
+  }
+  Vue.createApp(TestSubmitApp).mount('#page-top');
+</script>

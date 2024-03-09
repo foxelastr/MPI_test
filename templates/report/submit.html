@@ -1,0 +1,101 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %}test_submit.html{% endblock %}
+
+{% block content %}
+<div>
+    <div class="flex justify-center" style="padding: 1rem;">
+        <div class="#">
+            <h1 class="#">
+                시험 결과 입력
+            </h1>
+        </div>
+    </div>
+    <form id="testInputForm" action="#">
+        <div class="flex flex-col justify-center " style="padding: 1rem;">
+            <div class="flex justify-center">
+                <div class="mb-6">
+                    <label for="school" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">시험 시기를
+                        선택하세요
+                    </label>
+                    <select id="school" v-model="ExamYearSemester" class="text-center ">
+                        <option value="ExamYearSemester" disabled>시험 시기 선택</option>
+                        <option value="20211">2021년 상반기</option>
+                        <option value="20212">2021년 하반기</option>
+                        <option value="20221">2022년 상반기</option>
+                        <option value="20222">2022년 하반기</option>
+                        <option value="20231">2023년 상반기</option>
+                    </select>
+                </div>
+            </div>
+            <div class="flex justify-center">
+                <div class="mb-6">
+                    <label for="school" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">학년을 선택하세요
+                    </label>
+                    <div class="select">
+                        <select v-model="ExamGrade" class="text-center ">
+                            <option value="ExamGrade" disabled>학년 선택</option>
+                            <option value="1">초1</option>
+                            <option value="2">초2</option>
+                            <option value="3">초3</option>
+                            <option value="4">초4</option>
+                            <option value="5">초5</option>
+                            <option value="6">초6</option>
+                            <option value="7">중1</option>
+                            <option value="8">중2</option>
+                            <option value="9">중3</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="flex justify-center">
+                <div class="mb-6 flex flex-col">
+                    <label for="school" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">지역을 선택하세요
+                    </label>
+                    <div class="select grow">
+                        <select id="region" v-model="region"
+                            class="text-center bg-gray-50 w-full block border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                            <option value="서울">서울</option>
+                            <option value="경기">경기</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="#" style="padding: 1rem;">
+            <h3 class="text-3xl font-bold dark:text-white mb-4">
+                학생의 답을 입력하는 영역입니다.
+            </h3>
+            <div class="column-5">
+                <div>
+                    <!-- 각 가로 행을 반복 생성 -->
+                    <div class="flex justify-center" v-for="rowIndex in 5" :key="`row-${rowIndex}`">
+                        <!-- 각 행 내에서 5개의 입력 필드 생성 -->
+                        <div class="mb-6" v-for="colIndex in 5" :key="`col-${rowIndex}-${colIndex}`">
+                            <input type="text" :id="`input-${rowIndex}-${colIndex}`"
+                                :placeholder="`${(rowIndex - 1) * 5 + colIndex}번`"
+                                v-model.number="answerList[rowIndex - 1][colIndex - 1]" class="#" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="#" style="padding: 1rem;">
+            <button type="button" @click="submitForm" class="#">
+                결과보기
+            </button>
+            <router-link to="/">
+                <button type="button" class="#">
+                    홈으로
+                </button>
+            </router-link>
+        </div>
+    </form>
+</div>
+{% endblock %}
+
+{% block extra-script %}
+{% include 'include/test_submit_vue.html' %}
+{% endblock %}

@@ -2,25 +2,23 @@
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 
 <script>
-  const StudentDetailApp = {
+  const TestListApp = {
     delimiters: ['[[', ']]'],
     data() {
       return {
-        csrfToken : document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
         studentname: '',
         TestList: {},
-        studentId: '',
       }
     },
     created() {
       console.log("created()...");
-      this.studentId = location.pathname.split('/')[3]
-      this.fetchStudentDetail(this.studentId);
+      // const studentId = location.pathname.split('/')[3]
+      // this.fetchStudentDetail(studentId);
     },
     methods: {
       fetchStudentDetail(studentId) {
         console.log("fetchStudentDetail()...", studentId);
-        axios.get(`/api/student/${studentId}`)
+        <!-- axios.get(`/api/student/${studentId}`)
           .then(res => {
             console.log("FETCH STUDENTDETAIL GET RES", res);
             this.studentname = res.data.student_name;
@@ -31,23 +29,10 @@
           .catch(err => {
             console.log("FETCH STUDENTDETAIL GET ERR.RESPONSE", err.response);
             alert(`${err.response.status} ${err.response.statusText}`);
-          });
-      },
-      submitTest() {
-        console.log("submitTest() with studentId:", this.studentId);
-        // studentId를 포함한 API 요청을 보내는 로직
-        axios.get(`/api/report/submit/${this.studentId}/`, {})
-        .then(res => {
-          console.log("Submit response:", res);
-          window.location.href = `/report/submit/${this.studentId}`;
-          })
-          .catch(err => {
-            console.error("Submit error:", err.response);
-            alert(`${err.response.status} ${err.response.statusText}`);
-          });
+          }); -->
       }
     }
   }
 
-  Vue.createApp(StudentDetailApp).mount('#page-top');
+  Vue.createApp(TestListApp).mount('#page-top');
 </script>

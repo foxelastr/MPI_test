@@ -16,6 +16,8 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import include, path
+from django.conf import settings
+from django.conf.urls.static import static
 
 from mpitest.views import HomeView
 
@@ -25,4 +27,10 @@ urlpatterns = [
     path('', HomeView.as_view(), name='home'),
     path('dashboard/', include('dashboard.urls')),
     path('api/', include('api.urls')),
+    path('report/', include('report.urls')),
 ]
+
+urlpatterns += static(
+    settings.MEDIA_URL,
+    document_root=settings.MEDIA_ROOT
+)
