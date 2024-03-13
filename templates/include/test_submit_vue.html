@@ -17,29 +17,39 @@
     },
     created() {
       console.log("created()...");
-      this.studentId = location.pathname.split('/')[3]
-      console.log("studentId : ", this.studentId)
+      this.studentId = location.pathname.split('/')[3];
+      console.log("studentId : ", this.studentId);
     },
     methods: {
       submitForm() {
-        const postData = {
-          ExamYearSemester: this.ExamYearSemester,
-          ExamGrade: this.ExamGrade,
-          region: this.region,
-          answerList: this.answerList.flat(),
-          studentId: this.studentId,
-        };
+        // FormData 인스턴스 생성
+        const formData = new FormData();
         
-        axios.post(`/api/report/result/${this.studentId}/`, postData, {
+        // 데이터 추가
+        formData.append('ExamYearSemester', this.ExamYearSemester);
+        formData.append('ExamGrade', this.ExamGrade);
+        formData.append('ExamArea', this.region);  // "region" 필드를 "ExamArea"로 매핑
+        formData.append('ExamResults', JSON.stringify(this.answerList.flat()));
+        formData.append('studentId', this.studentId);
+  
+        // answerList의 모든 항목을 평탄화하여 추가
+        // this.answerList.flat().forEach((answer, index) => {
+        //   formData.append(`answers[${index}]`, answer);
+        // });
+
+        for (let [key, value] of formData.entries()) {
+          console.log(key, value);
+      }
+        
+        axios.post(`/api/report/result/${this.studentId}/`, formData, {
           headers: {
-            'X-CSRFToken': this.csrfToken // CSRF 토큰 헤더에 추가
+            'X-CSRFToken': this.csrfToken, // CSRF 토큰 헤더에 추가
+            'Content-Type': 'multipart/form-data' // 중요: FormData를 사용할 때의 Content-Type
           }
         })
         .then(response => {
           console.log("Submit response:", response);
-          // 요청 성공 후 추가적인 작업을 여기에 구현
-          // 시험 시기, 학년, 지역, 학생의 답 리스트를 api로 보내기
-          window.location.href = `/report/result/${this.studentId}/`;
+          // window.location.href = `/report/result/${this.studentId}/`;
         })
         .catch(error => {
           console.error("Submit error:", error.response);
@@ -49,4 +59,5 @@
     },
   }
   Vue.createApp(TestSubmitApp).mount('#page-top');
-</script>
+  </script>
+  
