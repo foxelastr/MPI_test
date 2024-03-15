@@ -23,10 +23,10 @@
         axios.get(`/api/student/${studentId}`)
           .then(res => {
             console.log("FETCH STUDENTDETAIL GET RES", res);
-            this.studentname = res.data.student_name;
-            console.log("student name :", this.student_name)
-            this.TestList = res.data.tests;
-            console.log("TestList : ", this.TestList)
+            // this.studentname = res.data.student_name;
+            // console.log("student name :", this.student_name)
+            // this.TestList = res.data.tests;
+            // console.log("TestList : ", this.TestList)
           })
           .catch(err => {
             console.log("FETCH STUDENTDETAIL GET ERR.RESPONSE", err.response);

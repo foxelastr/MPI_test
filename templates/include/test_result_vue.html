@@ -1,0 +1,43 @@
+<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+<script>
+  const TestSubmitApp = {
+    delimiters: ['[[', ']]'],
+    data() {
+      return {
+        csrfToken: document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+        ExamYearSemester: "",
+        ExamGrade: "",
+        region: "",
+        answers: [],
+        answerList: Array.from({ length: 5 }, () => Array(5).fill(null)),
+        studentId: '',
+      };
+    },
+    created() {
+      console.log("created()...");
+      this.studentId = location.pathname.split('/')[3];
+      console.log("studentId : ", this.studentId);
+    },
+    methods: {
+        fetchReportDetail(studentId) {
+            console.log("fetchReportDetail()...", studentId);
+            axios.get(`/api/report/detail/${studentId}`)
+                .then(res => {
+                console.log("FETCH REPORTDETAIL GET RES", res);
+                this.studentname = res.data.student_name;
+                console.log("student name :", this.student_name)
+                this.TestList = res.data.tests;
+                console.log("TestList : ", this.TestList)
+                })
+                .catch(err => {
+                console.log("FETCH STUDENTDETAIL GET ERR.RESPONSE", err.response);
+                alert(`${err.response.status} ${err.response.statusText}`);
+                });
+        },
+    },
+  }
+  Vue.createApp(TestSubmitApp).mount('#page-top');
+  </script>
+  

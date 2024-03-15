@@ -6,7 +6,7 @@ from django.template.response import TemplateResponse
 class SubmitDV(CreateView):
     model = TestResult
     template_name = 'report/submit.html'
-    fields = ['ExamYearSemester', 'ExamGrade', 'ExamArea', 'ExamResults']
+    fields = ['StudentId', 'ExamYearSemester', 'ExamGrade', 'ExamArea', 'ExamResults']
     success_url = '/some/success/url'
 
 class ResultDV(View):

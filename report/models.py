@@ -1,6 +1,7 @@
 from django.db import models
 
 class TestResult(models.Model):
+    StudentId = models.PositiveIntegerField('StudentId')
     ExamYearSemester = models.PositiveIntegerField('EXAM_YEAR_AND_SEMESTER')
     ExamGrade = models.PositiveSmallIntegerField('EXAM_GRADE')
     ExamArea = models.TextField('EXAM_AREA', max_length=50)
