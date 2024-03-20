@@ -30,7 +30,7 @@
         formData.append('ExamGrade', this.ExamGrade);
         formData.append('ExamArea', this.region);  // "region" 필드를 "ExamArea"로 매핑
         formData.append('ExamResults', JSON.stringify(this.answerList.flat()));
-        formData.append('studentId', this.studentId);
+        formData.append('StudentId', String(this.studentId));
   
         // answerList의 모든 항목을 평탄화하여 추가
         // this.answerList.flat().forEach((answer, index) => {
@@ -41,7 +41,7 @@
           console.log(key, value);
       }
         
-        axios.post(`/api/result/result/${this.studentId}/`, formData, {
+        axios.post(`/api/report/result/${this.studentId}/`, formData, {
           headers: {
             'X-CSRFToken': this.csrfToken, // CSRF 토큰 헤더에 추가
             'Content-Type': 'multipart/form-data' // 중요: FormData를 사용할 때의 Content-Type
@@ -49,7 +49,7 @@
         })
         .then(response => {
           console.log("Submit response:", response);
-          window.location.href = `/report/result/${this.studentId}/`;
+          // window.location.href = `/report/result/${this.studentId}/`;
         })
         .catch(error => {
           console.error("Submit error:", error.response);

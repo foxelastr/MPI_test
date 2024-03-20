@@ -4,7 +4,7 @@ from .models import TestStatistics, TestReport, TestResult
 # Register your models here.
 @admin.register(TestResult)
 class TestResult(admin.ModelAdmin):
-    list_display = ('ExamYearSemester', 'ExamGrade', 'ExamArea', 'ExamResults')
+    list_display = ('StudentId', 'ExamYearSemester', 'ExamGrade', 'ExamArea', 'ExamResults')
 
 @admin.register(TestStatistics)
 class TestStatistics(admin.ModelAdmin):
