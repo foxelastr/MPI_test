@@ -3,7 +3,7 @@ from django.urls import reverse_lazy
 from django.views import View
 from django.views.generic.list import BaseListView
 from django.views.generic import CreateView, ListView
-from django.http import JsonResponse
+from django.http import HttpRequest, HttpResponse, JsonResponse
 from api.utils import obj_to_student, obj_to_test
 from dashboard.models import Student, Test
 from report.forms import TestResultForm
@@ -84,52 +84,86 @@ class ApiResultLV(CreateView):
         # 폼 데이터가 유효하지 않으면 에러 메시지와 함께 응답 반환
         return JsonResponse({'status': 'error', 'errors': form.errors}, status=400)
     
+# class ApiReportLV(ListView):
+#     model = TestResult
+#     template_name = 'report/result.html'
+#     context_object_name = 'test_results'
+    
+#     def get_queryset(self):
+#         # URL의 파라미터로부터 student_id를 받아와서 필터링합니다.
+#         self.student_id = self.kwargs.get('student_id')
+#         return super().get_queryset().filter(StudentId=self.student_id)
+    
+#     def get_context_data(self, **kwargs):
+#         # 부모 클래스의 get_context_data 메서드 호출로 기본 컨텍스트 데이터 가져오기
+#         context = super(ApiReportLV, self).get_context_data(**kwargs)
+        
+#         # 필요한 추가 데이터를 context 딕셔너리에 추가
+#         year_semester = self.request.GET.get('year_semester')
+#         test_grade = self.request.GET.get('test_grade')
+        
+#         # 예제에서 utils.get_std_result 함수는 모델 인스턴스를 반환하는 것으로 보임
+#         # 반환된 모델 인스턴스를 context 딕셔너리에 추가하지 말고, 이를 사용하여 필요한 데이터만 추출해서 추가해야 함
+#         test_result = utils.get_std_result(self.student_id, year_semester, test_grade)
+#         print("test result : ", test_result)
+        
+#         test_result_data = {
+#             'StudentId': test_result.StudentId,
+#             'ExamYearSemester': test_result.ExamYearSemester,
+#             'ExamGrade': test_result.ExamGrade,
+#             'ExamArea': test_result.ExamArea,
+#             'ExamResults': test_result.ExamResults,
+#         }
+
+#         print("test result data: ", test_result_data)
+        
+#         match_statistics = utils.get_statistics(test_result.ExamYearSemester, test_result.ExamGrade)
+#         print("\n\n")
+#         print("match statistics : ", match_statistics)
+        
+#         # 모델 인스턴스 대신 필요한 정보만을 딕셔너리에 추가
+#         context['additional_info'] = {
+#             'year_semester': year_semester,
+#             'test_grade': test_grade,
+#             # 추가로 필요한 정보를 여기에 추가
+#         }
+        
+#         return context
+
 class ApiReportLV(ListView):
-    #####################################################
-    ############ 통계처리 여기다 해라!!!!!!!!! ###########
-    #####################################################
-    # report/utils.py에 통계처리에 필요한 함수들 정의돼있음
-    # import까지 했음
-
     model = TestResult
+    template_name = 'report/result.html'
     context_object_name = 'test_results'
-    
-    def get_queryset(self):
-        """
-        필요에 따라 queryset을 커스터마이즈 할 수 있습니다.
-        예를 들어, 특정 학생의 결과만 필터링하려면 여기서 조건을 추가할 수 있습니다.
-        """
-        student_id = self.kwargs.get('student_id')
-        return TestResult.objects.filter(student_id=student_id)
 
-    def render_to_response(self, context, **response_kwargs):
-        """
-        컨텍스트 데이터를 사용하여 각 시험 결과에 대한 점수를 계산하고, 이를 응답 데이터로 포함합니다.
-        """
-        # 시험 결과와 점수를 저장할 리스트 초기화
-        results_with_scores = []
+    def get(self, request, *args, **kwargs):
+        # URL의 쿼리 파라미터에서 year_semester와 test_grade 값을 가져옵니다.
+        year_semester = request.GET.get('year_semester')
+        test_grade = request.GET.get('test_grade')
 
-        for test_result in context['test_results']:
-            try:
-                # 각 시험 결과에 대한 점수 계산
-                score = utils.calculate_score(
-                    student_id=test_result.student_id,
-                    year_semester=test_result.ExamYearSemester,
-                    test_grade=test_result.ExamGrade
-                )
-                result_data = {
-                    'test_id': test_result.id,
-                    'score': score
-                }
-                results_with_scores.append(result_data)
-            except ValueError as e:
-                # 에러 처리: 적절한 로그 출력 또는 결과에 에러 메시지 추가 등
-                print(f"Error calculating score for test result {test_result.id}: {e}")
+        # utils.get_std_result 함수를 사용하여 테스트 결과 객체를 가져옵니다.
+        test_result = utils.get_std_result(self.kwargs.get('student_id'), year_semester, test_grade)
+        
+        match_statistics = utils.get_statistics(test_result.ExamYearSemester, test_result.ExamGrade)
+        
+        # 필요한 추가 데이터를 JSON 형식으로 클라이언트에 전송합니다.
+        response_data = {
+            'StudentId': test_result.StudentId,
+            'ExamYearSemester': test_result.ExamYearSemester,
+            'ExamGrade': test_result.ExamGrade,
+            'ExamArea': test_result.ExamArea,
+            'ExamResults': test_result.ExamResults,
+            'Statistics_AnswerList' : match_statistics[0].first().Statistics_AnswerList,
+            'Statistics_StrongPoint' : match_statistics[0].first().Statistics_StrongPoint,
+            'Statistics_WeakPoint' : match_statistics[0].first().Statistics_WeakPoint,
+            'Statistics_AccumulatedNumber' : match_statistics[0].first().Statistics_AccumulatedNumber,
+            'Statistics_NationalAverage' : match_statistics[0].first().Statistics_NationalAverage,
+            'Statistics_SeoulAverage' : match_statistics[0].first().Statistics_SeoulAverage,
+        }
 
-        # 최종 결과를 JSON 형태로 응답
-        return JsonResponse(results_with_scores, safe=False, **response_kwargs)
-    
-    
+        # JsonResponse 객체를 사용하여 응답을 반환합니다.
+        return JsonResponse(response_data)
+
+
     # # POST 요청 처리
     # def post(self, request, *args, **kwargs):
     #     # 요청 바디를 JSON으로 파싱

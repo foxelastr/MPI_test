@@ -8,7 +8,7 @@ from .models import TestResult, TestStatistics
 # 학생의 시험 결과 조회
 def get_std_result(student_id, year_semester, test_grade):
     test_result = TestResult.objects.filter(
-        student_id=student_id,
+        StudentId=student_id,
         ExamYearSemester=year_semester,
         ExamGrade=test_grade
     ).first()
@@ -24,7 +24,7 @@ def get_statistics(year_semester, test_grade):
     for grade in [test_grade, 7, 8, 9]:
         data = TestStatistics.objects.filter(
             Statistics_YearSemester=year_semester,
-            ExamGrade=grade
+            Statistics_TestGrade=grade
         )
         statistics_list.append(data)
 

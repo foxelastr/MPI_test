@@ -19,17 +19,29 @@
       console.log("created()...");
       this.studentId = location.pathname.split('/')[3];
       console.log("studentId : ", this.studentId);
+      // URL의 쿼리 스트링 파싱
+      const queryString = location.search;
+      const params = new URLSearchParams(queryString);
+      
+      // 각 파라미터를 Vue 데이터 속성에 할당
+      this.ExamYearSemester = params.get('year_semester');
+      this.ExamGrade = params.get('test_grade');
+      
+      console.log("ExamYearSemester: ", this.ExamYearSemester);
+      console.log("ExamGrade: ", this.ExamGrade);
+ 
+      this.fetchReportDetail(this.studentId);
     },
     methods: {
         fetchReportDetail(studentId) {
             console.log("fetchReportDetail()...", studentId);
-            axios.get(`/api/report/detail/${studentId}`)
-                .then(res => {
+            axios.get(`/api/report/detail/${studentId}?year_semester=${this.ExamYearSemester}&test_grade=${this.ExamGrade}`)
+            .then(res => {
                 console.log("FETCH REPORTDETAIL GET RES", res);
                 this.studentname = res.data.student_name;
-                console.log("student name :", this.student_name)
+                // console.log("student name :", this.student_name)
                 this.TestList = res.data.tests;
-                console.log("TestList : ", this.TestList)
+                // console.log("TestList : ", this.TestList)
                 })
                 .catch(err => {
                 console.log("FETCH STUDENTDETAIL GET ERR.RESPONSE", err.response);
