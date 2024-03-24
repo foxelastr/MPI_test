@@ -52,6 +52,7 @@
                 this.Score = res.data.Score
                 this.MathAbility = res.data.MathAbility
                 this.PredPercentile_low = (res.data.PredPercentile_low * 100).toFixed(2);
+                console.log("PredPercentile low_row : ", res.data.PredPercentile_low)
                 console.log("PredPercentile low : ", this.PredPercentile_low)
                 this.PredPercentile_high = (res.data.PredPercentile_high * 100).toFixed(2);
                 console.log("PredPercentile high : ", this.PredPercentile_high)

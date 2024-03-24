@@ -73,7 +73,6 @@ def average_diff(statistics_list, EleAvg):
         diff = statistics.first().Statistics_SeoulAverage - float(EleAvg)
         average_diff.append(diff)
         # 필요에 따라 여기서 추가적인 로직을 구현할 수 있습니다.
-
     return average_diff
 
 # 표준편차 비율 계산 함수
@@ -83,7 +82,7 @@ def calculate_standard_deviation_diff(statistics_list):
     StdDiff = []
     for statistics in statistics_list[1:]:
         std_dev = calculate_standard_deviation(statistics.first().Statistics_AccumulatedNumber)
-        devdiff = std_dev / result_dev
+        devdiff = result_dev / std_dev
         StdDiff.append(devdiff)
     return StdDiff
 
@@ -92,12 +91,13 @@ def MidScoreCorrection(Score, average_diff, StdDiff):
     # 평균 보정치 계산
     MAC = []
     for avg, std in zip(average_diff, StdDiff):
-        MAC.append(avg*std+1)
+        MAC.append(avg*std)
     
     # 중학교 점수 예측치 계산
     MSC = []
     for mac in MAC:
-        MSC.append(Score*mac)
+        MSC.append(Score+mac)
+    
     return MSC
 
 # 중학교 예상 백분위 계산 함수
@@ -115,6 +115,7 @@ def PredPercentile(MSC, statistics_list):
     for i in [0, 1, 2]:
         zval = (MSC[i] - mid_avg[i])/mid_std[i]
         ZVal_low.append(zval)
+
         
     # 상한 : (학년별 중학교 점수 예측치 - 학년별 실제 중학교 평균)/학년별 초딩 표준편차
     for i in [0, 1, 2]:
@@ -133,16 +134,14 @@ def PredPercentile(MSC, statistics_list):
     # 중학교 예상 백분위 하한 계산
     Percentile_high = []
     for i in [0, 1, 2]:
-        Percentile_high.append(norm.cdf(ZVal_low[i]))
+        Percentile_high.append(norm.cdf(ZVal_high[i]))
     PerdPercentile.append(statistics.mean(Percentile_high))
-    
+
     return PerdPercentile
 
 def calculate_student_ratio(Accumulate_ratio, Score):
     index = int((100-Score)/4)
-    print("index :", index)
     student_ratio = Accumulate_ratio[index]
-    print("student ratio :", student_ratio)
     return student_ratio
 
 def calculate_grade(student_ratio):

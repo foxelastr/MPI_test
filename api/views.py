@@ -99,15 +99,10 @@ class ApiReportLV(ListView):
         
         match_statistics = utils.get_statistics(test_result.ExamYearSemester, test_result.ExamGrade)
 
-        print("student answer type : ", type(test_result.ExamResults[0]))
-        print("student answer list : ", test_result.ExamResults)
-
         # 추가 데이터 : 점수 / 예측 백분위 상한 및 하한 / 정답 / 학생답 / OX리스트 / 고등예상등급 / 강점 및 약점 / 인지적행동영역(요건 좀 나중에) / 
         # 정답 리스트
         numeric_statistics_answerlist = match_statistics[0].first().Statistics_AnswerList
         statistics_answerlist = [int(item) for item in numeric_statistics_answerlist]
-        print("statistics answer type : ", type(statistics_answerlist[0]))
-        print("statistics answer list : ", statistics_answerlist)
         
         # 학생 원점수 계산
         student_score = utils.calculate_score(test_result=test_result, statistics_answerlist=statistics_answerlist)

@@ -1,11 +1,8 @@
+from django.shortcuts import redirect
+from django.urls import reverse_lazy
 from django.views.generic import TemplateView
+from django.contrib.auth.mixins import LoginRequiredMixin
 
-# from django.views.decorators.csrf import csrf_exempt
-# from django.utils.decorators import method_decorator
-
-class HomeView(TemplateView):
+class HomeView(LoginRequiredMixin, TemplateView):
     template_name = 'home.html'
-    
-# @method_decorator(csrf_exempt, name='dispatch')
-# class SavePoll(APIView):
-    
+    login_url = reverse_lazy('users:login')

@@ -46,10 +46,22 @@
                                 href="{% url 'home' %}#contact">Contact</a></li>
                         <li class="nav-item"><a class="nav-link" href="{% url 'admin:index' %}">Admin</a></li>
                         <li class="nav-item">
-                            <div class="btn-group" role="group" aria-label="Basic example">
-                                <button type="button" class="btn btn-outline-light">Log in</button>
-                                <button type="button" class="btn btn-light">Sign up</button>
+                            <div>
+                                {% if user.is_authenticated %}
+                                <form method="post" action="{% url 'users:logout' %}">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-outline-light">{{ user.username }}님
+                                        로그아웃</button>
+                                </form>
                             </div>
+                            {% else %}
+                            <div class="btn-group" role="group" aria-label="Basic example">
+                                <button type="button" class="btn btn-outline-light"><a
+                                        href="{% url 'users:login' %}">Log in</a></button>
+                                <button type="button" class="btn btn-light"><a href="{% url 'users:signup' %}">Sign
+                                        Up</a></button>
+                            </div>
+                            {% endif %}
                         </li>
                     </ul>
                 </div>
