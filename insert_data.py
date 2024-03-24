@@ -6,7 +6,7 @@ import json
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'mpitest.settings')
 django.setup()
 
-from report.models import TestReport  # 모델 임포트
+from report.models import TestReport, TestStatistics  # 모델 임포트
 
 # 데이터가 있는 디렉토리 경로
 base_dir = r"E:\PNS\MPI_test\media\data\2021_1_HME_DATA"  # 'r'을 사용하여 raw string으로 처리
@@ -42,8 +42,7 @@ for grade in range(1, 10):
     accumulated_number = read_data_to_list(accumulated_number_path)
     accumulated_ratio = read_data_to_list(accumulated_ratio_path)
     answer_list = read_data_to_list(answer_list_path)
-    # type_list 변수는 사용되지 않으므로 주석 처리하거나 제거
-    # type_list = read_data_to_list(type_list_path)
+    type_list = read_data_to_list(type_list_path)
     score_list = read_data_to_list(score_list_path)
     national_average = float(read_data_to_list(national_average_path)[0])  # 파일에 하나의 데이터만 있다고 가정
     seoul_region_average = read_data_to_list(seoul_region_average_path)
@@ -51,18 +50,18 @@ for grade in range(1, 10):
     weak_point = read_data_to_list(weak_point_path)
 
     # TestReport 인스턴스 생성 및 저장
-    report = TestReport(
-        YearSemester=20211,
-        TestGrade=grade,
-        AnswerList=answer_list,
-        # TypeList 제거 또는 모델에 해당 필드 추가 필요
-        StrongPoint=strong_point,
-        WeakPoint=weak_point,
-        AccumulatedNumber=accumulated_number,
-        AccumulatedRatio=accumulated_ratio,
-        NationalAverage=national_average,
-        SeoulAverage=seoul_averages[grade - 1],  # 서울 평균
-        SeoulRegionAverage=seoul_region_average,
+    report = TestStatistics(
+        Statistics_YearSemester=20211,
+        Statistics_TestGrade=grade,
+        Statistics_AnswerList=answer_list,
+        Statistics_ProblemType=type_list,
+        Statistics_StrongPoint=strong_point,
+        Statistics_WeakPoint=weak_point,
+        Statistics_AccumulatedNumber=accumulated_number,
+        Statistics_AccumulatedRatio=accumulated_ratio,
+        Statistics_NationalAverage=national_average,
+        Statistics_SeoulAverage=seoul_averages[grade - 1],  # 서울 평균
+        Statistics_SeoulRegionAverage=seoul_region_average,
     )
     report.save()
 

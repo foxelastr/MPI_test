@@ -29,7 +29,8 @@
         formData.append('ExamYearSemester', this.ExamYearSemester);
         formData.append('ExamGrade', this.ExamGrade);
         formData.append('ExamArea', this.region);  // "region" 필드를 "ExamArea"로 매핑
-        formData.append('ExamResults', JSON.stringify(this.answerList.flat()));
+        const numericAnswerList = this.answerList.flat().map(answer => Number(answer));
+        formData.append('ExamResults', JSON.stringify(numericAnswerList));
         formData.append('StudentId', String(this.studentId));
   
         // answerList의 모든 항목을 평탄화하여 추가

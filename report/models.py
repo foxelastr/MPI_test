@@ -18,6 +18,7 @@ class TestStatistics(models.Model):
     Statistics_YearSemester = models.PositiveIntegerField('YEAR_AND_SEMESTER', default=20231)
     Statistics_TestGrade = models.PositiveSmallIntegerField('TEST_GRADE', default=1)
     Statistics_AnswerList = models.JSONField('ANSWER_LIST', default=list)
+    Statistics_ProblemType = models.JSONField('PROBLEM_TYPE', default=list)
     Statistics_StrongPoint = models.JSONField('STRONG_POINT', default=list)
     Statistics_WeakPoint = models.JSONField('WEAK_POINT', default=list)
     Statistics_AccumulatedNumber = models.JSONField('ACCUMULATED_NUMBER', default=list)

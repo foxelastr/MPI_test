@@ -1,7 +1,7 @@
 import pandas as pd
 import os
 
-# # 지정된 디렉토리 경로
+# # # 지정된 디렉토리 경로
 # directory = 'E:/PNS/MCLS/TCNP_data/통계 자료 추출 데이터/2021_1_HME_DATA'
 
 # # 디렉토리 내의 모든 파일을 순회
@@ -50,39 +50,39 @@ import os
 #         for item in items:
 #             f.write(f"{item}\n")
 
-# # 파일 경로
-# file_path = 'E:/PNS/MCLS/TCNP_data/통계 자료 추출 데이터/2021_1_HME_DATA/2021_1_HME_DATA - 답 유형 출제의도.csv'
+# 파일 경로
+file_path = 'E:/PNS/MCLS/TCNP_data/통계 자료 추출 데이터/2021_1_HBM_DATA/2021_1_HME_DATA - 답 유형 출제의도.csv'
 
-# # CSV 파일 읽기, 3행부터 시작하므로 header=2로 설정
-# df = pd.read_csv(file_path, header=1)
+# CSV 파일 읽기, 3행부터 시작하므로 header=2로 설정
+df = pd.read_csv(file_path, header=1)
 
-# # 5~7열 데이터 추출, 판다스는 0부터 인덱싱하므로 각각 4, 5, 6을 사용
-# columns_data = {
-#     'answer': df.iloc[:, 4].tolist(),
-#     'score': df.iloc[:, 5].tolist(),
-#     'type': df.iloc[:, 6].tolist(),
-# }
+# 5~7열 데이터 추출, 판다스는 0부터 인덱싱하므로 각각 4, 5, 6을 사용
+columns_data = {
+    # 'answer': df.iloc[:, 4].tolist(),
+    # 'score': df.iloc[:, 5].tolist(),
+    'type': df.iloc[:, 6].tolist(),
+}
 
-# # 각 열마다 25개씩 잘라서 저장
-# for column_name, data in columns_data.items():
-#     for i in range(0, len(data), 25):
-#         # 현재 슬라이스의 데이터
-#         slice_data = data[i:i+25]
-#         # 파일 번호 (1부터 시작)
-#         file_number = i // 25 + 1
-#         # 파일 이름 설정
-#         if column_name == 'answer':
-#             file_name = f'{file_number}_answer.txt'
-#         elif column_name == 'score':
-#             file_name = f'{file_number}_score.txt'
-#         elif column_name == 'type':
-#             file_name = f'{file_number}_type.txt'
+# 각 열마다 25개씩 잘라서 저장
+for column_name, data in columns_data.items():
+    for i in range(0, len(data), 25):
+        # 현재 슬라이스의 데이터
+        slice_data = data[i:i+25]
+        # 파일 번호 (1부터 시작)
+        file_number = i // 25 + 1
+        # 파일 이름 설정
+        if column_name == 'answer':
+            file_name = f'{file_number}_answer.txt'
+        elif column_name == 'score':
+            file_name = f'{file_number}_score.txt'
+        elif column_name == 'type':
+            file_name = f'{file_number}.txt'
         
-#         # 설정된 이름으로 파일 저장
-#         file_path = f'E:/PNS/MCLS/TCNP_data/통계 자료 추출 데이터/2021_1_HME_DATA/{file_name}'
-#         with open(file_path, 'w') as f:
-#             for item in slice_data:
-#                 f.write(f"{item}\n")
+        # 설정된 이름으로 파일 저장
+        file_path = f'E:/PNS/MPI_test/media/data/2021_1_HME_DATA/Math_Ability/{file_name}'
+        with open(file_path, 'w') as f:
+            for item in slice_data:
+                f.write(f"{item}\n")
 
 # data = """
 # 학년,초1,초2,초3,초4,초5,초6,중1,중2,중3
@@ -172,43 +172,43 @@ import os
 #     except Exception as e:
 #         print(f'파일 이름 변경 중 오류가 발생했습니다: {e}')
 
-# CSV 파일 경로
-file_path = 'E:/PNS/MCLS/TCNP_data/2023_1_HME_DATA.csv'  # CSV 파일의 실제 경로
+# # CSV 파일 경로
+# file_path = 'E:/PNS/MCLS/TCNP_data/2023_1_HME_DATA.csv'  # CSV 파일의 실제 경로
 
-# 데이터 읽기 (제목이 없으므로 header=None)
-df = pd.read_csv(file_path, header=None)
+# # 데이터 읽기 (제목이 없으므로 header=None)
+# df = pd.read_csv(file_path, header=None)
 
-# StrongPoint와 WeakPoint에 대한 데이터 추출
-strong_point_data = df.iloc[:, 0]  # 첫 번째 열
-weak_point_data = df.iloc[:, 1]    # 두 번째 열
+# # StrongPoint와 WeakPoint에 대한 데이터 추출
+# strong_point_data = df.iloc[:, 0]  # 첫 번째 열
+# weak_point_data = df.iloc[:, 1]    # 두 번째 열
 
-# StrongPoint와 WeakPoint 폴더 경로
-strong_point_dir = 'E:/PNS/MCLS/TCNP_data/2023_1_HME_DATA/StrongPoint'
-weak_point_dir = 'E:/PNS/MCLS/TCNP_data/2023_1_HME_DATA/WeakPoint'
+# # StrongPoint와 WeakPoint 폴더 경로
+# strong_point_dir = 'E:/PNS/MCLS/TCNP_data/2023_1_HME_DATA/StrongPoint'
+# weak_point_dir = 'E:/PNS/MCLS/TCNP_data/2023_1_HME_DATA/WeakPoint'
 
-# 폴더가 없으면 생성
-os.makedirs(strong_point_dir, exist_ok=True)
-os.makedirs(weak_point_dir, exist_ok=True)
+# # 폴더가 없으면 생성
+# os.makedirs(strong_point_dir, exist_ok=True)
+# os.makedirs(weak_point_dir, exist_ok=True)
 
-# 데이터를 25개씩 나누어 파일로 저장
-for i in range(0, len(df), 25):
-    # 각각의 열에 대해 25개씩 데이터를 나누어 저장
-    strong_point_slice = strong_point_data[i:i+25]
-    weak_point_slice = weak_point_data[i:i+25]
+# # 데이터를 25개씩 나누어 파일로 저장
+# for i in range(0, len(df), 25):
+#     # 각각의 열에 대해 25개씩 데이터를 나누어 저장
+#     strong_point_slice = strong_point_data[i:i+25]
+#     weak_point_slice = weak_point_data[i:i+25]
 
-    # 파일 번호 결정 (1부터 시작)
-    file_number = i // 25 + 1
-    if file_number > 9:
-        break  # 1.txt부터 9.txt까지만 저장하기 위해
+#     # 파일 번호 결정 (1부터 시작)
+#     file_number = i // 25 + 1
+#     if file_number > 9:
+#         break  # 1.txt부터 9.txt까지만 저장하기 위해
 
-    # StrongPoint 데이터 저장
-    strong_point_filename = os.path.join(strong_point_dir, f'{file_number}.txt')
-    with open(strong_point_filename, 'w', encoding='utf-8') as f:  # 인코딩을 utf-8로 지정
-        for item in strong_point_slice:
-            f.write(f"{item}\n")
+#     # StrongPoint 데이터 저장
+#     strong_point_filename = os.path.join(strong_point_dir, f'{file_number}.txt')
+#     with open(strong_point_filename, 'w', encoding='utf-8') as f:  # 인코딩을 utf-8로 지정
+#         for item in strong_point_slice:
+#             f.write(f"{item}\n")
 
-    # WeakPoint 데이터 저장
-    weak_point_filename = os.path.join(weak_point_dir, f'{file_number}.txt')
-    with open(weak_point_filename, 'w', encoding='utf-8') as f:  # 인코딩을 utf-8로 지정
-        for item in weak_point_slice:
-            f.write(f"{item}\n")
+#     # WeakPoint 데이터 저장
+#     weak_point_filename = os.path.join(weak_point_dir, f'{file_number}.txt')
+#     with open(weak_point_filename, 'w', encoding='utf-8') as f:  # 인코딩을 utf-8로 지정
+#         for item in weak_point_slice:
+#             f.write(f"{item}\n")

@@ -83,52 +83,6 @@ class ApiResultLV(CreateView):
     def form_invalid(self, form):
         # 폼 데이터가 유효하지 않으면 에러 메시지와 함께 응답 반환
         return JsonResponse({'status': 'error', 'errors': form.errors}, status=400)
-    
-# class ApiReportLV(ListView):
-#     model = TestResult
-#     template_name = 'report/result.html'
-#     context_object_name = 'test_results'
-    
-#     def get_queryset(self):
-#         # URL의 파라미터로부터 student_id를 받아와서 필터링합니다.
-#         self.student_id = self.kwargs.get('student_id')
-#         return super().get_queryset().filter(StudentId=self.student_id)
-    
-#     def get_context_data(self, **kwargs):
-#         # 부모 클래스의 get_context_data 메서드 호출로 기본 컨텍스트 데이터 가져오기
-#         context = super(ApiReportLV, self).get_context_data(**kwargs)
-        
-#         # 필요한 추가 데이터를 context 딕셔너리에 추가
-#         year_semester = self.request.GET.get('year_semester')
-#         test_grade = self.request.GET.get('test_grade')
-        
-#         # 예제에서 utils.get_std_result 함수는 모델 인스턴스를 반환하는 것으로 보임
-#         # 반환된 모델 인스턴스를 context 딕셔너리에 추가하지 말고, 이를 사용하여 필요한 데이터만 추출해서 추가해야 함
-#         test_result = utils.get_std_result(self.student_id, year_semester, test_grade)
-#         print("test result : ", test_result)
-        
-#         test_result_data = {
-#             'StudentId': test_result.StudentId,
-#             'ExamYearSemester': test_result.ExamYearSemester,
-#             'ExamGrade': test_result.ExamGrade,
-#             'ExamArea': test_result.ExamArea,
-#             'ExamResults': test_result.ExamResults,
-#         }
-
-#         print("test result data: ", test_result_data)
-        
-#         match_statistics = utils.get_statistics(test_result.ExamYearSemester, test_result.ExamGrade)
-#         print("\n\n")
-#         print("match statistics : ", match_statistics)
-        
-#         # 모델 인스턴스 대신 필요한 정보만을 딕셔너리에 추가
-#         context['additional_info'] = {
-#             'year_semester': year_semester,
-#             'test_grade': test_grade,
-#             # 추가로 필요한 정보를 여기에 추가
-#         }
-        
-#         return context
 
 class ApiReportLV(ListView):
     model = TestResult
@@ -144,20 +98,74 @@ class ApiReportLV(ListView):
         test_result = utils.get_std_result(self.kwargs.get('student_id'), year_semester, test_grade)
         
         match_statistics = utils.get_statistics(test_result.ExamYearSemester, test_result.ExamGrade)
+
+        print("student answer type : ", type(test_result.ExamResults[0]))
+        print("student answer list : ", test_result.ExamResults)
+
+        # 추가 데이터 : 점수 / 예측 백분위 상한 및 하한 / 정답 / 학생답 / OX리스트 / 고등예상등급 / 강점 및 약점 / 인지적행동영역(요건 좀 나중에) / 
+        # 정답 리스트
+        numeric_statistics_answerlist = match_statistics[0].first().Statistics_AnswerList
+        statistics_answerlist = [int(item) for item in numeric_statistics_answerlist]
+        print("statistics answer type : ", type(statistics_answerlist[0]))
+        print("statistics answer list : ", statistics_answerlist)
+        
+        # 학생 원점수 계산
+        student_score = utils.calculate_score(test_result=test_result, statistics_answerlist=statistics_answerlist)
+        
+        # 예측 백분위 상한 및 하한 계산 : 강남서초 기준
+        # 평균편차치 계산 -> 표준편차 비율 계산 -> 중학교 점수 예측치 계산 -> 중학교 예상 백분위 계산
+        # 평균편차치 계산
+        EleAvg = match_statistics[0].first().Statistics_SeoulRegionAverage[0]
+        average_diff = utils.average_diff(statistics_list=match_statistics, EleAvg=EleAvg)
+        
+        # 표준편차 비율 계산
+        StdDiff = utils.calculate_standard_deviation_diff(statistics_list=match_statistics)
+        
+        # 중학교 점수 예측치 계산
+        MSC = utils.MidScoreCorrection(Score=student_score, average_diff=average_diff, StdDiff=StdDiff)
+        
+        # 중학교 예상 백분위 계산
+        PredPercentile = utils.PredPercentile(MSC=MSC, statistics_list=match_statistics)
+        
+        # O/X 리스트
+        OXlist = []
+        for i in range(len(test_result.ExamResults)):
+            if test_result.ExamResults[i] == statistics_answerlist[i]:
+                OXlist.append('O')
+            else:
+                OXlist.append('X')
+            
+        # 수학적 능력 분석 리스트
+        math_type_list = match_statistics[0].first().Statistics_ProblemType
+        math_ability_list = utils.calculate_math_ability_list(OX_list=OXlist, prob_type_list=math_type_list)
+        
+        # 고등 예상 등급
+        AccNum = match_statistics[0].first().Statistics_AccumulatedRatio
+        student_ratio = utils.calculate_student_ratio(Accumulate_ratio=AccNum, Score=student_score)
+        high_predict = utils.calculate_grade(student_ratio=student_ratio)
+        
+        # 강점 및 약점
+        Strong_Weak_Point = []
+        for i in range(len(test_result.ExamResults)):
+            if OXlist[i] == 'O':
+                Strong_Weak_Point.append(match_statistics[0].first().Statistics_StrongPoint[i])
+            else:
+                Strong_Weak_Point.append(match_statistics[0].first().Statistics_WeakPoint[i])
         
         # 필요한 추가 데이터를 JSON 형식으로 클라이언트에 전송합니다.
         response_data = {
-            'StudentId': test_result.StudentId,
-            'ExamYearSemester': test_result.ExamYearSemester,
-            'ExamGrade': test_result.ExamGrade,
-            'ExamArea': test_result.ExamArea,
-            'ExamResults': test_result.ExamResults,
-            'Statistics_AnswerList' : match_statistics[0].first().Statistics_AnswerList,
-            'Statistics_StrongPoint' : match_statistics[0].first().Statistics_StrongPoint,
-            'Statistics_WeakPoint' : match_statistics[0].first().Statistics_WeakPoint,
-            'Statistics_AccumulatedNumber' : match_statistics[0].first().Statistics_AccumulatedNumber,
-            'Statistics_NationalAverage' : match_statistics[0].first().Statistics_NationalAverage,
-            'Statistics_SeoulAverage' : match_statistics[0].first().Statistics_SeoulAverage,
+            'StudentId': test_result.StudentId,                 # 학생 Id
+            'ExamYearSemester': test_result.ExamYearSemester,   # 시험시기
+            'ExamGrade': test_result.ExamGrade,                 # 시험학년
+            'ExamResults': test_result.ExamResults,             # 학생답 리스트
+            'AnswerList': statistics_answerlist,                # 정답 리스트
+            'MathAbility': math_ability_list,                     # 수학적 능력 분석 리스트
+            'Score': student_score,                             # 원점수
+            'PredPercentile_low': PredPercentile[0],            # 중학교 예상 백분위 하한
+            'PredPercentile_high': PredPercentile[1],           # 중학교 예상 백분위 상한
+            'OX_list': OXlist,                                  # O/X 리스트
+            'HighSchoolPredictGrade': high_predict,             # 고등학교 내신 및 수능 예상 등급
+            'StrongWeakPoint': Strong_Weak_Point,               # 강점 및 약점 리스트
         }
 
         # JsonResponse 객체를 사용하여 응답을 반환합니다.

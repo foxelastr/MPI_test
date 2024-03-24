@@ -7,12 +7,18 @@
     data() {
       return {
         csrfToken: document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+        StudentId: "",
         ExamYearSemester: "",
         ExamGrade: "",
-        region: "",
-        answers: [],
-        answerList: Array.from({ length: 5 }, () => Array(5).fill(null)),
-        studentId: '',
+        ExamResults: [],
+        AnswerList: [],
+        Score: "",
+        MathAbility: [],
+        PredPercentile_low: "",
+        PredPercentile_high: "",
+        OX_list: [],
+        HighSchoolPredictGrade: "",
+        StrongWeakPoint: [],
       };
     },
     created() {
@@ -38,10 +44,20 @@
             axios.get(`/api/report/detail/${studentId}?year_semester=${this.ExamYearSemester}&test_grade=${this.ExamGrade}`)
             .then(res => {
                 console.log("FETCH REPORTDETAIL GET RES", res);
-                this.studentname = res.data.student_name;
-                // console.log("student name :", this.student_name)
-                this.TestList = res.data.tests;
-                // console.log("TestList : ", this.TestList)
+                this.studentId = res.data.StudentId;
+                this.ExamYearSemester = res.data.ExamYearSemester
+                this.ExamGrade = res.data.ExamGrade
+                this.ExamResults = res.data.ExamResults
+                this.AnswerList = res.data.AnswerList
+                this.Score = res.data.Score
+                this.MathAbility = res.data.MathAbility
+                this.PredPercentile_low = (res.data.PredPercentile_low * 100).toFixed(2);
+                console.log("PredPercentile low : ", this.PredPercentile_low)
+                this.PredPercentile_high = (res.data.PredPercentile_high * 100).toFixed(2);
+                console.log("PredPercentile high : ", this.PredPercentile_high)
+                this.OX_list = res.data.OX_list
+                this.HighSchoolPredictGrade = res.data.HighSchoolPredictGrade
+                this.StrongWeakPoint = res.data.StrongWeakPoint
                 })
                 .catch(err => {
                 console.log("FETCH STUDENTDETAIL GET ERR.RESPONSE", err.response);

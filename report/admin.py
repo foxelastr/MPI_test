@@ -8,7 +8,7 @@ class TestResult(admin.ModelAdmin):
 
 @admin.register(TestStatistics)
 class TestStatistics(admin.ModelAdmin):
-    list_display = ('Statistics_YearSemester', 'Statistics_TestGrade', 'Statistics_AnswerList', 'Statistics_StrongPoint', 'Statistics_WeakPoint', 'Statistics_AccumulatedNumber', 'Statistics_AccumulatedRatio', 'Statistics_NationalAverage', 'Statistics_SeoulAverage', 'Statistics_SeoulRegionAverage')
+    list_display = ('Statistics_YearSemester', 'Statistics_TestGrade', 'Statistics_AnswerList', 'Statistics_ProblemType', 'Statistics_StrongPoint', 'Statistics_WeakPoint', 'Statistics_AccumulatedNumber', 'Statistics_AccumulatedRatio', 'Statistics_NationalAverage', 'Statistics_SeoulAverage', 'Statistics_SeoulRegionAverage')
 
 @admin.register(TestReport)
 class TestReport(admin.ModelAdmin):

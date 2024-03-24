@@ -5,7 +5,213 @@
 {% block title %}test_result.html{% endblock %}
 
 {% block content %}
-
+<div>
+    <div class="block px-5 pt-7 shadow bg-gray-800 border-gray-700 h-full">
+      <div class="border-grey rounded-lg border bg-white">
+        <div class="flex justify-between border-b-4 border-zinc-400">
+          <div id="logo" class="w-1/6 ml-8"></div>
+          <div class="w-1/3 mr-4">
+            <p class="text-lg font-bold pb-2">
+              수학의 철인을 <br />만드는 교육
+            </p>
+          </div>
+        </div>
+        <div class="flex justify-evenly border-b-2">
+          <div class="w-1/4 h-10 border-grey border-b-2 mb-1 pb-2">
+            <span class="font-bold text-xl">원점수</span> :
+            <span class="font-bold text-2xl text-rose-700">[[ Score ]]</span>
+          </div>
+          <div class="w-2/5 h-10 border-grey border-b-2 mb-1 pb-2">
+            <span class="font-bold text-xl">전국 백분위</span> :
+            <span class="font-bold text-2xl text-blue-800">{{
+              this.$store.state.analysisData.percentile
+            }}</span>
+          </div>
+        </div>
+        <div class="flex justify-center border-b-2">
+          <div class="w-11/12 h-60 border-grey border-2 my-2 pt-1 pb-3 px-3">
+            <div class="flex justify-center mt-1">
+              <div class="flex flex-col justify-center text-left w-5/6">
+                <div>
+                  ● <span class="font-bold">강철수학 학력평가</span>는
+                  교육과정에 맞추어 학생들의 실력을 측정하여 예상
+                  <br />&ensp;&ensp;데이터를 제시하고자 합니다.<br />
+                </div>
+                <div class="mt-2">
+                  ● 아울러 <span class="font-bold">강철수학 학력평가</span>의
+                  특징을 살펴보면 다음과 같습니다.<br />
+                </div>
+              </div>
+            </div>
+            <div class="flex justify-center mt-3">
+              <div class="flex flex-col justify-center text-left w-5/6">
+                <div>
+                  <span class="font-bold leading-relaxed">첫째,</span> 수학적인
+                  원리와 개념을 정확히 알고 있는지 평가하도록 하였습니다.<br />
+                  <span class="font-bold leading-relaxed">둘째,</span>
+                  교육과정의 내용을 잘 이해하고 있는지 평가하도록 하였습니다.<br />
+                  <span class="font-bold leading-relaxed">셋째,</span> 수학적
+                  사고력, 창의력, 문제해결력의 척도를 평가하도록 하였습니다.<br />
+                  <span class="font-bold leading-relaxed">넷째,</span> 개인별
+                  추후 예상 등급을 주어 학습방향을 제시해 주고 있습니다.<br />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="flex justify-evenly">
+          <div class="flex flex-col justify-start w-5/12 h-20 border-grey border-2 pb-2 my-1">
+            <span class="font-bold text-xl text-zinc-800">수 능 &ensp; 예 상 &ensp; 등 급</span>
+            <div class="flex justify-center">
+              <div class="w-1/4">
+                <span class="font-bold text-2xl text-pink-700">[[ HighSchoolPredictGrade ]]</span>
+              </div>
+            </div>
+          </div>
+          <div class="flex flex-col w-6/12 h-20 border-grey border-2 pb-2 my-1">
+            <span class="font-bold text-xl text-zinc-800">고 1 &ensp; 내 신 &ensp; 예 상 &ensp; 등 급</span>
+            <div class="flex justify-center">
+              <div class="w-1/4">
+                <span class="font-bold text-2xl text-pink-700">[[ HighSchoolPredictGrade ]]</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="flex justify-evenly border-b-2">
+          <div class="flex flex-col w-5/12 h-20 border-grey border-2 pb-2 my-1">
+            <span class="font-bold text-xl text-zinc-800">중학교 &ensp; 내신 &ensp; 예상 &ensp; 백분위</span>
+            <div>
+              <span class="font-bold text-2xl text-cyan-700">[[ PredPercentile_low ]]</span>
+              ~
+              <span class="font-bold text-2xl text-cyan-700">[[ PredPercentile_high ]]</span>
+            </div>
+          </div>
+          <div class="flex flex-col w-6/12 h-20 border-grey border-2 pb-2 my-1">
+            <span class="font-bold text-xl text-zinc-800">지역 예상 백분위</span>
+            <span class="font-bold text-2xl text-cyan-700">{{ this.$store.state.analysisData.eduOfficePredict
+            }}</span>
+          </div>
+        </div>
+        <div class="flex justify-center h-100">
+          <div class="flex flex-col w-full pb-3 mx-1.5 mb-0.5">
+            <div class="mb-2 text-2xl font-bold">수학적 능력 분석</div>
+            <div class="flex justify-center">
+              <div class="flex flex-col justify-start w-11/12 h-24 border-grey border-b-2 pb-5 mx-1.5my-1">
+                <div class="flex flex-col justify-start">
+                  <div class="flex justify-around">
+                    <div>
+                      <div class="flex flex-col">
+                        <span class="text-lg font-extrabold text-black">전국</span>
+                        <span class="text-lg font-extrabold text-black">평균</span>
+                      </div>
+                    </div>
+                    <div>
+                      <div class="flex flex-col">
+                        <span class="text-lg font-bold text-black">원점수</span>
+                        <span class="ml-3 text-2xl font-extrabold text-rose-600">[[ Score ]]</span>
+                      </div>
+                    </div>
+                    <div>
+                      <div class="flex flex-col">
+                        <span class="text-lg font-bold text-black">계산력</span>
+                        <span class="ml-3 text-2xl font-extrabold text-rose-600">[[ MathAbility[0] ]]</span>
+                      </div>
+                    </div>
+                    <div>
+                      <div class="flex flex-col">
+                        <span class="text-lg font-bold text-black">이해력</span>
+                        <span class="ml-3 text-2xl font-extrabold text-rose-600">[[ MathAbility[1] ]]</span>
+                      </div>
+                    </div>
+                    <div>
+                      <div class="flex flex-col">
+                        <span class="text-lg font-bold text-black">추론력</span>
+                        <span class="ml-3 text-2xl font-extrabold text-rose-600">[[ MathAbility[2] ]]</span>
+                      </div>
+                    </div>
+                    <div>
+                      <div class="flex flex-col">
+                        <span class="text-lg font-bold text-black">문제해결력</span>
+                        <span class="ml-3 text-2xl font-extrabold text-rose-600">[[ MathAbility[3] ]]</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="flex justify-around h-full">
+              <div class="flex flex-col justify-center w-64 h-64">
+                <div class="h-full">
+                  <Radar :data="chartData" :options="chartOptions"></Radar>
+                </div>
+              </div>
+              <div class="flex flex-col justify-around w-3/5 text-xs">
+                <div class="flex justify-between w-full">
+                  <div class="flex justify-between w-2/5 h-8 self-center bg-gray-300">
+                    <div class="self-center ml-1 text-sm pb-2 font-semibold">
+                      계산력
+                    </div>
+                    <div class="flex justify-center w-1/3 pb-2">
+                      <span class="bg-zinc-200 text-red-700 text-lg">[[ MathAbility[0] ]]</span>
+                    </div>
+                  </div>
+                  <div class="w-full mx-2 self-center font-bold">
+                    수학의 가장 밑바탕이 되는 능력으로 수학적 능력을
+                    향상시키는데 있어 가장 기본이며 근본적인 것
+                  </div>
+                </div>
+                <div class="flex justify-between w-full">
+                  <div class="flex justify-between w-2/5 h-8 self-center bg-gray-300">
+                    <div class="self-center ml-1 text-sm pb-2 font-semibold">
+                      이해력
+                    </div>
+                    <div class="flex justify-center w-1/3 pb-2">
+                      <span class="bg-zinc-200 text-red-700 text-lg">[[ MathAbility[1] ]]</span>
+                    </div>
+                  </div>
+                  <div class="w-full mx-2 self-center font-bold">
+                    수학적 기본 개념과 원리가 갖는 의미를 파악하고, 문제의
+                    핵심을 수학적 상황으로 생각할 수 있는 능력
+                  </div>
+                </div>
+                <div class="flex justify-between w-full">
+                  <div class="flex justify-between w-2/5 h-8 self-center bg-gray-300">
+                    <div class="self-center ml-1 text-sm pb-2 font-semibold">
+                      추론력
+                    </div>
+                    <div class="flex justify-center w-1/3 pb-2">
+                      <span class="bg-zinc-200 text-red-700 text-lg">[[ MathAbility[2] ]]</span>
+                    </div>
+                  </div>
+                  <div class="w-full mx-2 self-center font-bold">
+                    수학의 개념과 원리를 바탕으로 상호 관련성 속에서 문제 해결에
+                    필요한 원리와 개념을 찾는 수학적 사고 능력
+                  </div>
+                </div>
+                <div class="flex justify-between w-full">
+                  <div class="flex justify-between w-2/5 h-8 self-center bg-gray-300">
+                    <div class="self-center ml-1 text-sm pb-2 font-semibold">
+                      문제해결력
+                    </div>
+                    <div class="flex justify-center w-1/3 pb-2">
+                      <span class="bg-zinc-200 text-red-700 text-lg">[[ MathAbility[3] ]]</span>
+                    </div>
+                  </div>
+                  <div class="w-full mx-2 self-center font-bold">
+                    수학적 개념과 원리를 바탕으로 문제해결법을 찾아내며 결과의
+                    적합성과 유용성 등을 점검할 수 있는 능력
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="flex justify-center">
+          <div id="footer" class="w-11/12 h-16 border-t-2 py-2 my-1"></div>
+        </div>
+      </div>
+    </div>
+</div>
 {% endblock %}
 
 {% block extra-script %}
