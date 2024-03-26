@@ -25,8 +25,16 @@
             console.log("FETCH STUDENTDETAIL GET RES", res);
             this.studentname = res.data.student_name;
             // console.log("student name :", this.student_name)
-            this.TestList = res.data.tests;
-            // console.log("TestList : ", this.TestList)
+            this.TestList = res.data.tests.map(test => {
+              // 시험 이름(또는 설명)을 구성합니다.
+              const semesterStr = test.test_semester === 1 ? "상반기" : "하반기";
+              const test_name = `${test.test_year}년도 ${semesterStr} ${test.ExamGrade}학년`;
+              return {
+                ...test,
+                test_name,  // 구성한 시험 이름을 객체에 추가합니다.
+              };
+            });            
+            console.log("TestList : ", this.TestList)
             console.log("student name : ", this.studentname)
           })
           .catch(err => {
@@ -46,6 +54,12 @@
             console.error("Submit error:", err.response);
             alert(`${err.response.status} ${err.response.statusText}`);
           });
+      },
+      navigateToReport(test){
+        const year_semester = `${test.test_year}${test.test_semester}`;
+        const url = `/report/result/${this.studentId}/?year_semester=${year_semester}&test_grade=${test.ExamGrade}`;
+
+        window.location.href = url;
       }
     }
   }

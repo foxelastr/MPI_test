@@ -5,7 +5,7 @@ from django.views.generic.list import BaseListView
 from django.views.generic import CreateView, ListView
 from django.http import HttpRequest, HttpResponse, JsonResponse
 from api.utils import obj_to_student, obj_to_test
-from dashboard.models import Student, Test
+from dashboard.models import Student
 from report.forms import TestResultForm
 from report.models import TestResult
 from report import utils
@@ -19,25 +19,37 @@ class ApiStudentLV(BaseListView):
         StudentList = [obj_to_student(obj) for obj in qs]
         return JsonResponse(data=StudentList, safe=False, status=200)
 
-class ApiStudentDV(BaseListView):
-    model = Test
+class ApiStudentDV(ListView):
+    model = TestResult
 
     def get_queryset(self):
         student_id = self.kwargs.get('student_id')
-        queryset = Test.objects.filter(student__id=student_id)
+        queryset = TestResult.objects.filter(student__id=student_id)  # student_id를 기반으로 필터링
         return queryset
     
     def render_to_response(self, context, **response_kwargs):
         qs = context['object_list']
-        
-        # 여기서 student_id를 기반으로 학생 이름을 조회
         student_name = Student.objects.get(id=self.kwargs.get('student_id')).name
         
-        TestList = [obj_to_test(obj) for obj in qs]
-        
-        # 응답 데이터에 학생 이름 추가
-        response_data = {'student_name': student_name, 'tests': TestList}
-        
+        # TestList에 시험 이름(또는 설명)을 포함하여 구성
+        TestList = []
+        for test in qs:
+            test_year = int(test.ExamYearSemester / 10)
+            test_semester = test.ExamYearSemester % 10
+            
+            test_info = {
+                'test_year': test_year,
+                'test_semester': test_semester,
+                'test_date': test.test_date.strftime('%Y-%m-%d'),
+                'ExamGrade': test.ExamGrade,
+            }
+            TestList.append(test_info)
+
+        response_data = {
+            'student_name': student_name,
+            'tests': TestList
+        }
+
         return JsonResponse(data=response_data, safe=False, status=200)
 
 class ApiSubmitCV(CreateView):
@@ -47,7 +59,7 @@ class ApiSubmitCV(CreateView):
     
     def get(self, request, *args, **kwargs):
         student_id = self.kwargs.get('student_id')
-        queryset = Test.objects.filter(student__id=student_id)
+        queryset = TestResult.objects.filter(student__id=student_id)
         data = list(queryset.values())  # 또는 적절한 데이터 변환 로직
         return JsonResponse(data, safe=False)
     
@@ -68,17 +80,24 @@ class ApiResultLV(CreateView):
     
     def get(self, request, *args, **kwargs):
         student_id = self.kwargs.get('student_id')
-        queryset = Test.objects.filter(student__id=student_id)
+        queryset = TestResult.objects.filter(student__id=student_id)
         data = list(queryset.values())  # 또는 적절한 데이터 변환 로직
         return JsonResponse(data, safe=False)
     
     def form_valid(self, form):
-        print(form.cleaned_data)  # 폼 데이터 로깅하여 StudentId 값 확인
-
-        # 폼 데이터가 유효하면 데이터 저장
-        self.object = form.save()
-        # AJAX 요청에 대해서는 JSON 응답 반환
-        return JsonResponse({'status': 'success', 'data': self.object.id}, status=201)
+        # StudentId를 사용하여 Student 인스턴스를 찾습니다.
+        student_id = form.cleaned_data.get('StudentId')
+        student = Student.objects.get(id=student_id)
+        print("\nstudent id : ", student_id)
+        print("\nstudent name : ", student)
+        
+        # TestResult 인스턴스를 생성하고, student 필드를 설정합니다.
+        test_result = form.save(commit=False)
+        test_result.student = student
+        test_result.save()
+        
+        # 나머지 처리를 진행합니다.
+        return JsonResponse({'status': 'success', 'data': test_result.id}, status=201)
 
     def form_invalid(self, form):
         # 폼 데이터가 유효하지 않으면 에러 메시지와 함께 응답 반환
