@@ -4,7 +4,14 @@
 <form method="post">
   {% csrf_token %}
   {% include 'users/form_errors.html' %}
-  {{ form.as_p }} <!-- form 필드를 <p> 태그로 감싸서 렌더링합니다. -->
+  
+  <p>{{ form.username.label_tag }} {{ form.username }}</p>
+  <p>{{ form.email.label_tag }} {{ form.email }}</p>
+  <p>{{ form.password1.label_tag }} {{ form.password1 }}</p>
+  <p>{{ form.password2.label_tag }} {{ form.password2 }}</p>
+  <p>{{ form.affiliation.label_tag }} {{ form.affiliation }}</p>
+  <p>{{ form.region.label_tag }} {{ form.region }}</p>
+  
   <button type="submit">회원가입</button>
 </form>
 {% endblock %}

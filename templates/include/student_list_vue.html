@@ -25,7 +25,20 @@
                         console.log("FETCH STUDENTLIST GET ERR.RESPONSE", err.response);
                         alert(`${err.response.status} ${err.response.statusText}`);
                     });
-            }
+            },
+            addStudent() {
+                console.log("addStudent()...");
+                axios.get('/api/student/add')
+                    .then(res => {
+                        console.log("FETCH STUDENT ADD GET RES", res)
+                        window.location.href = `/dashboard/addstudent/`;
+
+                    })
+                    .catch(err => {
+                        console.log("FETCH STUDENT ADD GET ERR.RESPONSE", err.response)
+                        alert(`${err.response.status} ${err.response.statusText}`)
+                    })
+            },
         }
     }
 

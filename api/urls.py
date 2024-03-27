@@ -6,6 +6,7 @@ from api import views
 app_name = 'api'
 urlpatterns = [
     path('student/list', views.ApiStudentLV.as_view(), name='student_list'),
+    path('student/add', views.ApiAddStudentCV.as_view(), name='add_student'),
     path('student/<int:student_id>/', views.ApiStudentDV.as_view(), name='student_detail'),
     path('report/submit/<int:student_id>/', views.ApiSubmitCV.as_view(), name='submit'),
     path('report/result/<int:student_id>/', views.ApiResultLV.as_view(), name='result'),

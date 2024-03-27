@@ -1,11 +1,11 @@
 from django.contrib.auth import login
-from django.contrib.auth.forms import UserCreationForm
+from .forms import CustomUserCreationForm
 from django.urls import reverse_lazy
 from django.views.generic.edit import CreateView
 
 # 회원가입 뷰
 class SignUpView(CreateView):
-    form_class = UserCreationForm
+    form_class = CustomUserCreationForm
     success_url = reverse_lazy('users:login')
     template_name = 'users/signup.html'
 

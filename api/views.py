@@ -1,6 +1,5 @@
-import json
 from django.urls import reverse_lazy
-from django.views import View
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic.list import BaseListView
 from django.views.generic import CreateView, ListView
 from django.http import HttpRequest, HttpResponse, JsonResponse
@@ -11,13 +10,28 @@ from report.models import TestResult
 from report import utils
 
 
-class ApiStudentLV(BaseListView):
+class ApiStudentLV(LoginRequiredMixin, ListView):
     model = Student
-    
+
+    def get_queryset(self):
+        # 현재 로그인한 사용자와 연결된 학생들만 필터링
+        return Student.objects.filter(user=self.request.user)
+
     def render_to_response(self, context, **response_kwargs):
-        qs = context['object_list']
+        # get_queryset에서 필터링된 쿼리셋을 사용
+        qs = self.get_queryset()
         StudentList = [obj_to_student(obj) for obj in qs]
         return JsonResponse(data=StudentList, safe=False, status=200)
+
+    def obj_to_student(obj):
+        # 여기에 obj (Student 인스턴스)를 받아서 원하는 데이터 구조로 변환하는 로직을 구현합니다.
+        # 예제로, 모델의 필드를 그대로 사용하는 간단한 변환 로직을 제시합니다.
+        return {
+            'id': obj.id,
+            'name': obj.name,
+            'birthdate': obj.birthdate.strftime('%Y-%m-%d'),  # 날짜는 문자열로 변환
+            'grade': obj.grade
+        }
 
 class ApiStudentDV(ListView):
     model = TestResult
@@ -185,20 +199,34 @@ class ApiReportLV(ListView):
         # JsonResponse 객체를 사용하여 응답을 반환합니다.
         return JsonResponse(response_data)
 
+class ApiAddStudentCV(CreateView):
+    # model = Student
+    # form_class = TestResultForm
+    # success_url = reverse_lazy('home')  # 성공시 리다이렉트 될 URL 설정
+    
+    # def get(self, request, *args, **kwargs):
+    #     student_id = self.kwargs.get('student_id')
+    #     queryset = TestResult.objects.filter(student__id=student_id)
+    #     data = list(queryset.values())  # 또는 적절한 데이터 변환 로직
+    #     return JsonResponse(data, safe=False)
+    
+    # def form_valid(self, form):
+    #     # StudentId를 사용하여 Student 인스턴스를 찾습니다.
+    #     student_id = form.cleaned_data.get('StudentId')
+    #     student = Student.objects.get(id=student_id)
+    #     print("\nstudent id : ", student_id)
+    #     print("\nstudent name : ", student)
+        
+    #     # TestResult 인스턴스를 생성하고, student 필드를 설정합니다.
+    #     test_result = form.save(commit=False)
+    #     test_result.student = student
+    #     test_result.save()
+        
+    #     # 나머지 처리를 진행합니다.
+    #     return JsonResponse({'status': 'success', 'data': test_result.id}, status=201)
 
-    # # POST 요청 처리
-    # def post(self, request, *args, **kwargs):
-    #     # 요청 바디를 JSON으로 파싱
-    #     body_unicode = request.body.decode('utf-8')
-    #     body = json.loads(body_unicode)
-        
-    #     # 필요한 데이터 처리 로직 구현
-    #     # 예시: body 데이터를 사용하여 새 Test 객체 생성
-    #     # new_test = Test.objects.create(**body)
-        
-    #     # 데이터를 딕셔너리 형태로 변환
-    #     # 예시: 생성된 Test 객체의 정보를 딕셔너리 형태로 변환
-    #     # data = {'id': new_test.id, 'name': new_test.name, ...}
-        
-    #     # JsonResponse를 사용하여 JSON 형태로 응답
-    #     return JsonResponse(body, safe=False)  # 여기서는 예시로 받은 데이터를 그대로 반환
+    # def form_invalid(self, form):
+    #     # 폼 데이터가 유효하지 않으면 에러 메시지와 함께 응답 반환
+    #     return JsonResponse({'status': 'error', 'errors': form.errors}, status=400)
+    
+    pass

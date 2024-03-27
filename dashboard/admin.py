@@ -3,11 +3,8 @@ from .models import Student
 
 @admin.register(Student)
 class StudentAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name', 'birthdate', 'grade', 'test_list')
+    list_display = ('id', 'name', 'user_id', 'birthdate', 'grade', 'test_list')
 
-    # def test_list(self, obj):
-    #     return ', '.join([test.student for test in obj.test_results.all()])
-    # test_list.short_description = 'Tests'  # 해당 메서드에 대한 설명 추가
     def test_list(self, obj):
         tests_str = []
         for test in obj.test_results.all():
@@ -23,18 +20,3 @@ class StudentAdmin(admin.ModelAdmin):
     
     def get_queryset(self, request):
         return super().get_queryset(request).prefetch_related('test_results')
-
-# @admin.register(Test)
-# class TestAdmin(admin.ModelAdmin):
-#     list_display = ('id', 'name', 'student_name', 'test_date', 'consulting_schedule', 'consulting_content', 'consulting_status')
-
-#     def student_name(self, obj):
-#         return ', '.join([test.name for test in obj.student.all()])
-#     student_name.short_description = 'Students'  # 해당 메서드에 대한 설명 추가
-
-#     def get_queryset(self, request):
-#         return super().get_queryset(request).prefetch_related('student')
-    
-# @admin.register(Test_report)
-# class TestReportAdmin(admin.ModelAdmin):
-#     list_display = ('id', 'student', 'create_dt')
