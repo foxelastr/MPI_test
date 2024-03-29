@@ -1,9 +1,13 @@
+import datetime
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.views import View
 from django.views.generic.list import BaseListView
 from django.views.generic import CreateView, ListView
 from django.http import HttpRequest, HttpResponse, JsonResponse
+from django.utils.dateparse import parse_date
 from api.utils import obj_to_student, obj_to_test
+from dashboard.forms import StudentForm
 from dashboard.models import Student
 from report.forms import TestResultForm
 from report.models import TestResult
@@ -199,34 +203,22 @@ class ApiReportLV(ListView):
         # JsonResponse 객체를 사용하여 응답을 반환합니다.
         return JsonResponse(response_data)
 
-class ApiAddStudentCV(CreateView):
-    # model = Student
-    # form_class = TestResultForm
-    # success_url = reverse_lazy('home')  # 성공시 리다이렉트 될 URL 설정
-    
-    # def get(self, request, *args, **kwargs):
-    #     student_id = self.kwargs.get('student_id')
-    #     queryset = TestResult.objects.filter(student__id=student_id)
-    #     data = list(queryset.values())  # 또는 적절한 데이터 변환 로직
-    #     return JsonResponse(data, safe=False)
-    
-    # def form_valid(self, form):
-    #     # StudentId를 사용하여 Student 인스턴스를 찾습니다.
-    #     student_id = form.cleaned_data.get('StudentId')
-    #     student = Student.objects.get(id=student_id)
-    #     print("\nstudent id : ", student_id)
-    #     print("\nstudent name : ", student)
-        
-    #     # TestResult 인스턴스를 생성하고, student 필드를 설정합니다.
-    #     test_result = form.save(commit=False)
-    #     test_result.student = student
-    #     test_result.save()
-        
-    #     # 나머지 처리를 진행합니다.
-    #     return JsonResponse({'status': 'success', 'data': test_result.id}, status=201)
+class AddStudentCV(CreateView):
+    model = Student
+    form_class = StudentForm
+    template_name = 'dashboard/add_student.html'
+    success_url = reverse_lazy('/')  # 성공시 리다이렉트 될 URL 설정
 
-    # def form_invalid(self, form):
-    #     # 폼 데이터가 유효하지 않으면 에러 메시지와 함께 응답 반환
-    #     return JsonResponse({'status': 'error', 'errors': form.errors}, status=400)
-    
-    pass
+    def form_valid(self, form):
+        # StudentId를 사용하여 Student 인스턴스를 찾습니다.
+        form.instance.user = self.request.user  # 현재 로그인한 사용자 할당
+        
+        # Student 인스턴스를 생성하고, student 필드를 설정합니다.
+        form.save()
+        
+        # 나머지 처리를 진행합니다.
+        return JsonResponse({'status': 'success', 'data': self.request.user.id}, status=201)
+
+    def form_invalid(self, form):
+        # 폼 데이터가 유효하지 않으면 에러 메시지와 함께 응답 반환
+        return JsonResponse({'status': 'error', 'errors': form.errors}, status=400)

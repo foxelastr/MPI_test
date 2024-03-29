@@ -1,10 +1,11 @@
 from pathlib import Path
+from django.http import JsonResponse
+from django.urls import reverse_lazy
 from django.views.generic import DetailView, View
-
+from django.views.generic.edit import CreateView
+from dashboard.forms import StudentForm
 from dashboard.models import Student
 from mpitest import settings
-from django.http import FileResponse, Http404
-import os
 
 class StudentDV(DetailView):
     model = Student
@@ -35,3 +36,9 @@ class TestDV(View):
     def render_to_response(self, context, **response_kwargs):
         from django.shortcuts import render
         return render(self.request, self.template_name, context)
+
+class AddStudentCV(CreateView):
+    model = Student
+    form_class = StudentForm
+    template_name = 'dashboard/add_student.html'
+    success_url = '/'
