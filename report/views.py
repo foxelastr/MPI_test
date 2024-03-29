@@ -1,9 +1,9 @@
 from django.http import HttpResponse, HttpRequest
 from django.shortcuts import render
-from django.views.generic.edit import CreateView
+from django.urls import reverse_lazy
+from django.views.generic.edit import CreateView, UpdateView
 from django.views import View
 from .models import TestResult
-from django.template.response import TemplateResponse
 
 class SubmitDV(CreateView):
     model = TestResult
@@ -30,17 +30,10 @@ class ResultDV(View):
     def render_to_response(self, context, **response_kwargs) -> HttpResponse:
         return render(self.request, self.template_name, context)
 
-# class ResultDV(View):
-#     template_name = 'report/result.html'
+class TestResultUV(UpdateView):
+    model = TestResult
+    fields = ['ExamYearSemester', 'ExamGrade', 'ExamArea', 'ExamResults']
+    template_name = 'report/test_result_update_form.html'
     
-#     def get(self, request, *args, **kwargs):
-#         context = self.get_context_data()
-#         return self.render_to_response(context)
-    
-#     def get_context_data(self, **kwargs):
-#         # 컨텍스트 데이터 생성 로직
-#         context = {}
-#         return context
-    
-#     def render_to_response(self, context, **response_kwargs):
-#         return TemplateResponse(request=self.request, template=self.template_name, context=context, **response_kwargs)
+    def get_success_url(self):
+        return reverse_lazy('student_detail', kwargs={'pk': self.object.student.pk})

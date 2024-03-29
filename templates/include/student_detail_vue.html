@@ -60,9 +60,13 @@
         const url = `/report/result/${this.studentId}/?year_semester=${year_semester}&test_grade=${test.ExamGrade}`;
 
         window.location.href = url;
+      },
+      editTestResult(testResultId) {
+        console.log("test result id : ", testResultId)
+        // 시험 결과 수정 페이지로 리다이렉트
+        window.location.href = `/report/result/update/${testResultId}/`;
       }
     }
   }
-
   Vue.createApp(StudentDetailApp).mount('#page-top');
 </script>

@@ -1,8 +1,7 @@
 from pathlib import Path
-from django.http import JsonResponse
 from django.urls import reverse_lazy
 from django.views.generic import DetailView, View
-from django.views.generic.edit import CreateView
+from django.views.generic.edit import CreateView, UpdateView
 from dashboard.forms import StudentForm
 from dashboard.models import Student
 from mpitest import settings
@@ -42,3 +41,9 @@ class AddStudentCV(CreateView):
     form_class = StudentForm
     template_name = 'dashboard/add_student.html'
     success_url = '/'
+
+class StudentUV(UpdateView):
+    model = Student
+    fields = ['name', 'birthdate', 'grade']
+    template_name = 'dashboard/student_update_form.html'
+    success_url = reverse_lazy('home')  # 수정 성공 후 리다이렉트할 URL

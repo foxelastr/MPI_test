@@ -49,13 +49,13 @@ class ApiStudentDV(ListView):
         qs = context['object_list']
         student_name = Student.objects.get(id=self.kwargs.get('student_id')).name
         
-        # TestList에 시험 이름(또는 설명)을 포함하여 구성
         TestList = []
         for test in qs:
             test_year = int(test.ExamYearSemester / 10)
             test_semester = test.ExamYearSemester % 10
             
             test_info = {
+                'id': test.id,
                 'test_year': test_year,
                 'test_semester': test_semester,
                 'test_date': test.test_date.strftime('%Y-%m-%d'),
