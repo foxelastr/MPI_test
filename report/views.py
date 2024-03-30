@@ -36,4 +36,4 @@ class TestResultUV(UpdateView):
     template_name = 'report/test_result_update_form.html'
     
     def get_success_url(self):
-        return reverse_lazy('student_detail', kwargs={'pk': self.object.student.pk})
+        return reverse_lazy('dashboard:student_detail', kwargs={'pk': self.object.student.pk})
