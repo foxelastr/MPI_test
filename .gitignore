@@ -1,3 +1,18 @@
 MPI_VENV/
 
 media/
+
+users/__pycache__/
+users/migrations/
+
+report/__pycache__/
+report/migrations/
+
+mpitest/__pycache__/
+mpitest/migrations/
+
+dashboard/__pycache__/
+dashboard/migrations/
+
+api/__pycache__/
+api/migrations/
