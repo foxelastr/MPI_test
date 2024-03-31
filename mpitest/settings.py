@@ -26,7 +26,8 @@ SECRET_KEY = 'django-insecure-o$cqaae=&!17b*4pfi(#ymw2v9!ml2@!7_0(wf9n6*$)546wq0
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+# ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', '[::1]']
 
 
 # Application definition
@@ -130,7 +131,11 @@ STATIC_URL = '/static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-STATICFILES_DIRS = (BASE_DIR / 'static',)
+# STATICFILES_DIRS = (BASE_DIR / 'static',)
+STATICFILES_DIRS = [
+    BASE_DIR / 'static',
+]
+
 # STATIC_ROOT = 
 
 # 미디어 파일 설정

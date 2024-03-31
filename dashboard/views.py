@@ -44,6 +44,6 @@ class AddStudentCV(CreateView):
 
 class StudentUV(UpdateView):
     model = Student
-    fields = ['name', 'birthdate', 'grade']
+    form_class = StudentForm  # 'fields' 대신 'form_class'를 사용
     template_name = 'dashboard/student_update_form.html'
     success_url = reverse_lazy('home')  # 수정 성공 후 리다이렉트할 URL

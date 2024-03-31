@@ -14,8 +14,11 @@
     },
     created() {
       console.log("created()...");
-      this.studentId = location.pathname.split('/')[3]
-      this.fetchStudentDetail(this.studentId);
+      if (!path.endsWith('/')) {
+        path += '/';
+    }
+    this.studentId = path.split('/').slice(-2)[0];
+    this.fetchStudentDetail(this.studentId);
     },
     methods: {
       fetchStudentDetail(studentId) {

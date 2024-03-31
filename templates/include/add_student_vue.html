@@ -2,50 +2,61 @@
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 
 <script>
-  const TestSubmitApp = {
-    delimiters: ['[[', ']]'],
-    data() {
-      return {
-        csrfToken: document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-        studentName: "",
-        birthdate: "",
-        grade: "",
-      };
-    },
-    created() {},
-    methods: {
-      submitForm() {
-        originalBD = this.birthdate
-        const studentBD = originalBD.replace(/(\d{4})(\d{2})(\d{2})/, '$1-$2-$3');
-        // FormData 인스턴스 생성
-        const formData = new FormData();
-        
-        // 데이터 추가
-        formData.append('name', this.studentName);
-        formData.append('birthdate', studentBD);
-        formData.append('grade', this.grade);  // "region" 필드를 "ExamArea"로 매핑
+const TestSubmitApp = {
+  delimiters: ['[[', ']]'],
+  data() {
+    return {
+      csrfToken: document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+      studentName: "",
+      birthdate: "",
+      grade: "",
+    };
+  },
+  methods: {
+    submitForm() {
+      // 이름 유효성 검사
+      if (!this.studentName) {
+        alert("이름을 입력하세요");
+        return;
+      }
 
-        for (let [key, value] of formData.entries()) {
-          console.log(key, value);
+      // 생년월일 유효성 검사
+      if (!this.birthdate.match(/^\d{8}$/)) {
+        alert("생년월일을 8자리로 입력하세요");
+        return;
       }
-        
-        axios.post(`/api/student/add`, formData, {
-          headers: {
-            'X-CSRFToken': this.csrfToken, // CSRF 토큰 헤더에 추가
-            'Content-Type': 'multipart/form-data' // 중요: FormData를 사용할 때의 Content-Type
-          }
-        })
-        .then(response => {
-          console.log("Submit response:", response);
-          window.location.href = `/`;
-        })
-        .catch(error => {
-          console.error("Submit error:", error.response);
-          alert(`${error.response.status} ${error.response.statusText}`);
-        });
+
+      // 학년 유효성 검사
+      if (!this.grade) {
+        alert("학년을 선택하세요");
+        return;
       }
-    },
-  }
-  Vue.createApp(TestSubmitApp).mount('#page-top');
-  </script>
-  
+
+      const studentBD = this.birthdate.replace(/(\d{4})(\d{2})(\d{2})/, '$1-$2-$3');
+      // FormData 인스턴스 생성
+      const formData = new FormData();
+      
+      // 데이터 추가
+      formData.append('name', this.studentName);
+      formData.append('birthdate', studentBD);
+      formData.append('grade', this.grade);
+
+      axios.post(`/api/student/add`, formData, {
+        headers: {
+          'X-CSRFToken': this.csrfToken,
+          'Content-Type': 'multipart/form-data'
+        }
+      })
+      .then(response => {
+        console.log("Submit response:", response);
+        window.location.href = `/`;
+      })
+      .catch(error => {
+        console.error("Submit error:", error.response);
+        alert(`${error.response.status} ${error.response.statusText}`);
+      });
+    }
+  },
+}
+Vue.createApp(TestSubmitApp).mount('#page-top');
+</script>

@@ -1,0 +1,55 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>페이지를 찾을 수 없습니다</title>
+<style>
+    body {
+        text-align: center;
+        padding: 150px;
+        font-family: "Noto Sans KR", sans-serif;
+        background-color: #f0f0f0;
+        color: #333;
+    }
+
+    h1 {
+        font-size: 50px;
+        text-align: center;
+    }
+
+    p {
+        font-size: 20px;
+        text-align: center;
+    }
+
+    a {
+        display: inline-block;
+        padding: 10px 20px;
+        background-color: #007bff;
+        color: #fff;
+        text-decoration: none;
+        border-radius: 5px;
+    }
+
+    a:hover {
+        background-color: #0056b3;
+    }
+
+    .error-image {
+        max-width: 100%;
+        height: auto;
+    }
+
+</style>
+</head>
+<body id="page-top">
+
+<h1>404 페이지를 찾을 수 없습니다</h1>
+<p>찾고 계신 페이지가 존재하지 않거나, 다른 위치로 이동되었습니다.</p>
+<img src="/static/assets/img/404image.webp" alt="404 Error" class="error-image"/>
+<a href="/">홈으로 돌아가기</a>
+
+</body>
+</html>
