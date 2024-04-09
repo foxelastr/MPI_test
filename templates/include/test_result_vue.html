@@ -1,7 +1,12 @@
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://unpkg.com/vue-chartjs/dist/vue-chartjs.min.js"></script>
 
-<script>
+
+<script type="module">
   const TestSubmitApp = {
     delimiters: ['[[', ']]'],
     data() {
@@ -12,65 +17,199 @@
         ExamGrade: "",
         ExamResults: [],
         AnswerList: [],
-        Score: "",
         MathAbility: [],
-        PredPercentile_low: "",
-        PredPercentile_high: "",
+        Score: "",
+        selectedTerritory_low: 0,
+        selectedTerritory_high: 0,
+        otherTerritories_low: [],
+        otherTerritories_high: [],
         OX_list: [],
-        HighSchoolPredictGrade: "",
-        StrongWeakPoint: [],
+        HighSchoolPredictGrade: [],
+        SuneungPredictGrade:0,
+        NationalPredictRatio: 0,
+        StrongPoint: [],
+        WeakPoint: [],
+        StudentRegion: "",
+        chartData: {
+          labels: ['계산력', '이해력', '문제해결력', '추론력'],
+          datasets: [
+            {
+              label: '능력치',
+              data: [], // 초기 값
+              backgroundColor: 'rgba(255, 99, 132, 0.2)',
+              borderColor: 'rgba(255, 99, 132, 1)',
+              borderWidth: 1
+            }
+          ]
+        },
+        chartInstance: null, // 차트 인스턴스를 저장할 속성
+        captureState: 1,
       };
     },
     created() {
       console.log("created()...");
       let path = location.pathname;
       if (!path.endsWith('/')) {
-          path += '/';
+        path += '/';
       }
-      this.studentId = path.split('/').slice(-2)[0];
-      console.log("studentId : ", this.studentId);
-      // URL의 쿼리 스트링 파싱
+      this.StudentId = path.split('/').slice(-2)[0];
+      console.log("StudentId : ", this.StudentId);
+      
       const queryString = location.search;
       const params = new URLSearchParams(queryString);
       
-      // 각 파라미터를 Vue 데이터 속성에 할당
       this.ExamYearSemester = params.get('year_semester');
       this.ExamGrade = params.get('test_grade');
       
       console.log("ExamYearSemester: ", this.ExamYearSemester);
       console.log("ExamGrade: ", this.ExamGrade);
  
-      this.fetchReportDetail(this.studentId);
+      this.fetchReportDetail(this.StudentId);
     },
     methods: {
-        fetchReportDetail(studentId) {
-            console.log("fetchReportDetail()...", studentId);
-            axios.get(`/api/report/detail/${studentId}?year_semester=${this.ExamYearSemester}&test_grade=${this.ExamGrade}`)
-            .then(res => {
-                console.log("FETCH REPORTDETAIL GET RES", res);
-                this.studentId = res.data.StudentId;
-                this.ExamYearSemester = res.data.ExamYearSemester
-                this.ExamGrade = res.data.ExamGrade
-                this.ExamResults = res.data.ExamResults
-                this.AnswerList = res.data.AnswerList
-                this.Score = res.data.Score
-                this.MathAbility = res.data.MathAbility
-                this.PredPercentile_low = (res.data.PredPercentile_low * 100).toFixed(2);
-                console.log("PredPercentile low_row : ", res.data.PredPercentile_low)
-                console.log("PredPercentile low : ", this.PredPercentile_low)
-                this.PredPercentile_high = (res.data.PredPercentile_high * 100).toFixed(2);
-                console.log("PredPercentile high : ", this.PredPercentile_high)
-                this.OX_list = res.data.OX_list
-                this.HighSchoolPredictGrade = res.data.HighSchoolPredictGrade
-                this.StrongWeakPoint = res.data.StrongWeakPoint
-                })
-                .catch(err => {
-                console.log("FETCH STUDENTDETAIL GET ERR.RESPONSE", err.response);
-                alert(`${err.response.status} ${err.response.statusText}`);
-                });
-        },
+      fetchReportDetail(StudentId) {
+        console.log("fetchReportDetail()...", StudentId);
+        axios.get(`/api/report/detail/${StudentId}?year_semester=${this.ExamYearSemester}&test_grade=${this.ExamGrade}`)
+          .then(res => {
+            console.log("FETCH REPORTDETAIL GET RES", res);
+            this.StudentId = res.data.StudentId;
+            this.ExamYearSemester = res.data.ExamYearSemester;
+            this.ExamGrade = res.data.ExamGrade;
+            this.ExamResults = res.data.ExamResults;
+            this.AnswerList = res.data.AnswerList;
+            this.Score = res.data.Score;
+            this.StudentRegion = res.data.StudentRegion;
+            this.MathAbility = res.data.MathAbility
+            console.log("MathAbility : ", this.MathAbility)
+            
+            // this.chartData.datasets[0].data = res.data.MathAbility;
+            if (this.chartData.datasets && this.chartData.datasets.length > 0) {
+              this.chartData.datasets[0].data[0] = (this.MathAbility[0]*100/28).toFixed(2)
+              this.chartData.datasets[0].data[1] = (this.MathAbility[1]*100/32).toFixed(2)
+              this.chartData.datasets[0].data[2] = (this.MathAbility[2]*100/20).toFixed(2)
+              this.chartData.datasets[0].data[3] = (this.MathAbility[3]*100/20).toFixed(2)
+              console.log("차트데이터 : ", this.chartData.datasets[0].data)
+              // 차트 데이터가 업데이트된 후 차트를 다시 그리는 함수 호출
+              console.log("렌더차트 함수 호출 직후")
+            } else {
+              // 적절한 오류 처리 또는 데이터셋 초기화 로직
+              console.error('datasets 배열이 초기화되지 않았습니다.');
+            }
+            console.log("chartData : ", this.chartData)
+            
+            const territoryOrder = ["강남서초", "강동송파", "강서양천", "서울남부", "서울동부", "동작관악", "서울북부", "서울서부", "성동광진", "성북강북", "서울중부"];
+            const selectedIndex = territoryOrder.indexOf(this.StudentRegion);
+            
+            this.selectedTerritory_low = parseFloat(res.data.PredPercentile_low[selectedIndex] * 100).toFixed(2);
+            this.selectedTerritory_high = parseFloat(res.data.PredPercentile_high[selectedIndex] * 100).toFixed(2);
+            
+            this.otherTerritories_low = res.data.PredPercentile_low.map((value, index) => ({
+              territory: territoryOrder[index],
+              value: parseFloat(value * 100).toFixed(2)
+            })).filter((_, index) => index !== selectedIndex);
+            
+            this.otherTerritories_high = res.data.PredPercentile_high.map((value, index) => ({
+              territory: territoryOrder[index],
+              value: parseFloat(value * 100).toFixed(2)
+            })).filter((_, index) => index !== selectedIndex);
+            
+            this.OX_list = res.data.OX_list;
+            this.NationalPredictRatio = (res.data.NationalPredictRatio*100).toFixed(2)
+            this.HighSchoolPredictGrade = res.data.HighSchoolPredictGrade;
+            this.SuneungPredictGrade = res.data.SuneungPredictGrade
+            this.StrongPoint = res.data.StrongPoint;
+            console.log("strongPoint : ", this.StrongPoint)
+            this.WeakPoint = res.data.WeakPoint;
+            console.log("weakPoint : ", this.WeakPoint)
+            this.$nextTick(() => {
+              // DOM 업데이트 완료 후 차트 렌더링
+              this.renderRadarChart();
+            });
+          })
+          .catch(err => {
+            console.log("FETCH STUDENTDETAIL GET ERR.RESPONSE", err.response);
+            // alert(`${err.response.status} ${err.response.statusText}`);
+          });
+      },
+      renderRadarChart() {
+        this.$nextTick(() => {
+          const canvas = document.getElementById('radarChart');
+          if (canvas) {
+            const ctx = canvas.getContext('2d');
+            
+            // 기존 차트 인스턴스가 있으면 파괴
+            if (this.chartInstance) {
+              this.chartInstance.destroy();
+            }
+            
+            // 새 차트 인스턴스 생성
+            this.chartInstance = new Chart(ctx, {
+              type: 'radar',
+              data: this.chartData,
+              options: {
+                scales: {
+                  r: {
+                    angleLines: {
+                      display: true
+                    },
+                    suggestedMin: Math.min(...this.chartData.datasets[0].data)*0.8,
+                    suggestedMax: Math.max(...this.chartData.datasets[0].data)
+                  }
+                },
+                elements: {
+                  line: {
+                    borderWidth: 3
+                  }
+                }
+              }
+            });
+          } else {
+            console.error('Canvas element not found');
+          }
+        });
+      },
+      async captureAndDownload() {
+        await this.$nextTick(); // Vue의 DOM 업데이트 반영을 위해 대기
+        const pdf = new window.jspdf.jsPDF();
+        
+        // 첫 번째 요소 캡처
+        this.captureState = 1;
+        const element1 = document.querySelector('#capture-area');
+        console.log("element1 : ", element1)
+        await html2canvas(element1, {
+          logging:true,
+          useCORS:true
+        }).then((canvas) => {
+          const imgData1 = canvas.toDataURL('image/png');
+          pdf.addImage(imgData1, 'PNG', 0, 0, 210, 297); // 첫 번째 이미지 추가
+        }).catch(error => {
+          console.log("HTML2CANVAS err : ", error)
+        });;
+        
+        // 두 번째 요소 캡처
+      //  this.captureState = 2;
+      //  await this.$nextTick(); // Vue의 DOM 업데이트 반영을 위해 대기
+      //  const element2 = document.getElementById('capture-area2');
+      //  await html2canvas(element2, {
+      //    logging:true,
+      //    useCORS:true
+      //  }).then((canvas) => {
+      //    const imgData2 = canvas.toDataURL('image/png');
+      //    pdf.addImage(imgData2, 'PNG', 0, 0, 210, 297); // 첫 번째 이미지 추가
+      //  }).catch(error => {
+      //    console.log("HTML2CANVAS err : ", error)
+      //  });
+        
+        // PDF 저장
+        pdf.save('download.pdf');
+        
+        // 상태 복원
+        this.captureState = 1;
+      }
     },
+    mounted() {
+      this.renderRadarChart()
+    }
   }
   Vue.createApp(TestSubmitApp).mount('#page-top');
-  </script>
-  
+</script>

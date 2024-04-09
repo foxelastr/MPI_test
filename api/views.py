@@ -1,41 +1,38 @@
-import datetime
+import io
+from xhtml2pdf import pisa
+from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.views import View
-from django.views.generic.list import BaseListView
 from django.views.generic import CreateView, ListView
-from django.http import HttpRequest, HttpResponse, JsonResponse
-from django.utils.dateparse import parse_date
+from django.http import HttpResponse, JsonResponse
 from api.utils import obj_to_student, obj_to_test
+from django.template.loader import get_template
 from dashboard.forms import StudentForm
 from dashboard.models import Student
 from report.forms import TestResultForm
 from report.models import TestResult
 from report import utils
 
-
 class ApiStudentLV(LoginRequiredMixin, ListView):
     model = Student
 
-    def get_queryset(self):
-        # 현재 로그인한 사용자와 연결된 학생들만 필터링
-        return Student.objects.filter(user=self.request.user)
-
-    def render_to_response(self, context, **response_kwargs):
-        # get_queryset에서 필터링된 쿼리셋을 사용
-        qs = self.get_queryset()
-        StudentList = [obj_to_student(obj) for obj in qs]
-        return JsonResponse(data=StudentList, safe=False, status=200)
-
+    @staticmethod
     def obj_to_student(obj):
-        # 여기에 obj (Student 인스턴스)를 받아서 원하는 데이터 구조로 변환하는 로직을 구현합니다.
-        # 예제로, 모델의 필드를 그대로 사용하는 간단한 변환 로직을 제시합니다.
         return {
             'id': obj.id,
             'name': obj.name,
-            'birthdate': obj.birthdate.strftime('%Y-%m-%d'),  # 날짜는 문자열로 변환
+            'birthdate': obj.birthdate.strftime('%Y-%m-%d'),
             'grade': obj.grade
         }
+
+    def get_queryset(self):
+        return Student.objects.filter(user=self.request.user)
+
+    def render_to_response(self, context, **response_kwargs):
+        qs = self.get_queryset()
+        StudentList = [self.obj_to_student(obj) for obj in qs]
+        return JsonResponse(data=StudentList, safe=False, status=200)
+
 
 class ApiStudentDV(ListView):
     model = TestResult
@@ -121,18 +118,32 @@ class ApiResultLV(CreateView):
         # 폼 데이터가 유효하지 않으면 에러 메시지와 함께 응답 반환
         return JsonResponse({'status': 'error', 'errors': form.errors}, status=400)
 
-class ApiReportLV(ListView):
+class BaseReportView(ListView):
     model = TestResult
-    template_name = 'report/result.html'
-    context_object_name = 'test_results'
-
-    def get(self, request, *args, **kwargs):
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
         # URL의 쿼리 파라미터에서 year_semester와 test_grade 값을 가져옵니다.
-        year_semester = request.GET.get('year_semester')
-        test_grade = request.GET.get('test_grade')
+        year_semester = self.request.GET.get('year_semester')
+        test_grade = self.request.GET.get('test_grade')
+
+        # get_report_data 메서드로부터 필요한 데이터를 가져와 context에 추가합니다.
+        report_data = self.get_report_data(year_semester, test_grade)
+        # for key, value in report_data.items():
+        #     context[key] = value
+        context.update(report_data)
+
+        return context
+    
+    def get_report_data(self, student_id, year_semester, test_grade):
+        # 학생 ID로부터 Student 객체 조회
+        student = get_object_or_404(Student, id=student_id)
+
+        # User 객체를 통해 UserProfile 객체 조회
+        user_profile = student.user.profile
 
         # utils.get_std_result 함수를 사용하여 테스트 결과 객체를 가져옵니다.
-        test_result = utils.get_std_result(self.kwargs.get('student_id'), year_semester, test_grade)
+        test_result = utils.get_std_result(student_id, year_semester, test_grade)
         
         match_statistics = utils.get_statistics(test_result.ExamYearSemester, test_result.ExamGrade)
 
@@ -147,8 +158,7 @@ class ApiReportLV(ListView):
         # 예측 백분위 상한 및 하한 계산 : 강남서초 기준
         # 평균편차치 계산 -> 표준편차 비율 계산 -> 중학교 점수 예측치 계산 -> 중학교 예상 백분위 계산
         # 평균편차치 계산
-        EleAvg = match_statistics[0].first().Statistics_SeoulRegionAverage[0]
-        average_diff = utils.average_diff(statistics_list=match_statistics, EleAvg=EleAvg)
+        average_diff = utils.average_diff(statistics_list=match_statistics)
         
         # 표준편차 비율 계산
         StdDiff = utils.calculate_standard_deviation_diff(statistics_list=match_statistics)
@@ -170,39 +180,59 @@ class ApiReportLV(ListView):
         # 수학적 능력 분석 리스트
         math_type_list = match_statistics[0].first().Statistics_ProblemType
         math_ability_list = utils.calculate_math_ability_list(OX_list=OXlist, prob_type_list=math_type_list)
-        
+
         # 고등 예상 등급
-        AccNum = match_statistics[0].first().Statistics_AccumulatedRatio
-        student_ratio = utils.calculate_student_ratio(Accumulate_ratio=AccNum, Score=student_score)
-        high_predict = utils.calculate_grade(student_ratio=student_ratio)
+        highschool_predict_ratio = utils.calculate_student_ratio(Score=student_score, test_index='highschool')
+        suneung_predict_ratio = utils.calculate_student_ratio(Score=student_score, test_index='suneung')
+        high_predict = utils.calculate_grade(student_ratio=highschool_predict_ratio)
+        suneung_predict = utils.calculate_grade(student_ratio=suneung_predict_ratio)
         
         # 강점 및 약점
-        Strong_Weak_Point = []
+        Strong_Point = []
+        Weak_Point = []
         for i in range(len(test_result.ExamResults)):
             if OXlist[i] == 'O':
-                Strong_Weak_Point.append(match_statistics[0].first().Statistics_StrongPoint[i])
+                Strong_Point.append(match_statistics[0].first().Statistics_StrongPoint[i])
             else:
-                Strong_Weak_Point.append(match_statistics[0].first().Statistics_WeakPoint[i])
+                Weak_Point.append(match_statistics[0].first().Statistics_WeakPoint[i])
         
         # 필요한 추가 데이터를 JSON 형식으로 클라이언트에 전송합니다.
         response_data = {
             'StudentId': test_result.StudentId,                 # 학생 Id
+            'StudentRegion': user_profile.region,  # 학생의 지역 정보 추가
             'ExamYearSemester': test_result.ExamYearSemester,   # 시험시기
             'ExamGrade': test_result.ExamGrade,                 # 시험학년
             'ExamResults': test_result.ExamResults,             # 학생답 리스트
             'AnswerList': statistics_answerlist,                # 정답 리스트
-            'MathAbility': math_ability_list,                     # 수학적 능력 분석 리스트
+            'MathAbility': math_ability_list,                   # 수학적 능력 분석 리스트
             'Score': student_score,                             # 원점수
             'PredPercentile_low': PredPercentile[0],            # 중학교 예상 백분위 하한
             'PredPercentile_high': PredPercentile[1],           # 중학교 예상 백분위 상한
             'OX_list': OXlist,                                  # O/X 리스트
+            'NationalPredictRatio':suneung_predict_ratio,       # 전국 예상 백분위
             'HighSchoolPredictGrade': high_predict,             # 고등학교 내신 및 수능 예상 등급
-            'StrongWeakPoint': Strong_Weak_Point,               # 강점 및 약점 리스트
+            'SuneungPredictGrade': suneung_predict,             # 고등학교 수능 예상 등급
+            'StrongPoint': Strong_Point,               # 강점 리스트
+            'WeakPoint': Weak_Point,               # 약점 리스트
         }
 
         # JsonResponse 객체를 사용하여 응답을 반환합니다.
-        return JsonResponse(response_data)
+        return response_data
 
+class ApiReportLV(BaseReportView):
+    # ListView 기반 클래스를 상속받지만, 주로 JSON 응답을 처리하기 위한 용도로 사용
+
+    def get(self, request, *args, **kwargs):
+        student_id = self.kwargs.get('student_id')
+        year_semester = request.GET.get('year_semester')
+        test_grade = request.GET.get('test_grade')
+
+        # BaseReportView에서 정의한 메서드를 사용하여 report 데이터를 가져옴
+        report_data = self.get_report_data(student_id, year_semester, test_grade)
+
+        # JsonResponse 객체를 사용하여 응답을 반환
+        return JsonResponse(report_data, safe=False)
+    
 class AddStudentCV(CreateView):
     model = Student
     form_class = StudentForm

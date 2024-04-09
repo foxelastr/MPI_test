@@ -14,11 +14,12 @@
     },
     created() {
       console.log("created()...");
+      let path = window.location.pathname; // 현재 페이지의 경로를 가져옵니다.
       if (!path.endsWith('/')) {
         path += '/';
-    }
-    this.studentId = path.split('/').slice(-2)[0];
-    this.fetchStudentDetail(this.studentId);
+      }
+      this.studentId = path.split('/').slice(-2)[0];
+      this.fetchStudentDetail(this.studentId);
     },
     methods: {
       fetchStudentDetail(studentId) {

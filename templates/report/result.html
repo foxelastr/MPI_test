@@ -3,215 +3,361 @@
 {% load static %}
 
 {% block title %}test_result.html{% endblock %}
+{% block extra-style %}
+<style>
+  .A4-size {
+    width: 770px;
+    height: 1089px;
+  }
+
+  .A4plus-size {
+    width: 920px;
+    height: auto
+  }
+
+  #footer {
+    background-image: url("{% static 'assets/pns_footer_logo.png' %}");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+  }
+  
+  #logo {
+    background-image: url("{% static 'assets/pns_logo.jpg' %}");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+  }
+</style>
+{% endblock %}
 
 {% block content %}
-<div>
-    <div class="block px-5 pt-7 shadow bg-gray-800 border-gray-700 h-full">
+<div class="d-flex justify-content-center mb-3">
+  <div class="A4plus-size">
+    <div id="capture-area" class="block px-5 pt-7 shadow bg-gray-800 border-gray-700 h-full">
       <div class="border-grey rounded-lg border bg-white">
-        <div class="flex justify-between border-b-4 border-zinc-400">
-          <div id="logo" class="w-1/6 ml-8"></div>
-          <div class="w-1/3 mr-4">
-            <p class="text-lg font-bold pb-2">
+        <!-- header -->
+        <div class="d-flex justify-content-between border-bottom border-4 border-gray-400">
+          <div id="logo" class="w-16 ms-3"></div>
+          <div class="w-33 me-1">
+            <p class="fs-5 fw-bold pb-2">
               수학의 철인을 <br />만드는 교육
             </p>
           </div>
         </div>
-        <div class="flex justify-evenly border-b-2">
-          <div class="w-1/4 h-10 border-grey border-b-2 mb-1 pb-2">
-            <span class="font-bold text-xl">원점수</span> :
-            <span class="font-bold text-2xl text-rose-700">[[ Score ]]</span>
+        {% comment %} MPI(Mathematical Potential Index) test
+        수리적 능력. 즉, 기초적인 수리 능력을 진단하고 그 요인이 되는 계산력, 이해력, 추론력, 문제해결력의 네 가지 요인별로 수리적 정보 처리 능력을 측정합니다. 학생의 현재 수리언어의 처리 능력을 종합적으로 진단합니다. 이 결과와 본 연구소의 통계 데이터를 기반으로 자체 개발한 AI가 중·고등학교에서의 성적을 정밀 예측합니다. {% endcomment %}
+
+        <!-- base score and ratio -->
+        <div class="d-flex justify-content-around border-bottom border-2">
+          <div class="w-25 h-10 border border-bottom-2 mb-1 pb-2">
+            <span class="fw-bold fs-5">원점수</span> :
+            <span class="fw-bold fs-4 text-danger">[[ Score ]]</span>
           </div>
-          <div class="w-2/5 h-10 border-grey border-b-2 mb-1 pb-2">
-            <span class="font-bold text-xl">전국 백분위</span> :
-            <span class="font-bold text-2xl text-blue-800">{{
-              this.$store.state.analysisData.percentile
-            }}</span>
+          <div class="w-40 h-10 border border-bottom-2 mb-1 pb-2">
+            <span class="fw-bold fs-5">전국 백분위</span> :
+            <span class="fw-bold fs-4 text-primary">[[ NationalPredictRatio ]]</span>
           </div>
         </div>
-        <div class="flex justify-center border-b-2">
-          <div class="w-11/12 h-60 border-grey border-2 my-2 pt-1 pb-3 px-3">
-            <div class="flex justify-center mt-1">
-              <div class="flex flex-col justify-center text-left w-5/6">
+        
+        <!-- intro -->
+        <div class="d-flex justify-content-center border-bottom border-2">
+          <div class="w-92 p-3 border border-2 my-2 pt-1 pb-3">
+            <div class="d-flex justify-content-center mt-1">
+              <div class="d-flex flex-column justify-content-center align-items-start w-83">
                 <div>
-                  ● <span class="font-bold">MPI 학력평가</span>는
+                  ● <span class="fw-bold">MPI 학력평가</span>는
                   교육과정에 맞추어 학생들의 실력을 측정하여 예상
                   <br />&ensp;&ensp;데이터를 제시하고자 합니다.<br />
                 </div>
                 <div class="mt-2">
-                  ● 아울러 <span class="font-bold">MPI 학력평가</span>의
+                  ● 아울러 <span class="fw-bold">MPI 학력평가</span>의
                   특징을 살펴보면 다음과 같습니다.<br />
                 </div>
               </div>
             </div>
-            <div class="flex justify-center mt-3">
-              <div class="flex flex-col justify-center text-left w-5/6">
+            <div class="d-flex justify-content-center mt-3">
+              <div class="d-flex flex-column justify-content-center align-items-start w-83">
                 <div>
-                  <span class="font-bold leading-relaxed">첫째,</span> 수학적인
+                  <span class="fw-bold">첫째,</span> 수학적인
                   원리와 개념을 정확히 알고 있는지 평가하도록 하였습니다.<br />
-                  <span class="font-bold leading-relaxed">둘째,</span>
+                  <span class="fw-bold">둘째,</span>
                   교육과정의 내용을 잘 이해하고 있는지 평가하도록 하였습니다.<br />
-                  <span class="font-bold leading-relaxed">셋째,</span> 수학적
+                  <span class="fw-bold">셋째,</span> 수학적
                   사고력, 창의력, 문제해결력의 척도를 평가하도록 하였습니다.<br />
-                  <span class="font-bold leading-relaxed">넷째,</span> 개인별
+                  <span class="fw-bold">넷째,</span> 개인별
                   추후 예상 등급을 주어 학습방향을 제시해 주고 있습니다.<br />
                 </div>
               </div>
             </div>
           </div>
         </div>
-        <div class="flex justify-evenly">
-          <div class="flex flex-col justify-start w-5/12 h-20 border-grey border-2 pb-2 my-1">
-            <span class="font-bold text-xl text-zinc-800">수 능 &ensp; 예 상 &ensp; 등 급</span>
-            <div class="flex justify-center">
-              <div class="w-1/4">
-                <span class="font-bold text-2xl text-pink-700">[[ HighSchoolPredictGrade ]]</span>
+
+        <!-- predict high school ratios -->
+        <div class="d-flex justify-content-evenly">
+          <div class="d-flex flex-column justify-content-start w-50 border border-2 pb-2 my-1" style="height: 5rem;">
+            <span class="fw-bold fs-5" style="color: #4a5568;">수 능 &ensp; 예 상 &ensp; 등 급</span>
+            <div class="d-flex justify-content-center">
+              <div class="w-25">
+                <span class="fw-bold fs-3" style="color: #ec4899;">[[ SuneungPredictGrade ]]</span>
               </div>
             </div>
           </div>
-          <div class="flex flex-col w-6/12 h-20 border-grey border-2 pb-2 my-1">
-            <span class="font-bold text-xl text-zinc-800">고 1 &ensp; 내 신 &ensp; 예 상 &ensp; 등 급</span>
-            <div class="flex justify-center">
-              <div class="w-1/4">
-                <span class="font-bold text-2xl text-pink-700">[[ HighSchoolPredictGrade ]]</span>
+          <div class="d-flex flex-column w-50 border border-2 pb-2 my-1" style="height: 5rem;">
+            <span class="fw-bold fs-5" style="color: #4a5568;">고 1 &ensp; 내 신 &ensp; 예 상 &ensp; 등 급</span>
+            <div class="d-flex justify-content-center">
+              <div class="w-25">
+                <span class="fw-bold fs-3" style="color: #ec4899;">[[ HighSchoolPredictGrade[1] ]] ~ [[ HighSchoolPredictGrade[0] ]]</span>
               </div>
             </div>
           </div>
         </div>
-        <div class="flex justify-evenly border-b-2">
-          <div class="flex flex-col w-5/12 h-20 border-grey border-2 pb-2 my-1">
-            <span class="font-bold text-xl text-zinc-800">중학교 &ensp; 내신 &ensp; 예상 &ensp; 백분위</span>
+
+        <!-- predict middle school ratios -->
+        <div class="d-flex justify-content-evenly border-bottom border-2">
+          <div class="d-flex flex-column w-50 p-2 my-1 border border-2" style="height: 5rem;">
+            <span class="fw-bold fs-5" style="color: #4a5568;">중학교 &ensp; 내신 &ensp; 예상 &ensp; 백분위</span>
             <div>
-              <span class="font-bold text-2xl text-cyan-700">[[ PredPercentile_low ]]</span>
+              <span class="fw-bold fs-3" style="color: #06b6d4;">[[ selectedTerritory_low ]]</span>
               ~
-              <span class="font-bold text-2xl text-cyan-700">[[ PredPercentile_high ]]</span>
+              <span class="fw-bold fs-3" style="color: #06b6d4;">[[ selectedTerritory_high ]]</span>
             </div>
           </div>
-          <div class="flex flex-col w-6/12 h-20 border-grey border-2 pb-2 my-1">
-            <span class="font-bold text-xl text-zinc-800">지역 예상 백분위</span>
-            <span class="font-bold text-2xl text-cyan-700">{{ this.$store.state.analysisData.eduOfficePredict
-            }}</span>
-          </div>
         </div>
-        <div class="flex justify-center h-100">
-          <div class="flex flex-col w-full pb-3 mx-1.5 mb-0.5">
-            <div class="mb-2 text-2xl font-bold">수학적 능력 분석</div>
-            <div class="flex justify-center">
-              <div class="flex flex-col justify-start w-11/12 h-24 border-grey border-b-2 pb-5 mx-1.5my-1">
-                <div class="flex flex-col justify-start">
-                  <div class="flex justify-around">
-                    <div>
-                      <div class="flex flex-col">
-                        <span class="text-lg font-extrabold text-black">전국</span>
-                        <span class="text-lg font-extrabold text-black">평균</span>
-                      </div>
+
+        <!-- math ability -->
+        <div class="d-flex justify-content-center" style="height: 100%;">
+          <div class="d-flex flex-column w-100 pb-3 mx-1 mb-0" style="margin-bottom: 0.125rem !important;">
+            <div class="mb-2 fs-3 fw-bold">수학적 능력 분석</div>
+            <div class="d-flex justify-content-center">
+              <div class="d-flex flex-column justify-content-start w-92 border-bottom border-2 pb-5 mx-1 my-1" style="height: 6rem;">
+                <div class="d-flex justify-content-around">
+                  <div>
+                    <div class="d-flex flex-column">
+                      <span class="fs-5 fw-bold text-black">전국</span>
+                      <span class="fs-5 fw-bold text-black">평균</span>
                     </div>
-                    <div>
-                      <div class="flex flex-col">
-                        <span class="text-lg font-bold text-black">원점수</span>
-                        <span class="ml-3 text-2xl font-extrabold text-rose-600">[[ Score ]]</span>
-                      </div>
+                  </div>
+                  <div>
+                    <div class="d-flex flex-column">
+                      <span class="fs-5 fw-bold text-black">원점수</span>
+                      <span class="ms-3 fs-2 fw-bold text-danger">[[ Score ]]</span>
                     </div>
-                    <div>
-                      <div class="flex flex-col">
-                        <span class="text-lg font-bold text-black">계산력</span>
-                        <span class="ml-3 text-2xl font-extrabold text-rose-600">[[ MathAbility[0] ]]</span>
-                      </div>
+                  </div>
+                  <div>
+                    <div class="d-flex flex-column">
+                      <span class="fs-5 fw-bold text-black">계산력</span>
+                      <span class="ms-3 fs-2 fw-bold text-danger">[[ MathAbility[0] ]]</span>
                     </div>
-                    <div>
-                      <div class="flex flex-col">
-                        <span class="text-lg font-bold text-black">이해력</span>
-                        <span class="ml-3 text-2xl font-extrabold text-rose-600">[[ MathAbility[1] ]]</span>
-                      </div>
+                  </div>
+                  <div>
+                    <div class="d-flex flex-column">
+                      <span class="fs-5 fw-bold text-black">이해력</span>
+                      <span class="ms-3 fs-2 fw-bold text-danger">[[ MathAbility[1] ]]</span>
                     </div>
-                    <div>
-                      <div class="flex flex-col">
-                        <span class="text-lg font-bold text-black">추론력</span>
-                        <span class="ml-3 text-2xl font-extrabold text-rose-600">[[ MathAbility[2] ]]</span>
-                      </div>
+                  </div>
+                  <div>
+                    <div class="d-flex flex-column">
+                      <span class="fs-5 fw-bold text-black">추론력</span>
+                      <span class="ms-3 fs-2 fw-bold text-danger">[[ MathAbility[2] ]]</span>
                     </div>
-                    <div>
-                      <div class="flex flex-col">
-                        <span class="text-lg font-bold text-black">문제해결력</span>
-                        <span class="ml-3 text-2xl font-extrabold text-rose-600">[[ MathAbility[3] ]]</span>
-                      </div>
+                  </div>
+                  <div>
+                    <div class="d-flex flex-column">
+                      <span class="fs-5 fw-bold text-black">문제해결력</span>
+                      <span class="ms-3 fs-2 fw-bold text-danger">[[ MathAbility[3] ]]</span>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-            <div class="flex justify-around h-full">
-              <div class="flex flex-col justify-center w-64 h-64">
-                <div class="h-full">
-                  <Radar :data="chartData" :options="chartOptions"></Radar>
+            
+            <div class="d-flex justify-content-around" style="height: 100%;">
+              <div class="d-flex flex-column" style="margin-bottom: 0.125rem !important;">
+                <div class="#">
+                  {% comment %} <Radar :data="chartData" :options="chartOptions"></Radar> {% endcomment %}
+                  <canvas id="radarChart"></canvas>
                 </div>
               </div>
-              <div class="flex flex-col justify-around w-3/5 text-xs">
-                <div class="flex justify-between w-full">
-                  <div class="flex justify-between w-2/5 h-8 self-center bg-gray-300">
-                    <div class="self-center ml-1 text-sm pb-2 font-semibold">
+              <div class="d-flex flex-column justify-content-around text-xs" style="width: 60%;">
+                <div class="d-flex justify-content-between w-100">
+                  <div class="d-flex justify-content-between align-self-center bg-light" style="width: 40%; height: 2rem;">
+                    <div class="align-self-center ms-1 pb-2 fw-semibold" style="font-size: 0.875rem;">
                       계산력
                     </div>
-                    <div class="flex justify-center w-1/3 pb-2">
-                      <span class="bg-zinc-200 text-red-700 text-lg">[[ MathAbility[0] ]]</span>
+                    <div class="d-flex justify-content-center align-self-center" style="width: 33.33%; padding-bottom: 0.5rem;">
+                      <span class="bg-secondary text-danger" style="font-size: 1.125rem;">[[ MathAbility[0] ]]</span>
                     </div>
                   </div>
-                  <div class="w-full mx-2 self-center font-bold">
-                    수학의 가장 밑바탕이 되는 능력으로 수학적 능력을
-                    향상시키는데 있어 가장 기본이며 근본적인 것
+                  <div class="mx-2 align-self-center fw-bold" style="width: 100%;">
+                    수학의 가장 밑바탕이 되는 능력으로 수학적 능력을 향상시키는데 있어 가장 기본이며 근본적인 것
                   </div>
                 </div>
-                <div class="flex justify-between w-full">
-                  <div class="flex justify-between w-2/5 h-8 self-center bg-gray-300">
-                    <div class="self-center ml-1 text-sm pb-2 font-semibold">
+                <div class="d-flex justify-content-between w-100">
+                  <div class="d-flex justify-content-between align-self-center bg-light" style="width: 40%; height: 2rem;">
+                    <div class="align-self-center ms-1 pb-2 fw-semibold" style="font-size: 0.875rem;">
                       이해력
                     </div>
-                    <div class="flex justify-center w-1/3 pb-2">
-                      <span class="bg-zinc-200 text-red-700 text-lg">[[ MathAbility[1] ]]</span>
+                    <div class="d-flex justify-content-center align-self-center" style="width: 33.33%; padding-bottom: 0.5rem;">
+                      <span class="bg-secondary text-danger" style="font-size: 1.125rem;">[[ MathAbility[1] ]]</span>
                     </div>
                   </div>
-                  <div class="w-full mx-2 self-center font-bold">
-                    수학적 기본 개념과 원리가 갖는 의미를 파악하고, 문제의
-                    핵심을 수학적 상황으로 생각할 수 있는 능력
+                  <div class="mx-2 align-self-center fw-bold" style="width: 100%;">
+                    수학적 기본 개념과 원리가 갖는 의미를 파악하고, 문제의 핵심을 수학적 상황으로 생각할 수 있는 능력
                   </div>
                 </div>
-                <div class="flex justify-between w-full">
-                  <div class="flex justify-between w-2/5 h-8 self-center bg-gray-300">
-                    <div class="self-center ml-1 text-sm pb-2 font-semibold">
+                <div class="d-flex justify-content-between w-100">
+                  <div class="d-flex justify-content-between align-self-center bg-light" style="width: 40%; height: 2rem;">
+                    <div class="align-self-center ms-1 pb-2 fw-semibold" style="font-size: 0.875rem;">
                       추론력
                     </div>
-                    <div class="flex justify-center w-1/3 pb-2">
-                      <span class="bg-zinc-200 text-red-700 text-lg">[[ MathAbility[2] ]]</span>
+                    <div class="d-flex justify-content-center align-self-center" style="width: 33.33%; padding-bottom: 0.5rem;">
+                      <span class="bg-secondary text-danger" style="font-size: 1.125rem;">[[ MathAbility[2] ]]</span>
                     </div>
                   </div>
-                  <div class="w-full mx-2 self-center font-bold">
-                    수학의 개념과 원리를 바탕으로 상호 관련성 속에서 문제 해결에
-                    필요한 원리와 개념을 찾는 수학적 사고 능력
+                  <div class="mx-2 align-self-center fw-bold" style="width: 100%;">
+                    수학의 개념과 원리를 바탕으로 상호 관련성 속에서 문제 해결에 필요한 원리와 개념을 찾는 수학적 사고 능력
                   </div>
                 </div>
-                <div class="flex justify-between w-full">
-                  <div class="flex justify-between w-2/5 h-8 self-center bg-gray-300">
-                    <div class="self-center ml-1 text-sm pb-2 font-semibold">
+                <div class="d-flex justify-content-between w-100">
+                  <div class="d-flex justify-content-between align-self-center bg-light" style="width: 40%; height: 2rem;">
+                    <div class="align-self-center ms-1 pb-2 fw-semibold" style="font-size: 0.875rem;">
                       문제해결력
                     </div>
-                    <div class="flex justify-center w-1/3 pb-2">
-                      <span class="bg-zinc-200 text-red-700 text-lg">[[ MathAbility[3] ]]</span>
+                    <div class="d-flex justify-content-center align-self-center" style="width: 33.33%; padding-bottom: 0.5rem;">
+                      <span class="bg-secondary text-danger" style="font-size: 1.125rem;">[[ MathAbility[3] ]]</span>
                     </div>
                   </div>
-                  <div class="w-full mx-2 self-center font-bold">
-                    수학적 개념과 원리를 바탕으로 문제해결법을 찾아내며 결과의
-                    적합성과 유용성 등을 점검할 수 있는 능력
+                  <div class="mx-2 align-self-center fw-bold" style="width: 100%;">
+                    수학적 개념과 원리를 바탕으로 문제해결법을 찾아내며 결과의 적합성과 유용성 등을 점검할 수 있는 능력
                   </div>
                 </div>
               </div>
+              
             </div>
           </div>
         </div>
-        <div class="flex justify-center">
+
+        <!-- footer -->
+        <div class="flex justify-content-center">
           <div id="footer" class="w-11/12 h-16 border-t-2 py-2 my-1"></div>
         </div>
       </div>
     </div>
+  </div>
 </div>
+
+<div class="d-flex justify-content-center mb-3">
+  <div class="A4plus-size">
+    <div class="d-block px-4 pt-3 shadow bg-dark border-secondary h-100">
+      <div class="border border-light rounded bg-white">
+
+        <!-- header -->
+        <div class="d-flex justify-content-between border-bottom border-4 border-gray-400">
+          <div id="logo" class="w-16 ms-3"></div>
+          <div class="w-33 me-1">
+            <p class="fs-5 fw-bold pb-2">
+              수학의 철인을 <br />만드는 교육
+            </p>
+          </div>
+        </div>
+
+        <!-- O/X analysis -->
+        <div>
+          <div class="d-flex justify-content-evenly mt-3 mb-1">
+            <div class="w-25 h-auto border border-bottom-2 py-1 my-1 fs-5 fw-bold" style="height: 2.5rem;">
+              오답 문항 분석 자료
+            </div>
+          </div>
+          <div class="d-flex justify-content-center">
+            <div class="d-flex justify-content-center align-items-center w-100 my-2 py-3" style="height: 7rem;">
+              <div class="d-flex justify-content-evenly align-items-center w-100 border-2">
+                <div class="d-flex flex-column justify-content-around" style="width: 4rem; height: 8rem; border-style: double; border-width: 2px;">
+                  <div class="border-bottom">번호</div>
+                  <div class="border-bottom">배점</div>
+                  <div class="border-bottom">정답</div>
+                  <div>학생답</div>
+                </div>
+                <div class="d-flex flex-column justify-content-around w-100" style="height: 8rem; border-style: double; border-width: 2px;">
+                  <div class="d-flex justify-content-between">
+                    <!-- Use custom CSS for repeated elements -->
+                    <div style="width: 1.5rem;">[[ number ]]</div>
+                    <div>총점</div>
+                    <div>만점</div>
+                  </div>
+                  <div class="d-flex justify-content-between">
+                    <!-- Use custom CSS for repeated elements -->
+                    <div style="width: 1.5rem;">[[ score ]]</div>
+                    <div>[[ Score ]]</div>
+                    <div>100</div>
+                  </div>
+                  <div class="d-flex justify-content-between">
+                    <!-- Use custom CSS for repeated elements -->
+                    <div class="text-xs">[[ AnswerList ]]</div>
+                  </div>
+                  <div class="d-flex justify-content-between">
+                    <!-- Use custom CSS for repeated elements -->
+                    <div style="width: 1.5rem;">[[ ExamResults ]]</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- strong and weak points -->
+        <div class="d-flex justify-content-center mt-3">
+          <div class="w-100 h-100 border-bottom border-2">
+            <div class="d-flex flex-column justify-content-center h-100 py-2 mt-1">
+              <div class="d-flex justify-content-center pb-1 border-bottom border-2">
+                <div class="border-bottom border-2 w-25 text-xl fw-bold">
+                  강점 및 약점 분석
+                </div>
+              </div>
+              <div class="px-3 d-flex">
+                <div class="w-8 border-right border-2 d-flex flex-column justify-content-center">
+                  <div class="text-lg fw-bold">강점</div>
+                </div>
+                <!-- Vue.js의 v-if, v-for와 같은 지시문은 Bootstrap 변환과 무관하므로 그대로 유지 -->
+                <ul v-if="StrongPoint && StrongPoint.length"
+                  class="d-flex flex-column justify-content-start w-100 ms-2">
+                  <li v-for="(item, index) in StrongPoint" :key="'strong-' + index" class="list-unstyled text-secondary">
+                    [[ item ]]
+                  </li>
+                </ul>
+                <div v-else>강점이 없습니다</div>
+              </div>
+            </div>
+        
+            <div class="px-3 d-flex border-top border-2">
+              <div class="w-8 border-right border-2 d-flex flex-column justify-content-center">
+                <div class="text-lg fw-bold">약점</div>
+              </div>
+              <!-- Vue.js 지시문은 그대로 유지 -->
+              <ul v-if="WeakPoint && WeakPoint.length"
+                class="d-flex flex-column justify-content-start w-100 ms-2">
+                <li v-for="(item, index) in WeakPoint" :key="'weak-' + index" class="list-unstyled text-secondary">
+                  [[ item ]]
+                </li>
+              </ul>
+              <div v-else>약점이 없습니다</div>
+            </div>
+          </div>
+        </div>
+        <!-- footer -->
+        <div class="flex justify-content-center">
+          <div id="footer" class="w-11/12 h-16 border-t-2 py-2 my-1"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="flex justify-content-cneter">
+  <button type="button" @click="captureAndDownload">pdf 다운로드</button>
+</div>
+
+
 {% endblock %}
 
 {% block extra-script %}

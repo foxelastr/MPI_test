@@ -65,15 +65,35 @@ def calculate_score(test_result, statistics_answerlist):
     score = correct_answers * 4
     return score
 
-# 평균편차치 계산 함수
-def average_diff(statistics_list, EleAvg):
-    # 학년별 서울 평균 점수와 학생 점수의 차이 계산
-    average_diff = []
+# # 평균편차치 계산 함수
+# def average_diff(statistics_list, EleAvg):
+#     average_diff = []
+#     for statistics in statistics_list[1:]:
+#         diff = statistics.first().Statistics_SeoulAverage - float(EleAvg)
+#         average_diff.append(diff)
+#     return average_diff
+
+def average_diff(statistics_list):
+    region_diff_list = []
+    # 첫 번째 요소는 대상 학년의 통계 데이터입니다.
+    target_year_statistics = statistics_list[0].first()
+    # 대상 학년의 권역별 평균을 가져옵니다. 리스트 데이터 형식입니다.
+    target_year_region_averages = target_year_statistics.Statistics_SeoulRegionAverage
+    
     for statistics in statistics_list[1:]:
-        diff = statistics.first().Statistics_SeoulAverage - float(EleAvg)
-        average_diff.append(diff)
-        # 필요에 따라 여기서 추가적인 로직을 구현할 수 있습니다.
-    return average_diff
+        current_year_region_averages = statistics.first().Statistics_SeoulRegionAverage
+        region_diffs = []
+        # 리스트의 각 원소에 대해 반복합니다.
+        for i in range(len(current_year_region_averages)):
+            # 대상 학년과 비교 학년의 권역별 평균 차이를 계산합니다.
+            diff = float(current_year_region_averages[i]) - float(target_year_region_averages[i])
+            region_diffs.append(diff)
+        # 계산된 권역별 평균 차이를 리스트에 추가합니다.
+        region_diff_list.append(region_diffs)
+
+    return region_diff_list
+
+
 
 # 표준편차 비율 계산 함수
 def calculate_standard_deviation_diff(statistics_list):
@@ -86,72 +106,100 @@ def calculate_standard_deviation_diff(statistics_list):
         StdDiff.append(devdiff)
     return StdDiff
 
-# 중학교 점수 예측치 계산 함수
-def MidScoreCorrection(Score, average_diff, StdDiff):
-    # 평균 보정치 계산
-    MAC = []
-    for avg, std in zip(average_diff, StdDiff):
-        MAC.append(avg*std)
+# # 중학교 점수 예측치 계산 함수
+# def MidScoreCorrection(Score, average_diff, StdDiff):
+#     # 평균 보정치 계산
+#     MAC = []
+#     for avg, std in zip(average_diff, StdDiff):
+#         MAC.append(avg*std)
     
-    # 중학교 점수 예측치 계산
+#     # 중학교 점수 예측치 계산
+#     MSC = []
+#     for mac in MAC:
+#         MSC.append(Score+mac)
+    
+#     return MSC
+
+def MidScoreCorrection(Score, average_diff, StdDiff):
+    # 권역별 중학교 점수 예측치 계산
     MSC = []
-    for mac in MAC:
-        MSC.append(Score+mac)
+    for index, avg_diffs in enumerate(average_diff):
+        # 해당 학년의 표준편차 비율
+        std_diff = StdDiff[index]
+        # 각 권역별 평균 보정치(MAC) 계산 (표준편차 비율을 적용)
+        MAC = [avg * std_diff for avg in avg_diffs]
+        # 각 권역별 중학교 점수 예측치 계산
+        region_MSC = [Score + mac for mac in MAC]
+        # 계산된 권역별 중학교 점수 예측치를 MSC에 추가
+        MSC.append(region_MSC)
     
     return MSC
 
 # 중학교 예상 백분위 계산 함수
 def PredPercentile(MSC, statistics_list):
-    # Z-VALUE 계산 함수
-    ZVal_low =[]
-    ZVal_high =[]
-    mid_avg = []
-    mid_std = []
-    for data in statistics_list[1:]:
-        mid_avg.append(data.first().Statistics_SeoulAverage)
-        mid_std.append(calculate_standard_deviation(data.first().Statistics_AccumulatedNumber))
-    
-    # 하한 : (학년별 중학교 점수 예측치 - 학년별 실제 중학교 평균)/학년별 중딩 표준편차
-    for i in [0, 1, 2]:
-        zval = (MSC[i] - mid_avg[i])/mid_std[i]
-        ZVal_low.append(zval)
+    PerdPercentile_low = [[] for _ in range(3)]
+    PerdPercentile_high = [[] for _ in range(3)]
 
+    # 초등학교 실제 표준편차
+    elem_std = calculate_standard_deviation(statistics_list[0].first().Statistics_AccumulatedNumber)
+
+    # 각 학년별 중학교 평균 및 표준편차
+    mid_avg = [data.first().Statistics_SeoulAverage for data in statistics_list[1:]]
+    mid_std = [calculate_standard_deviation(data.first().Statistics_AccumulatedNumber) for data in statistics_list[1:]]
         
-    # 상한 : (학년별 중학교 점수 예측치 - 학년별 실제 중학교 평균)/학년별 초딩 표준편차
-    for i in [0, 1, 2]:
-        zval = (MSC[i] - mid_avg[i])/calculate_standard_deviation(
-            statistics_list[0].first().Statistics_AccumulatedNumber
-        )
-        ZVal_high.append(zval)
-        
-    # 중학교 예상 백분위 하한 계산
-    PerdPercentile = []
-    Percentile_low = []
-    for i in [0, 1, 2]:
-        Percentile_low.append(norm.cdf(ZVal_low[i]))
-    PerdPercentile.append(statistics.mean(Percentile_low))
+    for i in range(3):  # 3 학년별로 반복
+        for msc_val in MSC[i]:
+            ZVal_low = (msc_val - mid_avg[i]) / mid_std[i]
+            ZVal_high = (msc_val - mid_avg[i]) / elem_std
+            PerdPercentile_low[i].append(norm.cdf(ZVal_low))
+            PerdPercentile_high[i].append(norm.cdf(ZVal_high))
+
+    # 권역별 평균 백분위 계산
+    average_low = [statistics.mean([PerdPercentile_low[grade][region] for grade in range(3)]) for region in range(len(PerdPercentile_low[0]))]
+    average_high = [statistics.mean([PerdPercentile_high[grade][region] for grade in range(3)]) for region in range(len(PerdPercentile_high[0]))]
     
-    # 중학교 예상 백분위 하한 계산
-    Percentile_high = []
-    for i in [0, 1, 2]:
-        Percentile_high.append(norm.cdf(ZVal_high[i]))
-    PerdPercentile.append(statistics.mean(Percentile_high))
+    PredPercentile = [average_low, average_high]
+    return PredPercentile
 
-    return PerdPercentile
+    # return average_low, average_high
 
-def calculate_student_ratio(Accumulate_ratio, Score):
-    index = int((100-Score)/4)
-    student_ratio = Accumulate_ratio[index]
+    # return PerdPercentile_low, PerdPercentile_high
+
+def calculate_student_ratio(Score, test_index):
+    if test_index == 'suneung':
+        Zvalue = (Score-50)/24.5
+        student_ratio = norm.cdf(Zvalue)
+    elif test_index == 'highschool':
+        mean_low = 41.88
+        std_low = 21.5
+        mean_high = 50.27
+        std_high = 24.08
+        Zvalue_low = (Score-mean_high)/std_high
+        Zvalue_high = (Score-mean_low)/std_low
+        student_ratio = [norm.cdf(Zvalue_high), norm.cdf(Zvalue_low)]
     return student_ratio
 
 def calculate_grade(student_ratio):
     grade_cutoffs = [4, 11, 23, 40, 60, 77, 89, 96, 100]
     grades = range(1, 10)  # 1등급부터 9등급까지
 
-    for cutoff, grade in zip(grade_cutoffs, grades):
-        if int(student_ratio) <= cutoff:
-            return grade
+    # student_ratio가 리스트인 경우, 각 원소에 대해 등급을 계산
+    if isinstance(student_ratio, list):
+        grade_list = []
+        for ratio in student_ratio:
+            for cutoff, grade in zip(grade_cutoffs, grades):
+                if (100 - ratio * 100) <= cutoff:  # 누적 확률을 퍼센트로 변환
+                    grade_list.append(grade)
+                    break  # 해당 등급을 찾으면 루프 탈출
+        return grade_list
+
+    # student_ratio가 단일 숫자인 경우 (suneung)
+    else:
+        for cutoff, grade in zip(grade_cutoffs, grades):
+            if (100 - student_ratio * 100) <= cutoff:  # 누적 확률을 퍼센트로 변환
+                return grade
     return None
+
 
 # 문제 유형별 점수 계산
 def calculate_math_ability_list(OX_list, prob_type_list):
@@ -166,7 +214,6 @@ def calculate_math_ability_list(OX_list, prob_type_list):
         if ox == 'O':  # 정답인 경우에만 점수를 더함
             ability_index = ability_index_mapping[type_code]  # 유형 코드에 해당하는 수학적 능력 인덱스
             math_ability_scores[ability_index] += 4  # 해당 능력 점수에 4점을 더함
-
     return math_ability_scores
         
 

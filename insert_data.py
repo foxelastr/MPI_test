@@ -6,7 +6,7 @@ import json
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'mpitest.settings')
 django.setup()
 
-from report.models import TestReport, TestStatistics  # 모델 임포트
+from report.models import TestStatistics  # 모델 임포트
 
 # 데이터가 있는 디렉토리 경로
 base_dir = r"E:\PNS\MPI_test\media\data\2021_1_HME_DATA"  # 'r'을 사용하여 raw string으로 처리

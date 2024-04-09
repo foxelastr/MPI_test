@@ -26,63 +26,67 @@ import os
 #                 f.write("%s\n" % item)
 
 
-# # 파일 경로 지정
-# file_path = 'E:/PNS/MCLS/TCNP_data/통계 자료 추출 데이터/2021_1_HME_DATA/2021_1_HME_DATA - 서울 주요 지역.csv'
+# 파일 경로 지정
+file_path = './2021_1_서울주요지역.csv'
 
-# # CSV 파일 읽기, 2행부터 시작하므로 header=1로 설정
-# df = pd.read_csv(file_path, header=0)
+# CSV 파일 읽기, 2행부터 시작하므로 header=1로 설정
+df = pd.read_csv(file_path, header=0)
 
-# # 5열 데이터 추출, 판다스 인덱스는 0부터 시작하므로 4를 사용
-# column_data = df.iloc[:, 4].tolist()
+# 5열 데이터 추출, 판다스 인덱스는 0부터 시작하므로 4를 사용
+column_data = df.iloc[:, 4].tolist()
 
-# # 9로 나눈 나머지별로 분류할 리스트 딕셔너리 초기화
-# remainder_lists = {i: [] for i in range(9)}
+# 9로 나눈 나머지별로 분류할 리스트 딕셔너리 초기화
+remainder_lists = {i: [] for i in range(9)}
 
-# # 행 번호에 따라 데이터 분류
-# for i, item in enumerate(column_data, start=1):  # 2행부터 시작
-#     remainder = i % 9
-#     remainder_lists[remainder].append(item)
+# 행 번호에 따라 데이터 분류
+for i, item in enumerate(column_data, start=1):  # 2행부터 시작
+    remainder = i % 9
+    remainder_lists[remainder].append(item)
 
-# # 분류된 데이터를 각각의 txt 파일로 저장
-# for remainder, items in remainder_lists.items():
-#     file_name = f'E:/PNS/MCLS/TCNP_data/통계 자료 추출 데이터/2021_1_HME_DATA/{remainder}.txt'
-#     with open(file_name, 'w') as f:
-#         for item in items:
-#             f.write(f"{item}\n")
+# 분류된 데이터를 각각의 txt 파일로 저장
+for remainder, items in remainder_lists.items():
+    if remainder == 0:
+        file_name = f'E:/PNS/MPI_test/media/data/2021_1_HME_DATA/Seoul_Region_Average/{remainder+9}.txt'
+    else:
+        # file_name = f'E:/PNS/MCLS/TCNP_data/통계 자료 추출 데이터/2021_1_HME_DATA/{remainder}.txt'
+        file_name = f'E:/PNS/MPI_test/media/data/2021_1_HME_DATA/Seoul_Region_Average/{remainder}.txt'
+    with open(file_name, 'w') as f:
+        for item in items:
+            f.write(f"{item}\n")
 
-# 파일 경로
-file_path = 'E:/PNS/MCLS/TCNP_data/통계 자료 추출 데이터/2021_1_HBM_DATA/2021_1_HME_DATA - 답 유형 출제의도.csv'
+# # 파일 경로
+# file_path = 'E:/PNS/MCLS/TCNP_data/통계 자료 추출 데이터/2021_1_HBM_DATA/2021_1_HME_DATA - 답 유형 출제의도.csv'
 
-# CSV 파일 읽기, 3행부터 시작하므로 header=2로 설정
-df = pd.read_csv(file_path, header=1)
+# # CSV 파일 읽기, 3행부터 시작하므로 header=2로 설정
+# df = pd.read_csv(file_path, header=1)
 
-# 5~7열 데이터 추출, 판다스는 0부터 인덱싱하므로 각각 4, 5, 6을 사용
-columns_data = {
-    # 'answer': df.iloc[:, 4].tolist(),
-    # 'score': df.iloc[:, 5].tolist(),
-    'type': df.iloc[:, 6].tolist(),
-}
+# # 5~7열 데이터 추출, 판다스는 0부터 인덱싱하므로 각각 4, 5, 6을 사용
+# columns_data = {
+#     # 'answer': df.iloc[:, 4].tolist(),
+#     # 'score': df.iloc[:, 5].tolist(),
+#     'type': df.iloc[:, 6].tolist(),
+# }
 
-# 각 열마다 25개씩 잘라서 저장
-for column_name, data in columns_data.items():
-    for i in range(0, len(data), 25):
-        # 현재 슬라이스의 데이터
-        slice_data = data[i:i+25]
-        # 파일 번호 (1부터 시작)
-        file_number = i // 25 + 1
-        # 파일 이름 설정
-        if column_name == 'answer':
-            file_name = f'{file_number}_answer.txt'
-        elif column_name == 'score':
-            file_name = f'{file_number}_score.txt'
-        elif column_name == 'type':
-            file_name = f'{file_number}.txt'
+# # 각 열마다 25개씩 잘라서 저장
+# for column_name, data in columns_data.items():
+#     for i in range(0, len(data), 25):
+#         # 현재 슬라이스의 데이터
+#         slice_data = data[i:i+25]
+#         # 파일 번호 (1부터 시작)
+#         file_number = i // 25 + 1
+#         # 파일 이름 설정
+#         if column_name == 'answer':
+#             file_name = f'{file_number}_answer.txt'
+#         elif column_name == 'score':
+#             file_name = f'{file_number}_score.txt'
+#         elif column_name == 'type':
+#             file_name = f'{file_number}.txt'
         
-        # 설정된 이름으로 파일 저장
-        file_path = f'E:/PNS/MPI_test/media/data/2021_1_HME_DATA/Math_Ability/{file_name}'
-        with open(file_path, 'w') as f:
-            for item in slice_data:
-                f.write(f"{item}\n")
+#         # 설정된 이름으로 파일 저장
+#         file_path = f'E:/PNS/MPI_test/media/data/2021_1_HME_DATA/Math_Ability/{file_name}'
+#         with open(file_path, 'w') as f:
+#             for item in slice_data:
+#                 f.write(f"{item}\n")
 
 # data = """
 # 학년,초1,초2,초3,초4,초5,초6,중1,중2,중3
