@@ -30,6 +30,7 @@
         StrongPoint: [],
         WeakPoint: [],
         StudentRegion: "",
+        OfficeRegion: [],
         chartData: {
           labels: ['계산력', '이해력', '문제해결력', '추론력'],
           datasets: [
@@ -121,6 +122,8 @@
             console.log("strongPoint : ", this.StrongPoint)
             this.WeakPoint = res.data.WeakPoint;
             console.log("weakPoint : ", this.WeakPoint)
+            this.OfficeRegion = territoryOrder.filter(region => region !== this.StudentRegion);
+            console.log("office region : ", this.OfficeRegion)
             this.$nextTick(() => {
               // DOM 업데이트 완료 후 차트 렌더링
               this.renderRadarChart();

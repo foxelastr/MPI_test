@@ -1,5 +1,3 @@
-import io
-from xhtml2pdf import pisa
 from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -199,7 +197,7 @@ class BaseReportView(ListView):
         # 필요한 추가 데이터를 JSON 형식으로 클라이언트에 전송합니다.
         response_data = {
             'StudentId': test_result.StudentId,                 # 학생 Id
-            'StudentRegion': user_profile.region,  # 학생의 지역 정보 추가
+            'StudentRegion': user_profile.region,               # 학생의 지역 정보 추가
             'ExamYearSemester': test_result.ExamYearSemester,   # 시험시기
             'ExamGrade': test_result.ExamGrade,                 # 시험학년
             'ExamResults': test_result.ExamResults,             # 학생답 리스트
@@ -212,8 +210,8 @@ class BaseReportView(ListView):
             'NationalPredictRatio':suneung_predict_ratio,       # 전국 예상 백분위
             'HighSchoolPredictGrade': high_predict,             # 고등학교 내신 및 수능 예상 등급
             'SuneungPredictGrade': suneung_predict,             # 고등학교 수능 예상 등급
-            'StrongPoint': Strong_Point,               # 강점 리스트
-            'WeakPoint': Weak_Point,               # 약점 리스트
+            'StrongPoint': Strong_Point,                        # 강점 리스트
+            'WeakPoint': Weak_Point,                            # 약점 리스트
         }
 
         # JsonResponse 객체를 사용하여 응답을 반환합니다.
