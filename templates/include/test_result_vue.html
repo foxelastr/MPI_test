@@ -12,13 +12,14 @@
     data() {
       return {
         csrfToken: document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-        StudentId: "",
-        ExamYearSemester: "",
-        ExamGrade: "",
+        StudentId: 0,
+        StudentName: "",
+        ExamYearSemester: 0,
+        ExamGrade: 0,
         ExamResults: [],
         AnswerList: [],
         MathAbility: [],
-        Score: "",
+        Score: 0,
         selectedTerritory_low: 0,
         selectedTerritory_high: 0,
         otherTerritories_low: [],
@@ -74,6 +75,7 @@
           .then(res => {
             console.log("FETCH REPORTDETAIL GET RES", res);
             this.StudentId = res.data.StudentId;
+            this.StudentName = res.data.StudentName;
             this.ExamYearSemester = res.data.ExamYearSemester;
             this.ExamGrade = res.data.ExamGrade;
             this.ExamResults = res.data.ExamResults;
@@ -81,7 +83,8 @@
             this.Score = res.data.Score;
             this.StudentRegion = res.data.StudentRegion;
             this.MathAbility = res.data.MathAbility
-            console.log("MathAbility : ", this.MathAbility)
+
+            console.log("student name :", this.StudentName)
             
             // this.chartData.datasets[0].data = res.data.MathAbility;
             if (this.chartData.datasets && this.chartData.datasets.length > 0) {
@@ -89,9 +92,6 @@
               this.chartData.datasets[0].data[1] = (this.MathAbility[1]*100/32).toFixed(2)
               this.chartData.datasets[0].data[2] = (this.MathAbility[2]*100/20).toFixed(2)
               this.chartData.datasets[0].data[3] = (this.MathAbility[3]*100/20).toFixed(2)
-              console.log("차트데이터 : ", this.chartData.datasets[0].data)
-              // 차트 데이터가 업데이트된 후 차트를 다시 그리는 함수 호출
-              console.log("렌더차트 함수 호출 직후")
             } else {
               // 적절한 오류 처리 또는 데이터셋 초기화 로직
               console.error('datasets 배열이 초기화되지 않았습니다.');
@@ -177,7 +177,7 @@
         
         // 첫 번째 요소 캡처
         this.captureState = 1;
-        const element1 = document.querySelector('#capture-area');
+        const element1 = document.getElementById('capture-area1');
         console.log("element1 : ", element1)
         await html2canvas(element1, {
           logging:true,
@@ -190,21 +190,46 @@
         });;
         
         // 두 번째 요소 캡처
-      //  this.captureState = 2;
-      //  await this.$nextTick(); // Vue의 DOM 업데이트 반영을 위해 대기
-      //  const element2 = document.getElementById('capture-area2');
-      //  await html2canvas(element2, {
-      //    logging:true,
-      //    useCORS:true
-      //  }).then((canvas) => {
-      //    const imgData2 = canvas.toDataURL('image/png');
-      //    pdf.addImage(imgData2, 'PNG', 0, 0, 210, 297); // 첫 번째 이미지 추가
-      //  }).catch(error => {
-      //    console.log("HTML2CANVAS err : ", error)
-      //  });
+        this.captureState = 2;
+        await this.$nextTick(); // Vue의 DOM 업데이트 반영을 위해 대기
+        const element2 = document.getElementById('capture-area2');
+        pdf.addPage();
+        await html2canvas(element2, {
+          logging:true,
+          useCORS:true
+        }).then((canvas) => {
+          const imgData2 = canvas.toDataURL('image/png');
+          pdf.addImage(imgData2, 'PNG', 0, 0, 210, 297); // 첫 번째 이미지 추가
+        }).catch(error => {
+          console.log("HTML2CANVAS err : ", error)
+        });
+
+        // 세 번째 요소 캡처
+        this.captureState = 3;
+        await this.$nextTick(); // Vue의 DOM 업데이트 반영을 위해 대기
+        const element3 = document.getElementById('capture-area3');
+        pdf.addPage();
+        await html2canvas(element3, {
+          logging:true,
+          useCORS:true
+        }).then((canvas) => {
+          const imgData3 = canvas.toDataURL('image/png');
+          pdf.addImage(imgData3, 'PNG', 0, 0, 210, 297); // 첫 번째 이미지 추가
+        }).catch(error => {
+          console.log("HTML2CANVAS err : ", error)
+        });
+
+        const year = this.ExamYearSemester.toString().slice(0, 4);
+        let banki
+        if (this.ExamYearSemester[-1] == 1) {
+          banki = "상반기"
+        } else {
+          banki = "하반기"
+        }
+        const pdfName = `${this.StudentName}_${year}년도_${banki}_보고서.pdf`
         
         // PDF 저장
-        pdf.save('download.pdf');
+        pdf.save(pdfName);
         
         // 상태 복원
         this.captureState = 1;

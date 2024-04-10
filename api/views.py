@@ -197,6 +197,7 @@ class BaseReportView(ListView):
         # 필요한 추가 데이터를 JSON 형식으로 클라이언트에 전송합니다.
         response_data = {
             'StudentId': test_result.StudentId,                 # 학생 Id
+            'StudentName' : student.name,                       # 학생 이름
             'StudentRegion': user_profile.region,               # 학생의 지역 정보 추가
             'ExamYearSemester': test_result.ExamYearSemester,   # 시험시기
             'ExamGrade': test_result.ExamGrade,                 # 시험학년
