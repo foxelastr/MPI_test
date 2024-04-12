@@ -40,13 +40,8 @@
                 </button>
                 <div class="collapse navbar-collapse" id="navbarResponsive">
                     <ul class="navbar-nav text-uppercase ms-auto py-4 py-lg-0">
-                        <li class="nav-item"><a class="nav-link" data-target="#page-top"
-                                href="{% url 'home' %}#page-top">Home</a></li>
-                        <li class="nav-item"><a class="nav-link" data-target="#portfolio"
-                                href="{% url 'home' %}#portfolio">학원생</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{% url 'home' %}">학원생</a></li>
                         <li class="nav-item"><a class="nav-link" href="{% url 'dashboard:testlist' %}">시험지</a></li>
-                        <li class="nav-item"><a class="nav-link" data-target="#contact"
-                                href="{% url 'home' %}#contact">Contact</a></li>
                         <li class="nav-item"><a class="nav-link" href="{% url 'admin:index' %}">Admin</a></li>
                         <li class="nav-item">
                             <div>
@@ -69,14 +64,14 @@
                     </ul>
                 </div>
             </div>
-
         </nav>
         <!-- Masthead-->
         <header class="masthead">
             <div class="container">
-                <div class="masthead-subheading">Welcome To MPI Test!</div>
-                <div>It's Nice To Meet You</div>
-                <a class="btn btn-primary btn-xl text-uppercase" href="#services">Tell Me More</a>
+                <div class="masthead-subheading">MPI TEST</div>
+                <div>MPI(Mathematical Potential Index) :
+                    수리적 능력. 즉, 기초적인 수리 능력을 진단하고 그 요인이 되는 계산력, 이해력, 추론력, 문제해결력의 네 가지 요인별로 수리적 정보 처리 능력을 측정합니다. 학생의 현재
+                    수리언어의 처리 능력을 종합적으로 진단합니다. 이 결과와 본 연구소의 통계 데이터를 기반으로 자체 개발한 AI가 중·고등학교에서의 성적을 정밀 예측합니다.</div>
             </div>
         </header>
 

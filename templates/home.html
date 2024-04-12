@@ -8,13 +8,13 @@
 <section class="page-section bg-light" id="portfolio">
     <div class="container">
         <div class="text-center">
-            <h2 class="section-heading text-uppercase">Student List</h2>
-            <h3 class="section-subheading text-muted">Lorem ipsum dolor sit amet consectetur.</h3>
+            <h2 class="section-heading text-uppercase">학생 목록</h2>
+            <h3 class="section-subheading text-muted">학생의 목록을 확인할 수 있습니다.</h3>
         </div>
-        <div class="row">
-            <div class="col-lg-3 d-flex justify-content-end">
-                <button class="btn btn-primary" type="button">
-                    <a :href="`/dashboard/addstudent/`">학생 추가</a>
+        <div class="d-flex flex-column w-100">
+            <div class="d-flex flex-row-reverse w-100">
+                <button class="btn btn-warning" type="button">
+                    <a :href="`/dashboard/addstudent/`" class="text-black" style="text-decoration: none;">학생 추가</a>
                 </button>
             </div>
             <!-- Student List Tabel -->
@@ -36,11 +36,14 @@
                         <div class="col-3">[[ student.birthdate ]]</div>
                         <div class="col-3">
                             <button class="btn btn-info btn-lg" type="button">
-                                <a :href="`/dashboard/student/${student.id}/`">시험정보</a></button>
+                                <a :href="`/dashboard/student/${student.id}/`" class="text-black"
+                                    style="text-decoration: none;">시험정보</a></button>
                         </div>
                         <div class="col-3">
                             <button class="btn btn-primary btn-lg" type="button">
-                                <a :href="`/dashboard/student/update/${student.id}/`">정보 수정</a>
+                                <a :href="`/dashboard/student/update/${student.id}/`" class="text-light"
+                                    style="text-decoration: none;">정보
+                                    수정</a>
                             </button>
                         </div>
                     </div>

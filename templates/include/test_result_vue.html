@@ -46,6 +46,11 @@
         },
         chartInstance: null, // 차트 인스턴스를 저장할 속성
         captureState: 1,
+        AnswerList1: [],
+        AnswerList2: [],
+        ExamResults1: [],
+        ExamResults2: [],
+        carouselPage: 1,
       };
     },
     created() {
@@ -84,7 +89,11 @@
             this.StudentRegion = res.data.StudentRegion;
             this.MathAbility = res.data.MathAbility
 
-            console.log("student name :", this.StudentName)
+            this.AnswerList1 = this.AnswerList.slice(0, 14)
+            this.AnswerList2 = this.AnswerList.slice(14)
+
+            this.ExamResults1 = this.ExamResults.slice(0, 14)
+            this.ExamResults2 = this.ExamResults.slice(14)
             
             // this.chartData.datasets[0].data = res.data.MathAbility;
             if (this.chartData.datasets && this.chartData.datasets.length > 0) {
@@ -233,7 +242,22 @@
         
         // 상태 복원
         this.captureState = 1;
-      }
+      },
+      carouselPageRight() {
+        this.carouselPage += 1;
+        if (this.carouselPage == 4) {
+          this.carouselPage = 1;
+        }
+      },
+      carouselPageLeft() {
+        this.carouselPage -= 1;
+        if (this.carouselPage == 0) {
+          this.carouselPage = 3;
+        }
+      },
+      carouselControl(pageNumber) {
+        this.carouselPage = pageNumber;
+      },
     },
     mounted() {
       this.renderRadarChart()
