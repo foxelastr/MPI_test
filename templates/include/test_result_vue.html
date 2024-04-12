@@ -45,12 +45,12 @@
           ]
         },
         chartInstance: null, // 차트 인스턴스를 저장할 속성
-        captureState: 1,
         AnswerList1: [],
         AnswerList2: [],
         ExamResults1: [],
         ExamResults2: [],
-        carouselPage: 1,
+        carouselPage: 3,
+        rangeNumbers: this.range(15, 25),
       };
     },
     created() {
@@ -74,6 +74,10 @@
       this.fetchReportDetail(this.StudentId);
     },
     methods: {
+      range(start, end) {
+        const length = end - start + 1;
+        return Array.from({ length }, (_, i) => start + i);
+      },
       fetchReportDetail(StudentId) {
         console.log("fetchReportDetail()...", StudentId);
         axios.get(`/api/report/detail/${StudentId}?year_semester=${this.ExamYearSemester}&test_grade=${this.ExamGrade}`)
@@ -185,7 +189,7 @@
         const pdf = new window.jspdf.jsPDF();
         
         // 첫 번째 요소 캡처
-        this.captureState = 1;
+        this.carouselPage = 1;
         const element1 = document.getElementById('capture-area1');
         console.log("element1 : ", element1)
         await html2canvas(element1, {
@@ -197,9 +201,10 @@
         }).catch(error => {
           console.log("HTML2CANVAS err : ", error)
         });;
-        
+
+       
         // 두 번째 요소 캡처
-        this.captureState = 2;
+        this.carouselPage = 2;
         await this.$nextTick(); // Vue의 DOM 업데이트 반영을 위해 대기
         const element2 = document.getElementById('capture-area2');
         pdf.addPage();
@@ -214,7 +219,7 @@
         });
 
         // 세 번째 요소 캡처
-        this.captureState = 3;
+        this.carouselPage = 3;
         await this.$nextTick(); // Vue의 DOM 업데이트 반영을 위해 대기
         const element3 = document.getElementById('capture-area3');
         pdf.addPage();
@@ -241,7 +246,7 @@
         pdf.save(pdfName);
         
         // 상태 복원
-        this.captureState = 1;
+        this.carouselPage = 1;
       },
       carouselPageRight() {
         this.carouselPage += 1;

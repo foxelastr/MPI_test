@@ -48,6 +48,7 @@
     width: 220px;
     height: 60px;
   }
+
   #footer {
     background-image: url("{% static 'assets/pns_footer_logo.png' %}");
     padding: 10px 0px 10px 0px;
@@ -329,11 +330,12 @@
                       <div class="">
                         <div class="">
                           <div class="">
-                            <table class="table table-striped-columns fixed-tabel table-sm text-center">
-                              <thead>
+                            <!-- <table class="table table-striped-columns fixed-tabel table-sm text-center"> -->
+                            <table class="table table-striped fixed-tabel table-sm text-center">
+                              <thead class="table-dark">
                                 <tr>
-                                  <th scope="col">번호</th>
-                                  <th scope="col" v-for="number in 14" :key="'header-' + number" class="text-center custom-col">[[ number ]]</th>
+                                  <th scope="col" class="text-white">번호</th>
+                                  <th scope="col" v-for="number in 14" :key="'header-' + number" class="text-center custom-col text-white">[[ number ]]</th>
                                 </tr>
                               </thead>
                               <tbody>
@@ -349,17 +351,17 @@
                                   <th scope="row">학생답</th>
                                   <td  v-for="(answer, index) in ExamResults1" :key="'result-'+index" class="text-center custom-col">[[ answer ]]</td>
                                 </tr>
-                                <tr>
-                                  <td scope="col">번호</td>
-                                  <td scope="col" v-for="number in 11" :key="'header-' + number" class="text-center custom-col">[[ number ]]</td>
-                                  <td scope="col">점수</td>                      
-                                  <td scope="col">총점</td>
+                                <tr class="table-dark">
+                                  <td scope="col" class=" fw-bold text-white">번호</td>
+                                  <td scope="col" v-for="number in rangeNumbers" :key="'header-' + number" class="text-center custom-col fw-bolder text-white">[[ number ]]</td>
+                                  <td scope="col" class="fw-bold">점수</td>                      
+                                  <td scope="col" class="fw-bold">총점</td>
                                   <td scope="col"></td>
                                 </tr>
                                 <tr>
                                   <th scope="row">배점</th>
                                   <td v-for="score in 11" :key="'score-' + index" class="text-center custom-col">4</td>
-                                  <td scope="col">[[ Score ]]</th>
+                                  <td scope="col" class="fw-bold">[[ Score ]]</th>
                                   <td scope="col">100</th>
                                   <td scope="col"></th>
                                 </tr>
@@ -431,7 +433,7 @@
           </div>
           <div class="carousel-item active">
             <div class="d-flex justify-content-center" v-if="carouselPage == 3" data-carousel-item>
-              <div id="capture-area2" class="A4plus-size">
+              <div id="capture-area3" class="A4plus-size">
                 <div class="d-flex flex-column justify-content-center px-4 shadow bg-dark w-100 h-100">
                   <div class="border border-light rounded bg-white d-flex flex-column">
             
@@ -450,10 +452,10 @@
                       </div>
                     </div>
             
-                    <!-- O/X analysis -->
+                    <!-- Office Regional Predict Percentile -->
                     <div class="border-bottom border-2">
                       <div class="w-40 h-10 d-flex justify-content-evenly mt-3 mb-1">
-                        <div class="border border-bottom-2 p-3 my-1 fs-5 fw-bold">
+                        <div class="border-2 border-bottom p-3 my-1 fs-5 fw-bold">
                           교육청 권역별 예상 백분위
                         </div>
                       </div>
