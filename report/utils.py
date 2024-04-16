@@ -38,8 +38,11 @@ def get_statistics(year_semester, test_grade):
 def calculate_standard_deviation(AccumulatedNumber):
     P = list(range(100, -4, -4))
 
+    print("accumulated number : ", AccumulatedNumber)
+    print("P : ", P)
     # 정수로 변환
-    AccumulatedNumber = [int(x) for x in AccumulatedNumber]
+    AccumulatedNumber = [int(x.replace(',', '')) for x in AccumulatedNumber]
+    print("accumulated number : ", AccumulatedNumber)
 
     # 학생 수에 따른 점수 계산
     scores = []

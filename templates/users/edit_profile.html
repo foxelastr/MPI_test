@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card card-body">
+                <h2 class="text-center mb-4">프로필 수정</h2>
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="id_affiliation" class="form-label">학원명</label>
+                        <input type="text" name="affiliation" id="id_affiliation" class="form-control" value="{{ form.affiliation.value|default_if_none:'' }}">
+                    </div>
+                    <div class="mb-3">
+                        <label for="id_region" class="form-label">지역권역</label>
+                        <select name="region" id="id_region" class="form-control">
+                            <option value="">교육청 권역을 선택해주세요</option>
+                            {% for value, label in form.region.field.choices %}
+                            <option value="{{ value }}" {% if form.region.value == value %}selected{% endif %}>{{ label }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="id_region_detail" class="form-label">세부주소</label>
+                        <input type="text" name="region_detail" id="id_region_detail" class="form-control" value="{{ form.region_detail.value|default_if_none:'' }}">
+                    </div>
+                    <button type="submit" class="btn btn-primary">변경 사항 저장</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_script %}
+{% include 'include/edit_profile_vue.html'%}
+{% endblock %}

@@ -192,6 +192,8 @@
                     <!-- math ability -->
                     <div class="d-flex justify-content-center w-100 border-bottom border-2">
                       <div class="d-flex flex-column pb-3 mx-1 mb-0" style="margin-bottom: 0.125rem !important;">
+
+                        <!-- math ability data numbers -->
                         <div class="d-flex justify-content-center">
                           <div class="d-flex flex-column w-75 pb-3 mx-1 mb-0" style="margin-bottom: 0.125rem !important;">
                             <div class="d-flex justify-content-center">
@@ -222,6 +224,7 @@
                           </div>
                         </div>
                         
+                        <!-- chart and analysis -->
                         <div class="d-flex justify-content-around">
                           <div class="d-flex flex-column" style="margin-bottom: 0.125rem !important;">
                             <div class="#">
@@ -341,7 +344,7 @@
                               <tbody>
                                 <tr>
                                   <th scope="row">배점</th>
-                                  <td v-for="score in 14" :key="'score-' + index" class="text-center custom-col">4</td>
+                                  <td v-for="(score, index) in 14" :key="'score-' + index" class="text-center custom-col">4</td>
                                 </tr>
                                 <tr>
                                   <th scope="row">정답</th>
@@ -360,24 +363,24 @@
                                 </tr>
                                 <tr>
                                   <th scope="row">배점</th>
-                                  <td v-for="score in 11" :key="'score-' + index" class="text-center custom-col">4</td>
-                                  <td scope="col" class="fw-bold">[[ Score ]]</th>
-                                  <td scope="col">100</th>
-                                  <td scope="col"></th>
+                                  <td v-for="(score, index) in 11" :key="'score-' + index" class="text-center custom-col">4</td>
+                                  <td scope="col" class="fw-bold">[[ Score ]]</td>
+                                  <td scope="col">100</td>
+                                  <td scope="col"></td>
                                 </tr>
                                 <tr>
                                   <th scope="row">정답</th>
                                   <td v-for="(input, index) in AnswerList2" :key="'answer-' + index" class="text-center custom-col">[[ input ]]</td>
-                                  <td scope="row" class="custom-col"></th>
-                                  <td scope="row" class="custom-col"></th>
-                                  <td scope="row" class="custom-col"></th>
+                                  <td scope="row" class="custom-col"></td>
+                                  <td scope="row" class="custom-col"></td>
+                                  <td scope="row" class="custom-col"></td>
                                 </tr>
                                 <tr>
                                   <th scope="row">학생답</th>
                                   <td  v-for="(answer, index) in ExamResults2" :key="'result-'+index" class="text-center custom-col">[[ answer ]]</td>
-                                  <td scope="row" class="custom-col"></th>
-                                  <td scope="row" class="custom-col"></th>
-                                  <td scope="row" class="custom-col"></th>
+                                  <td scope="row" class="custom-col"></td>
+                                  <td scope="row" class="custom-col"></td>
+                                  <td scope="row" class="custom-col"></td>
                                 </tr>
                               </tbody>
                             </table>
@@ -474,9 +477,13 @@
                                     <div class="card-text text-center flex-grow-1 text-blue-500 bg-cyan-200">[[ otherTerritories_high[index].value ]]</div>
                                   </div>
                                 </div>
+                                <div>
+                                  <!-- <canvas :id="'horizontalBarChart' + index"></canvas> -->
+                                  <canvas :id="'horizontalBarChart' + index"></canvas>
+                                </div>
                               </div>
                             </div>
-            
+                            
                           </div>
                         </div>
                       </div>

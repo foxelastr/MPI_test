@@ -1,0 +1,10 @@
+<script>
+    // HTML5 폼 유효성 검사가 비활성화된 경우, 이를 다시 활성화합니다.
+    document.getElementById('signupForm').addEventListener('submit', function(e) {
+      if (!this.checkValidity()) {
+        e.preventDefault(); // 폼 제출 방지
+        e.stopPropagation(); // 상위 요소로의 이벤트 전파 중지
+      }
+      this.classList.add('was-validated');
+    }, false);
+</script>

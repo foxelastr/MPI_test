@@ -1,18 +1,64 @@
 {% extends 'base.html' %}
 {% block content %}
-<h1>회원가입</h1>
-<form method="post">
-  {% csrf_token %}
-  {% include 'users/form_errors.html' %}
-  
-  <p>{{ form.username.label_tag }} {{ form.username }}</p>
-  <p>{{ form.email.label_tag }} {{ form.email }}</p>
-  <p>{{ form.password1.label_tag }} {{ form.password1 }}</p>
-  <p>{{ form.password2.label_tag }} {{ form.password2 }}</p>
-  <p>{{ form.affiliation.label_tag }} {{ form.affiliation }}</p>
-  <p>{{ form.region.label_tag }} {{ form.region }}</p>
-  <p>{{ form.region_detail.label_tag }} {{ form.region_detail }}</p>
-  
-  <button type="submit">회원가입</button>
-</form>
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-10">
+      <h1 class="mb-3 text-center">회원가입</h1>
+      <form method="post" id="signupForm" class="needs-validation card card-body" novalidate>
+        {% csrf_token %}
+        
+        <div class="form-group">
+          <label for="username" class="mt-3 mb-1">{{ form.username.label }}</label>
+          <input type="text" class="form-control" id="username" class="form-control" name="{{ form.username.name }}" placeholder="사용자 이름을 입력하세요" required oninvalid="this.setCustomValidity('사용자 이름을 입력해주세요')" 
+          oninput="this.setCustomValidity('')">
+        </div>
+        
+        <div class="form-group">
+          <label for="email" class="mt-3 mb-1">{{ form.email.label }}</label>
+          <input type="email" class="form-control" id="email" class="form-control" name="{{ form.email.name }}" placeholder="이메일 주소를 입력하세요" required oninvalid="this.setCustomValidity('유효한 이메일 주소를 입력해주세요')" 
+          oninput="this.setCustomValidity('')">
+        </div>
+        
+        <div class="form-group">
+          <label for="password1" class="mt-3 mb-1">{{ form.password1.label }}</label>
+          <input type="password" class="form-control" id="password1" class="form-control" name="{{ form.password1.name }}" placeholder="비밀번호를 입력하세요" required oninvalid="this.setCustomValidity('비밀번호를 입력해주세요')" 
+          oninput="this.setCustomValidity('')">
+        </div>
+        
+        <div class="form-group">
+          <label for="password2" class="mt-3 mb-1">{{ form.password2.label }}</label>
+          <input type="password" class="form-control" id="password2" class="form-control" name="{{ form.password2.name }}" placeholder="비밀번호 확인을 위해 다시 입력하세요" required oninvalid="this.setCustomValidity('비밀번호를 다시 입력해주세요')" 
+          oninput="this.setCustomValidity('')">
+        </div>
+        
+        <div class="form-group">
+          <label for="affiliation" class="mt-3 mb-1">{{ form.affiliation.label }}</label>
+          <input type="text" class="form-control" id="affiliation" class="form-control" name="{{ form.affiliation.name }}" placeholder="소속 학원 이름을 입력하세요" required oninvalid="this.setCustomValidity('소속 학원 이름을 입력해주세요')" oninput="this.setCustomValidity('')">
+        </div>
+        
+        <div class="form-group">
+          <label for="region" class="mt-3 mb-1">{{ form.region.label }}</label>
+          <select class="form-control" id="region" class="form-control" name="{{ form.region.name }}">
+            <option value="" selected disabled>교육청 권역을 선택해주세요</option>
+            {% for value, label in form.region.field.choices %}
+              <option value="{{ value }}">{{ label }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        
+        
+        <div class="form-group">
+          <label for="region_detail" class="mt-3 mb-1">{{ form.region_detail.label }}</label>
+          <input type="text" class="form-control" id="region_detail" class="form-control" name="{{ form.region_detail.name }}" placeholder="상세 지역을 동까지 입력하세요(예 : 강남구 개포동)" required oninvalid="this.setCustomValidity('상세 지역을 입력해주세요')" oninput="this.setCustomValidity('')">
+        </div>
+        
+        <button type="submit" class="btn btn-primary w-100 mt-3">회원가입</button>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra-script %}
+{% include 'include/auth_vue.html' %}
 {% endblock %}

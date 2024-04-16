@@ -30,8 +30,7 @@
         <!-- Navigation-->
         <nav class="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNav">
             <div class="container">
-                <a class="navbar-brand" href="#page-top"><img src="{% static 'assets/img/navbar-logo.svg' %}"
-                        alt="..." /></a>
+                <a class="navbar-brand" href="#page-top"><img src="{% static 'assets/nav_logo.png' %}" alt="..." /></a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                     data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
                     aria-label="Toggle navigation">
@@ -44,13 +43,28 @@
                         <li class="nav-item"><a class="nav-link" href="{% url 'dashboard:testlist' %}">시험지</a></li>
                         <li class="nav-item"><a class="nav-link" href="{% url 'admin:index' %}">Admin</a></li>
                         <li class="nav-item">
-                            <div>
-                                {% if user.is_authenticated %}
-                                <form method="post" action="{% url 'users:logout' %}">
-                                    {% csrf_token %}
-                                    <button type="submit" class="btn btn-outline-light">{{ user.username }}님
-                                        로그아웃</button>
-                                </form>
+                            {% if user.is_authenticated %}
+                            <!-- Dropdown for user information -->
+                            <div class="dropdown">
+                                <button class="btn btn-outline-light dropdown-toggle" type="button"
+                                    id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                                    {{ user.username }}님
+                                </button>
+                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                    <li><a class="dropdown-item" href="#">프로필</a></li>
+                                    <li><a class="dropdown-item" href="{% url 'users:edit_profile' %}">설정</a></li>
+                                    <li><a class="dropdown-item" href="{% url 'users:change_password' %}">비밀번호 변경</a>
+                                    </li>
+                                    <li>
+                                        <hr class="dropdown-divider">
+                                    </li>
+                                    <li>
+                                        <form method="post" action="{% url 'users:logout' %}">
+                                            {% csrf_token %}
+                                            <button type="submit" class="dropdown-item">로그아웃</button>
+                                        </form>
+                                    </li>
+                                </ul>
                             </div>
                             {% else %}
                             <div class="btn-group" role="group" aria-label="Basic example">
@@ -63,6 +77,7 @@
                         </li>
                     </ul>
                 </div>
+
             </div>
         </nav>
         <!-- Masthead-->

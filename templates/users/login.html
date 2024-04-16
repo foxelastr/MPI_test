@@ -1,19 +1,39 @@
 {% extends 'base.html' %}
 {% block content %}
 
-<h1>로그인</h1>
-<form method="post" action="{% url 'users:login' %}">
-  {% csrf_token %}
-  {% include 'users/form_errors.html' %}
-  <div>
-    <label>사용자 ID</label>
-    <input type="text" name="username" id="username">
-  </div>
-  <div>
-    <label>비밀번호</label>
-    <input type="password" name="password" id="password">
-  </div>
-  <button type="submit">로그인</button>
-</form>
+<div class="container mt-5">
+  <div class="row">
+    <div class="col-md-6 offset-md-3">
+      <h1 class="mb-3 text-center">로그인</h1>
+      <form method="post" action="{% url 'users:login' %}" class="card card-body">
+        {% csrf_token %}
 
+        {% if messages %}
+        <script type="text/javascript">
+        window.onload = function() {
+            {% for message in messages %}
+            alert('{{ message }}');
+            {% endfor %}
+        }
+        </script>
+        {% endif %}
+
+        <div class="mb-3">
+          <label for="username" class="form-label">사용자 ID</label>
+          <input type="text" name="username" id="username" class="form-control" placeholder="사용자 ID를 입력하세요" required oninvalid="this.setCustomValidity('사용자 ID를 입력해주세요')" oninput="this.setCustomValidity('')">
+
+        </div>
+        <div class="mb-3">
+          <label for="password" class="form-label">비밀번호</label>
+          <input type="password" name="password" id="password" class="form-control" placeholder="비밀번호를 입력하세요" required oninvalid="this.setCustomValidity('비밀번호를 입력해주세요')" oninput="this.setCustomValidity('')">
+        </div>
+        <button type="submit" class="btn btn-primary w-100">로그인</button>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra-script %}
+{% include 'include/auth_vue.html' %}
 {% endblock %}

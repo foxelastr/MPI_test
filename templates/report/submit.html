@@ -6,36 +6,36 @@
 
 {% block content %}
 <div>
-    <div class="flex justify-center" style="padding: 1rem;">
-        <div class="#">
-            <h1 class="#">
-                시험 결과 입력
-            </h1>
+    <div class="row justify-content-center my-4">
+        <div class="col-auto">
+            <h1>시험 결과 입력</h1>
         </div>
     </div>
     <form id="testInputForm" action="#">
-        <div class="flex flex-col justify-center " style="padding: 1rem;">
-            <div class="flex justify-center">
-                <div class="mb-6">
-                    <label for="school" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">시험 시기를
-                        선택하세요
-                    </label>
-                    <select id="school" v-model="ExamYearSemester" class="text-center ">
-                        <option value="ExamYearSemester" disabled>시험 시기 선택</option>
-                        <option value="20211">2021년 상반기</option>
-                        <option value="20212">2021년 하반기</option>
-                        <option value="20221">2022년 상반기</option>
-                        <option value="20222">2022년 하반기</option>
-                        <option value="20231">2023년 상반기</option>
-                    </select>
+        <div class="row justify-content-center">
+            <div class="row justify-content-center">
+                <div class="col-md-6 mb-3">
+                    <div class="form-group">
+                        <label for="school" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">시험 시기를
+                            선택하세요
+                        </label>
+                        <select id="school" v-model="ExamYearSemester" class="form-control">
+                            <option value="ExamYearSemester" disabled>시험 시기 선택</option>
+                            <option value="20211">2021년 상반기</option>
+                            <option value="20212">2021년 하반기</option>
+                            <option value="20221">2022년 상반기</option>
+                            <option value="20222">2022년 하반기</option>
+                            <option value="20231">2023년 상반기</option>
+                        </select>
+                    </div>
                 </div>
             </div>
-            <div class="flex justify-center">
-                <div class="mb-6">
+            <div class="row justify-content-center">
+                <div class="col-md-6 mb-3">
                     <label for="school" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">학년을 선택하세요
                     </label>
                     <div class="select">
-                        <select v-model="ExamGrade" class="text-center ">
+                        <select v-model="ExamGrade" class="form-control">
                             <option value="ExamGrade" disabled>학년 선택</option>
                             <option value="1">초1</option>
                             <option value="2">초2</option>
@@ -50,54 +50,55 @@
                     </div>
                 </div>
             </div>
-            <div class="flex justify-center">
-                <div class="mb-6 flex flex-col">
-                    <label for="school" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">지역을 선택하세요
-                    </label>
-                    <div class="select grow">
-                        <select id="region" v-model="region"
-                            class="text-center bg-gray-50 w-full block border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-                            <option value="강남서초">강남서초</option>
-                            <option value="강동송파">강동송파</option>
-                            <option value="강서양천">강서양천</option>
-                            <option value="서울남부">서울남부(영등포,구로,금천)</option>
-                            <option value="서울동부">서울동부(동대문,중랑)</option>
-                            <option value="동작관악">동작관악</option>
-                            <option value="서울북부">서울북부(도봉,노원)</option>
-                            <option value="서울서부">서울서부(서대분,마포,은평)</option>
-                            <option value="성동광진">성동광진</option>
-                            <option value="성북강북">성북강북</option>
-                            <option value="서울중부">서울중부(종로,중구,용산)</option>
-                        </select>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="#" style="padding: 1rem;">
-            <h3 class="text-3xl font-bold dark:text-white mb-4">
-                학생의 답을 입력하는 영역입니다.
-            </h3>
-            <div class="column-5">
-                <div>
-                    <!-- 각 가로 행을 반복 생성 -->
-                    <div class="flex justify-center" v-for="rowIndex in 5" :key="`row-${rowIndex}`">
-                        <!-- 각 행 내에서 5개의 입력 필드 생성 -->
-                        <div class="mb-6" v-for="colIndex in 5" :key="`col-${rowIndex}-${colIndex}`">
-                            <input type="text" :id="`input-${rowIndex}-${colIndex}`"
-                                :placeholder="`${(rowIndex - 1) * 5 + colIndex}번`"
-                                v-model.number="answerList[rowIndex - 1][colIndex - 1]" class="#" />
+            <div class="row justify-content-center">
+                <div class="col-md-6">
+                    <div class="form-group mb-3">
+                        <label for="school" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">지역을 선택하세요
+                        </label>
+                        <div class="select grow">
+                            <select id="region" v-model="region"
+                                class="form-control ">
+                                <option value="" disabled selected>교육청 권역을 선택해주세요</option>
+                                <option value="강남서초">강남서초</option>
+                                <option value="강동송파">강동송파</option>
+                                <option value="강서양천">강서양천</option>
+                                <option value="서울남부">서울남부(영등포,구로,금천)</option>
+                                <option value="서울동부">서울동부(동대문,중랑)</option>
+                                <option value="동작관악">동작관악</option>
+                                <option value="서울북부">서울북부(도봉,노원)</option>
+                                <option value="서울서부">서울서부(서대분,마포,은평)</option>
+                                <option value="성동광진">성동광진</option>
+                                <option value="성북강북">성북강북</option>
+                                <option value="서울중부">서울중부(종로,중구,용산)</option>
+                            </select>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="#" style="padding: 1rem;">
-            <button type="button" @click="submitForm" class="btn btn-primary">
-                결과보기
-            </button>
-            <button type="button" class="btn btn-warning">
-                홈으로
-            </button>
+        <div class="container col-md-6">
+            <h3 class="text-center mb-4">학생의 답을 입력하는 영역입니다.</h3>
+            <!-- 각 가로 행을 반복 생성 -->
+            <div class="row" v-for="rowIndex in 5" :key="`row-${rowIndex}`">
+                <!-- 각 행 내에서 5개의 입력 필드 생성 -->
+                <div class="col" v-for="colIndex in 5" :key="`col-${rowIndex}-${colIndex}`">
+                    <input type="text" :id="`input-${rowIndex}-${colIndex}`"
+                           :placeholder="`${(rowIndex - 1) * 5 + colIndex}번`"
+                           v-model.number="answerList[rowIndex - 1][colIndex - 1]" 
+                           class="form-control mb-2" />
+                </div>
+            </div>
+        </div>
+        
+        <div class="row justify-content-center mt-4">
+            <div class="col-md-2 d-flex justify-content-around">
+                <button type="button" @click="submitForm" class="btn btn-primary px-5 py-2">
+                    결과보기
+                </button>
+                <button type="button" class="btn btn-warning px-5 py-2">
+                    홈으로
+                </button>
+            </div>
         </div>
     </form>
 </div>
