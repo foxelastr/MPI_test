@@ -261,6 +261,10 @@
         await this.$nextTick(); // Vue의 DOM 업데이트 반영을 위해 대기
         const pdf = new window.jspdf.jsPDF();
         
+        // #######################################
+        // 1페이지 아닐 때 1페이지로 가서 캡쳐 ㄱㄱ
+        // #######################################
+
         // 첫 번째 요소 캡처
         this.carouselPage = 1;
         const element1 = document.getElementById('capture-area1');
