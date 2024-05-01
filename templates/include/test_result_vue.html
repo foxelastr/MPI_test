@@ -4,7 +4,7 @@
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://unpkg.com/vue-chartjs/dist/vue-chartjs.min.js"></script>
-
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@1.0.2"></script>
 
 <script type="module">
   const TestSubmitApp = {
@@ -45,20 +45,31 @@
           ]
         },
         horizonBarChartData: {
-          labels: ['백분위 최소', '백분위 최대'],
+          labels: [],
           datasets: [
             {
-              label: '예상 백분위',
+              label: '백분위 최소',
               data: [],
               backgroundColor: [
-                'rgba(255, 206, 86, 0.2)',
-                'rgba(75, 192, 192, 0.2)',
+                'rgba(255, 206, 86, 0.8)',
               ],
               borderColor: [ // 각 막대의 테두리 색
                 'rgba(255, 206, 86, 1)',
+              ],
+              borderWidth: 1,
+              maxBarThickness: 12,
+            },
+            {
+              label: '백분위 최대',
+              data: [],
+              backgroundColor: [
+                'rgba(75, 192, 192, 0.8)',
+              ],
+              borderColor: [ // 각 막대의 테두리 색
                 'rgba(75, 192, 192, 1)',
               ],
-              borderWidth: 1
+              borderWidth: 1,
+              maxBarThickness: 12,
             }],          
         },
         radarChartInstance: null, // 차트 인스턴스를 저장할 속성
@@ -92,6 +103,11 @@
       carouselPage(newVal) {
         if (newVal === 1) {
           this.renderRadarChart();
+        }
+        if (this.carouselPage === 3) {
+          this.$nextTick(() => {
+            this.renderHorizontalBarChart();
+          });
         }
       }
     },
@@ -140,6 +156,8 @@
               value: parseFloat(value * 100).toFixed(2)
             })).filter((_, index) => index !== selectedIndex);
             
+            console.log("other territory low data : ", this.otherTerritories_low)
+
             this.otherTerritories_high = res.data.PredPercentile_high.map((value, index) => ({
               territory: territoryOrder[index],
               value: parseFloat(value * 100).toFixed(2)
@@ -150,11 +168,8 @@
             this.HighSchoolPredictGrade = res.data.HighSchoolPredictGrade;
             this.SuneungPredictGrade = res.data.SuneungPredictGrade
             this.StrongPoint = res.data.StrongPoint;
-            console.log("strongPoint : ", this.StrongPoint)
             this.WeakPoint = res.data.WeakPoint;
-            console.log("weakPoint : ", this.WeakPoint)
             this.OfficeRegion = territoryOrder.filter(region => region !== this.StudentRegion);
-            console.log("office region : ", this.OfficeRegion)
             if (this.carouselPage === 1) {
               this.$nextTick(() => {
                 // DOM 업데이트 완료 후 차트 렌더링
@@ -204,19 +219,17 @@
           }
         });
       },
-      renderHorizontalBarChart(index){
+      renderHorizontalBarChart(){
         this.$nextTick(() => {
-
-          const canvasId = `horizontalBarChart${index}`;
+          const canvasId = `horizontalBarChart`;
           const canvas = document.getElementById(canvasId)
-//          if (!canvas) {
-//          console.error('Canvas element not found for ID:', canvasId);
-//            return;
-//          }
+
           if (canvas) {
             if (canvas.offsetWidth === 0 || canvas.offsetHeight === 0) {
               console.error("Canvas size is zero.");
             }
+
+            console.log("canvas is : ", canvas)
 
             const ctx = canvas.getContext('2d');
 
@@ -224,10 +237,20 @@
               this.horizontalBarChartInstance.destroy();
             }
 
-            this.horizonBarChartData.datasets[0].data = [
-              parseFloat(this.otherTerritories_low[index].value),
-              parseFloat(this.otherTerritories_high[index].value)
-            ];
+            const territoryOrder = ["강남서초", "강동송파", "강서양천", "서울남부", "서울동부", "동작관악", "서울북부", "서울서부", "성동광진", "성북강북", "서울중부"];
+            const selectedIndex = territoryOrder.indexOf(this.StudentRegion);
+
+            const lowList = this.otherTerritories_low.map(item => parseFloat(item.value))
+            const highList = this.otherTerritories_high.map(item => parseFloat(item.value))
+            const newTerritoryOrder = territoryOrder.filter((_, index) => index !== selectedIndex);
+
+            this.horizonBarChartData.labels = newTerritoryOrder;
+
+            this.horizonBarChartData.datasets[0].data = lowList;
+            // this.horizonBarChartData.datasets[0].data = [40, 80, 60];
+            this.horizonBarChartData.datasets[1].data = highList;
+
+            console.log("dataset : ", this.horizonBarChartData.datasets[0].data)
 
             this.horizontalBarChartInstance = new Chart(ctx, {
               type: 'bar', // 차트 타입을 'bar'로 변경
@@ -237,12 +260,53 @@
                 scales: {
                   x: { // x 축 설정
                     beginAtZero: true, // 0에서 시작
-                    suggestedMax: Math.max(...this.horizonBarChartData.datasets[0].data) * 1.2 // 최대값의 1.2배
+                    suggestedMax: Math.max(...this.horizonBarChartData.datasets[0].data)
                   }
                 },
                 elements: {
                   bar: { // 막대 관련 설정
                     borderWidth: 3
+                  }
+                },
+                plugins: {
+                  annotation: {
+                    annotations: {
+                      box1: {
+                        type: 'box',
+                        xMin: 0,
+                        xMax: 20,
+                        backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                        borderWidth: 0,
+                      },
+                      box2: {
+                        type: 'box',
+                        xMin: 20,
+                        xMax: 40,
+                        backgroundColor: 'rgba(155, 155, 155, 0.1)',
+                        borderWidth: 0,
+                      },
+                      box3: {
+                        type: 'box',
+                        xMin: 40,
+                        xMax: 60,
+                        backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                        borderWidth: 0,
+                      },
+                      box4: {
+                        type: 'box',
+                        xMin: 60,
+                        xMax: 80,
+                        backgroundColor: 'rgba(155, 155, 155, 0.1)',
+                        borderWidth: 0,
+                      },
+                      box5: {
+                        type: 'box',
+                        xMin: 80,
+                        xMax: 100,
+                        backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                        borderWidth: 0,
+                      },
+                    }
                   }
                 }
               }
@@ -258,73 +322,48 @@
         return Array.from({ length }, (_, i) => start + i);
       },
       async captureAndDownload() {
-        await this.$nextTick(); // Vue의 DOM 업데이트 반영을 위해 대기
         const pdf = new window.jspdf.jsPDF();
-        
-        // #######################################
-        // 1페이지 아닐 때 1페이지로 가서 캡쳐 ㄱㄱ
-        // #######################################
-
-        // 첫 번째 요소 캡처
-        this.carouselPage = 1;
-        const element1 = document.getElementById('capture-area1');
-        console.log("element1 : ", element1)
-        await html2canvas(element1, {
-          logging:true,
-          useCORS:true
-        }).then((canvas) => {
-          const imgData1 = canvas.toDataURL('image/png');
-          pdf.addImage(imgData1, 'PNG', 0, 0, 210, 297); // 첫 번째 이미지 추가
-        }).catch(error => {
-          console.log("HTML2CANVAS err : ", error)
-        });;
-
-       
-        // 두 번째 요소 캡처
-        this.carouselPage = 2;
-        await this.$nextTick(); // Vue의 DOM 업데이트 반영을 위해 대기
-        const element2 = document.getElementById('capture-area2');
-        pdf.addPage();
-        await html2canvas(element2, {
-          logging:true,
-          useCORS:true
-        }).then((canvas) => {
-          const imgData2 = canvas.toDataURL('image/png');
-          pdf.addImage(imgData2, 'PNG', 0, 0, 210, 297); // 첫 번째 이미지 추가
-        }).catch(error => {
-          console.log("HTML2CANVAS err : ", error)
-        });
-
-        // 세 번째 요소 캡처
-        this.carouselPage = 3;
-        await this.$nextTick(); // Vue의 DOM 업데이트 반영을 위해 대기
-        const element3 = document.getElementById('capture-area3');
-        pdf.addPage();
-        await html2canvas(element3, {
-          logging:true,
-          useCORS:true
-        }).then((canvas) => {
-          const imgData3 = canvas.toDataURL('image/png');
-          pdf.addImage(imgData3, 'PNG', 0, 0, 210, 297); // 첫 번째 이미지 추가
-        }).catch(error => {
-          console.log("HTML2CANVAS err : ", error)
-        });
-
-        const year = this.ExamYearSemester.toString().slice(0, 4);
-        let banki
-        if (this.ExamYearSemester[-1] == 1) {
-          banki = "상반기"
-        } else {
-          banki = "하반기"
-        }
-        const pdfName = `${this.StudentName}_${year}년도_${banki}_보고서.pdf`
+    
+        // 페이지 번호와 관련된 상태를 업데이트
+        const setPageAndCapture = async (pageNumber, elementId) => {
+            this.carouselPage = pageNumber;
+            await this.$nextTick(); // Vue의 DOM 업데이트를 기다림
+            return new Promise(resolve => {
+                setTimeout(async () => { // DOM 업데이트 후 충분한 시간을 기다립니다
+                    const element = document.getElementById(elementId);
+                    console.log(`${elementId} : `, element);
+                    await html2canvas(element, {
+                        logging: true,
+                        useCORS: true
+                    }).then((canvas) => {
+                        const imgData = canvas.toDataURL('image/png');
+                        if (pageNumber > 1) pdf.addPage();
+                        pdf.addImage(imgData, 'PNG', 0, 0, 210, 297);
+                        resolve();
+                    }).catch(error => {
+                        console.log("HTML2CANVAS error: ", error);
+                        resolve(); // 에러가 발생해도 다음 페이지로 넘어갑니다
+                    });
+                }, 1000); // 차트 로드를 위해 추가 대기 시간을 설정
+            });
+        };
+    
+        // 각 페이지를 순차적으로 처리
+        await setPageAndCapture(1, 'capture-area1');
+        await setPageAndCapture(2, 'capture-area2');
+        await setPageAndCapture(3, 'capture-area3');
+    
+        const examYearSemesterString = String(this.ExamYearSemester); // 명시적으로 문자열로 변환
+        const year = examYearSemesterString.slice(0, 4);
+        const banki = examYearSemesterString.endsWith('1') ? "상반기" : "하반기";
+        const pdfName = `${this.StudentName}_${year}년도_${banki}_보고서.pdf`;
         
         // PDF 저장
         pdf.save(pdfName);
         
         // 상태 복원
         this.carouselPage = 1;
-      },
+      },    
       carouselPageRight() {
         this.carouselPage += 1;
         if (this.carouselPage == 4) {
@@ -340,15 +379,20 @@
       carouselControl(pageNumber) {
         this.carouselPage = pageNumber;
       },
-      initHorizontalBarCharts() {
-        this.OfficeRegion.forEach((_, index) => {
-          this.renderHorizontalBarChart(index);
-        });
-      },
+    //  initHorizontalBarCharts() {
+    //    this.OfficeRegion.forEach((_, index) => {
+    //      this.renderHorizontalBarChart(index);
+    //    });
+    //  },
     },
 
     mounted() {
       this.renderRadarChart()
+      if (this.carouselPage === 3) {
+        this.$nextTick(() => {
+          this.initHorizontalBarCharts();
+        });
+      }
     },
     unmounted() {
       if (this.carouselPage === 3) {
