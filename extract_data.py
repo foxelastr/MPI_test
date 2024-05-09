@@ -1,35 +1,103 @@
 import pandas as pd
 import os
 
-# # # 지정된 디렉토리 경로
-# directory = 'E:/PNS/MCLS/TCNP_data/통계 자료 추출 데이터/2021_1_HME_DATA'
+# 지정된 디렉토리 경로
+MPI_directory = 'E:/PNS/MCLS/TCNP_data/통계 자료 추출 데이터/2022_2_HME_DATA/'
+media_directory = 'E:/PNS/MPI_test/media/data/2022_2_HME_DATA/'
+type_directory = 'E:/PNS/MPI_test/media/data/2022_2_HME_DATA/Type_list'
 
-# # 디렉토리 내의 모든 파일을 순회
-# for filename in os.listdir(directory):
-#     # CSV 파일인지 확인
-#     if filename.endswith('statistics.csv'):
-#         # 파일의 전체 경로
-#         file_path = os.path.join(directory, filename)
-#         # 파일 읽기 (header로 첫 행을 사용)
-#         df = pd.read_csv(file_path, header=1)
-#         # 3열의 데이터 추출 (파이썬은 0부터 인덱싱 하므로 2를 사용, 열 인덱스 주의)
-#         column_data = df.iloc[:, 2].tolist()  # '인원' 열 데이터 추출, 필요한 열 인덱스로 조정
+# ***** 점수 / 인원 / 누적인원 / 비율 *****
+# 결과 저장 폴더 생성
+os.makedirs(os.path.join(media_directory, 'Accumulated_Number'), exist_ok=True)
+os.makedirs(os.path.join(media_directory, 'Accumulated_Ratio'), exist_ok=True)
 
-#         # 결과를 저장할 파일명 설정 (원본 파일명에 '_result' 추가)
-#         result_filename = filename.replace('20211_hme_', '')
-#         result_filename = result_filename.replace('_statistics.csv', '.txt')
-#         result_file_path = os.path.join(directory, result_filename)
+# 학년별 파일 번호 매핑
+grade_to_file_number = {
+    'cho1': '1', 'cho2': '2', 'cho3': '3', 
+    'cho4': '4', 'cho5': '5', 'cho6': '6',
+    'jung1': '7', 'jung2': '8', 'jung3': '9'
+}
 
-#         # 추출된 데이터를 새로운 텍스트 파일로 저장
-#         with open(result_file_path, 'w') as f:
-#             for item in column_data:
-#                 f.write("%s\n" % item)
+# 디렉터리 내의 모든 파일 검사
+for filename in os.listdir(MPI_directory):
+    # CSV 파일인지 확인
+    if filename.endswith('statistics.csv'):
+        # 파일의 전체 경로
+        file_path = os.path.join(MPI_directory, filename)
+        
+        # 파일 읽기, header로 첫 행 사용
+        df = pd.read_csv(file_path, header=0)  # 첫 행을 헤더로 사용
+
+        # 파일 이름에서 학년 추출
+        base_filename = filename.replace('20222_hme_', '').replace('_statistics.csv', '')
+        file_number = grade_to_file_number[base_filename]  # 학년에 따른 파일 번호 매핑
+
+        # 파일 이름 설정
+        number_filename = f'{file_number}.txt'
+        ratio_filename = f'{file_number}.txt'
+
+        # 각 데이터를 해당 폴더에 저장
+        number_file_path = os.path.join(media_directory, 'Accumulated_Number', number_filename)
+        ratio_file_path = os.path.join(media_directory, 'Accumulated_Ratio', ratio_filename)
+
+        # Accumulated_Number 데이터 저장
+        with open(number_file_path, 'w', encoding='utf-8') as f:
+            for item in df.iloc[:, 2].tolist():
+                f.write(f"{item}\n")
+
+        # Accumulated_Ratio 데이터 저장
+        with open(ratio_file_path, 'w', encoding='utf-8') as f:
+            for item in df.iloc[:, 3].tolist():
+                f.write(f"{item}\n")
+
+print("모든 데이터가 성공적으로 저장되었습니다.")
 
 
+# ***** 서울 평균 *****
+# 파일 경로 설정
+csv_file_path = os.path.join(MPI_directory, '2022_2_HME_DATA - 학년별 지역별 평균 점수.csv')
+output_directory = os.path.join(media_directory, 'Seoul_Average')
+
+# 출력 디렉터리 생성 (존재하지 않는 경우)
+if not os.path.exists(output_directory):
+    os.makedirs(output_directory)
+    print(f"폴더 생성: {output_directory}")
+else:
+    print(f"폴더가 이미 존재합니다: {output_directory}")
+
+# CSV 파일 읽기
+df = pd.read_csv(csv_file_path)
+
+# '지역'이 '서울'인 행만 필터링
+seoul_data = df[df['지역'] == '서울']
+
+# 파일에 저장할 점수 데이터 추출
+scores = seoul_data['점수'].tolist()
+
+# 파일 경로 지정 및 데이터 저장
+output_file_path = os.path.join(output_directory, 'Seoul_Average.txt')
+with open(output_file_path, 'w') as file:
+    for score in scores:
+        file.write(f"{score}\n")
+
+print("서울 지역 평균 점수가 성공적으로 저장되었습니다.")
+
+
+# ***** 서울 주요 지역 *****
 # 파일 경로 지정
-file_path = './2021_1_서울주요지역.csv'
+file_path = os.path.join(MPI_directory, '2022_2_HME_DATA - 서울주요지역.csv')
 
-# CSV 파일 읽기, 2행부터 시작하므로 header=1로 설정
+# 생성하고자 하는 폴더의 경로
+folder_path = os.path.join(media_directory, 'Seoul_Region_Average')
+
+# 폴더가 존재하지 않는 경우
+if not os.path.exists(folder_path):
+    os.makedirs(folder_path)
+    print(f"폴더 생성: {folder_path}")
+else:
+    print(f"폴더가 이미 존재합니다: {folder_path}")
+
+# CSV 파일 읽기, 2행부터 시작하므로 header=0로 설정
 df = pd.read_csv(file_path, header=0)
 
 # 5열 데이터 추출, 판다스 인덱스는 0부터 시작하므로 4를 사용
@@ -46,173 +114,128 @@ for i, item in enumerate(column_data, start=1):  # 2행부터 시작
 # 분류된 데이터를 각각의 txt 파일로 저장
 for remainder, items in remainder_lists.items():
     if remainder == 0:
-        file_name = f'E:/PNS/MPI_test/media/data/2021_1_HME_DATA/Seoul_Region_Average/{remainder+9}.txt'
+        file_name = f'{9}.txt'  # 정확한 파일명 설정
     else:
-        # file_name = f'E:/PNS/MCLS/TCNP_data/통계 자료 추출 데이터/2021_1_HME_DATA/{remainder}.txt'
-        file_name = f'E:/PNS/MPI_test/media/data/2021_1_HME_DATA/Seoul_Region_Average/{remainder}.txt'
-    with open(file_name, 'w') as f:
+        file_name = f'{remainder}.txt'
+    full_path = os.path.join(folder_path, file_name)  # 올바른 경로 구성
+    with open(full_path, 'w') as f:
         for item in items:
             f.write(f"{item}\n")
 
-# # 파일 경로
-# file_path = 'E:/PNS/MCLS/TCNP_data/통계 자료 추출 데이터/2021_1_HBM_DATA/2021_1_HME_DATA - 답 유형 출제의도.csv'
 
-# # CSV 파일 읽기, 3행부터 시작하므로 header=2로 설정
-# df = pd.read_csv(file_path, header=1)
+# ***** 정답 / 유형 / 출제의도 *****
+# 기본 경로 설정
+base_directory = media_directory
 
-# # 5~7열 데이터 추출, 판다스는 0부터 인덱싱하므로 각각 4, 5, 6을 사용
-# columns_data = {
-#     # 'answer': df.iloc[:, 4].tolist(),
-#     # 'score': df.iloc[:, 5].tolist(),
-#     'type': df.iloc[:, 6].tolist(),
-# }
+# 파일 경로
+file_path = 'E:/PNS/MCLS/TCNP_data/통계 자료 추출 데이터/2022_2_HME_DATA/2022_2_HME_DATA - 답 유형 출제의도.csv'
 
-# # 각 열마다 25개씩 잘라서 저장
-# for column_name, data in columns_data.items():
-#     for i in range(0, len(data), 25):
-#         # 현재 슬라이스의 데이터
-#         slice_data = data[i:i+25]
-#         # 파일 번호 (1부터 시작)
-#         file_number = i // 25 + 1
-#         # 파일 이름 설정
-#         if column_name == 'answer':
-#             file_name = f'{file_number}_answer.txt'
-#         elif column_name == 'score':
-#             file_name = f'{file_number}_score.txt'
-#         elif column_name == 'type':
-#             file_name = f'{file_number}.txt'
-        
-#         # 설정된 이름으로 파일 저장
-#         file_path = f'E:/PNS/MPI_test/media/data/2021_1_HME_DATA/Math_Ability/{file_name}'
-#         with open(file_path, 'w') as f:
-#             for item in slice_data:
-#                 f.write(f"{item}\n")
+# 폴더 생성을 위한 함수
+def create_directory(directory_path):
+    if not os.path.exists(directory_path):
+        os.makedirs(directory_path)
+        print(f"폴더 생성: {directory_path}")
+    else:
+        print(f"폴더가 이미 존재합니다: {directory_path}")
 
-# data = """
-# 학년,초1,초2,초3,초4,초5,초6,중1,중2,중3
-# 평균,82.8/100,74.7/100,70.8/100,71.7/100,69.5/100,72.0/100,57.6/100,62.8/100,57.5/100
-# 계산력,26.2/28,26.3/28,24.6/28,26.1/28,21.8/28,22.9/28,22.0/28,22.9/28,23.9/28
-# 이해력,29.4/32,30.4/32,24.2/32,26.0/32,23.3/32,29.0/32,19.4/32,23.8/32,22.6/32
-# 추론력,14.4/20,9.3/20,13.5/20,7.1/20,9.6/20,9.1/20,6.3/20,10.2/20,6.7/20
-# 문제해결력,12.7/20,8.6/20,8.5/20,12.6/20,14.8/20,11.0/20,10.0/20,5.9/20,4.2/20
-# """
+# 필요한 폴더들 생성
+folders = {
+    'Answer_list': 'Answer_list',
+    'Type_list': 'Type_list',
+    'StrongPoint': 'StrongPoint',
+    'Score_list': 'Score_list'
+}
+for key, folder in folders.items():
+    folders[key] = base_directory + folder
+    create_directory(folders[key])
 
-# # 데이터를 줄 단위로 분리
-# lines = data.strip().split('\n')
+# CSV 파일 읽기, 헤더는 1행으로 설정
+df = pd.read_csv(file_path, header=1)
 
-# # 학년을 추출하여 리스트 생성
-# grades = lines[0].split(',')[1:]
+# 데이터 추출 및 파일 저장
+columns_data = {
+    'Answer_list': df.iloc[:, 4].tolist(),   # 5열 데이터
+    'Score_list': df.iloc[:, 5].tolist(),    # 6열 데이터
+    'Type_list': df.iloc[:, 6].tolist(),     # 7열 데이터
+    'StrongPoint': df.iloc[:, 7].tolist()    # 8열 데이터
+}
 
-# # 각 학년에 대해 점수 추출 및 파일 저장
-# for grade_index, grade in enumerate(grades, start=1):
-#     scores_list = []
-#     for line in lines[1:]:
-#         parts = line.split(',')
-#         score = parts[grade_index].split('/')[0]
-#         scores_list.append(score)
+# 각 열마다 25개씩 잘라서 저장
+for i in range(0, len(df), 25):
+    file_number = i // 25 + 1
+    if file_number > 9:
+        break  # 파일 번호가 9를 초과하면 종료
     
-#     file_name = f'{grade}.txt'
-#     with open(file_name, 'w') as f:
-#         for score in scores_list:
-#             f.write(f"{score}\n")
+    # 각 폴더에 대한 파일 경로 지정 및 데이터 저장
+    for folder_key, folder_path in folders.items():
+        file_path = os.path.join(folder_path, f'{file_number}.txt')
+        with open(file_path, 'a', encoding='utf-8') as f:  # 'a' 모드로 변경하여 데이터 추가
+            for item in columns_data[folder_key][i:i+25]:
+                f.write(f"{item}\n")
+
+print("모든 파일이 성공적으로 생성되었습니다.")
+
+
+# ***** 수학적 능력 *****
+# 파일 경로 및 디렉터리 설정
+csv_file_path = os.path.join(MPI_directory, '2022_2_HME_DATA - 학년별 전국 평균 점수.csv')
+National_Average = os.path.join(media_directory, 'National_Average')
+
+# 디렉터리가 없으면 생성
+os.makedirs(National_Average, exist_ok=True)
+
+# 데이터 불러오기
+df = pd.read_csv(csv_file_path)
+
+# 학년 추출
+grades = df.columns[1:]  # 첫 열을 제외한 나머지 열(학년)
+
+# 학년 이름을 숫자로 매핑
+grade_to_number = {grade: str(index + 1) for index, grade in enumerate(grades)}
+
+# 각 학년에 대해 점수 추출 및 파일 저장
+for grade in grades:
+    # 해당 학년의 데이터를 문자열로 변환
+    scores_series = df[grade].astype(str)
     
-#     print(f"{file_name}에 데이터가 저장되었습니다.")
+    # 점수/만점 부분에서 점수만 추출
+    scores_list = scores_series.str.split('/').str[0].tolist()
+
+    # 파일 이름 설정 및 파일 저장 경로
+    file_name = f'{grade_to_number[grade]}.txt'
+    file_path = os.path.join(National_Average, file_name)
+
+    # 파일 저장
+    with open(file_path, 'w') as f:
+        for score in scores_list:
+            f.write(f"{score}\n")
+
+    print(f"File '{file_name}' has been saved successfully.")
 
 
-# # 파일이 위치한 디렉토리
-# directory = 'E:/PNS/MPI_test/media/data/2021_1_HME_DATA'
 
-# # 파일 이름 변경 규칙
-# rename_rules = {
-#     'cho1': '1',
-#     'cho2': '2',
-#     'cho3': '3',
-#     'cho4': '4',
-#     'cho5': '5',
-#     'cho6': '6',
-#     'jung1': '7',
-#     'jung2': '8',
-#     'jung3': '9'
-# }
+# ***** 약점 *****
+# 파일 경로 지정
+input_file_path = MPI_directory + '2022_2_weak_point.txt'  # 이 부분을 실제 파일 경로로 변경하세요.
+output_directory = media_directory + 'WeakPoint' # 저장할 디렉터리의 경로
 
-# # 디렉토리 내의 모든 파일을 순회하며 이름 변경
-# for filename in os.listdir(directory):
-#     # 원본 파일 경로
-#     old_file = os.path.join(directory, filename)
+# 출력 디렉터리가 없다면 생성
+if not os.path.exists(output_directory):
+    os.makedirs(output_directory)
+
+# 파일 열기 및 처리
+with open(input_file_path, 'r', encoding='utf-8') as file:
+    lines = file.readlines()  # 모든 줄을 메모리로 읽기
+
+# 25줄 단위로 파일에 저장
+for i in range(0, len(lines), 25):
+    # 파일 번호 계산 (1부터 시작)
+    file_number = i // 25 + 1
+    output_file_path = os.path.join(output_directory, f'{file_number}.txt')
     
-#     # 새 파일 이름을 위한 번호 추출
-#     for key, value in rename_rules.items():
-#         if key in filename:
-#             # 새 파일 이름 생성
-#             new_filename = filename.replace(key, value)
-#             new_file = os.path.join(directory, new_filename)
-            
-#             # 파일 이름 변경
-#             os.rename(old_file, new_file)
-#             print(f"Renamed '{filename}' to '{new_filename}'")
-#             break  # 일치하는 첫 번째 규칙을 적용한 후 반복 중단
+    # 지정된 범위의 줄을 파일에 쓰기
+    with open(output_file_path, 'w', encoding='utf-8') as output_file:
+        output_file.writelines(lines[i:i+25])  # 슬라이스 사용하여 25줄씩 쓰기
 
-# print("All files have been renamed.")
+print("모든 데이터가 성공적으로 저장되었습니다.")
 
-
-# # 파일이 위치한 디렉토리 경로
-# directory = 'E:/PNS/MPI_test/media/data/2021_1_HME_DATA/Type_list'
-
-# # 1부터 9까지의 숫자에 대응하는 파일 이름 변경
-# for n in range(1, 10):
-#     old_name = f'{n}_type.txt'  # 기존 파일 이름
-#     new_name = f'{n}.txt'  # 새 파일 이름
-    
-#     # 파일 이름 변경을 위한 전체 경로 구성
-#     old_path = os.path.join(directory, old_name)
-#     new_path = os.path.join(directory, new_name)
-    
-#     # 파일 이름 변경
-#     try:
-#         os.rename(old_path, new_path)
-#         print(f'파일 이름이 변경되었습니다: {old_name} -> {new_name}')
-#     except FileNotFoundError:
-#         print(f'{old_name} 파일을 찾을 수 없습니다.')
-#     except Exception as e:
-#         print(f'파일 이름 변경 중 오류가 발생했습니다: {e}')
-
-# # CSV 파일 경로
-# file_path = 'E:/PNS/MCLS/TCNP_data/2023_1_HME_DATA.csv'  # CSV 파일의 실제 경로
-
-# # 데이터 읽기 (제목이 없으므로 header=None)
-# df = pd.read_csv(file_path, header=None)
-
-# # StrongPoint와 WeakPoint에 대한 데이터 추출
-# strong_point_data = df.iloc[:, 0]  # 첫 번째 열
-# weak_point_data = df.iloc[:, 1]    # 두 번째 열
-
-# # StrongPoint와 WeakPoint 폴더 경로
-# strong_point_dir = 'E:/PNS/MCLS/TCNP_data/2023_1_HME_DATA/StrongPoint'
-# weak_point_dir = 'E:/PNS/MCLS/TCNP_data/2023_1_HME_DATA/WeakPoint'
-
-# # 폴더가 없으면 생성
-# os.makedirs(strong_point_dir, exist_ok=True)
-# os.makedirs(weak_point_dir, exist_ok=True)
-
-# # 데이터를 25개씩 나누어 파일로 저장
-# for i in range(0, len(df), 25):
-#     # 각각의 열에 대해 25개씩 데이터를 나누어 저장
-#     strong_point_slice = strong_point_data[i:i+25]
-#     weak_point_slice = weak_point_data[i:i+25]
-
-#     # 파일 번호 결정 (1부터 시작)
-#     file_number = i // 25 + 1
-#     if file_number > 9:
-#         break  # 1.txt부터 9.txt까지만 저장하기 위해
-
-#     # StrongPoint 데이터 저장
-#     strong_point_filename = os.path.join(strong_point_dir, f'{file_number}.txt')
-#     with open(strong_point_filename, 'w', encoding='utf-8') as f:  # 인코딩을 utf-8로 지정
-#         for item in strong_point_slice:
-#             f.write(f"{item}\n")
-
-#     # WeakPoint 데이터 저장
-#     weak_point_filename = os.path.join(weak_point_dir, f'{file_number}.txt')
-#     with open(weak_point_filename, 'w', encoding='utf-8') as f:  # 인코딩을 utf-8로 지정
-#         for item in weak_point_slice:
-#             f.write(f"{item}\n")

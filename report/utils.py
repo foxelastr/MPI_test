@@ -2,8 +2,6 @@ import statistics
 from scipy.stats import norm
 from .models import TestResult, TestStatistics
 
-# 구해야 할 것들
-# 표준편차, 
 
 # 학생의 시험 결과 조회
 def get_std_result(student_id, year_semester, test_grade):
@@ -65,14 +63,6 @@ def calculate_score(test_result, statistics_answerlist):
     score = correct_answers * 4
     return score
 
-# # 평균편차치 계산 함수
-# def average_diff(statistics_list, EleAvg):
-#     average_diff = []
-#     for statistics in statistics_list[1:]:
-#         diff = statistics.first().Statistics_SeoulAverage - float(EleAvg)
-#         average_diff.append(diff)
-#     return average_diff
-
 def average_diff(statistics_list):
     region_diff_list = []
     # 첫 번째 요소는 대상 학년의 통계 데이터입니다.
@@ -93,8 +83,6 @@ def average_diff(statistics_list):
 
     return region_diff_list
 
-
-
 # 표준편차 비율 계산 함수
 def calculate_standard_deviation_diff(statistics_list):
     result_dev = calculate_standard_deviation(statistics_list[0].first().Statistics_AccumulatedNumber)
@@ -105,20 +93,6 @@ def calculate_standard_deviation_diff(statistics_list):
         devdiff = result_dev / std_dev
         StdDiff.append(devdiff)
     return StdDiff
-
-# # 중학교 점수 예측치 계산 함수
-# def MidScoreCorrection(Score, average_diff, StdDiff):
-#     # 평균 보정치 계산
-#     MAC = []
-#     for avg, std in zip(average_diff, StdDiff):
-#         MAC.append(avg*std)
-    
-#     # 중학교 점수 예측치 계산
-#     MSC = []
-#     for mac in MAC:
-#         MSC.append(Score+mac)
-    
-#     return MSC
 
 def MidScoreCorrection(Score, average_diff, StdDiff):
     # 권역별 중학교 점수 예측치 계산
@@ -160,10 +134,6 @@ def PredPercentile(MSC, statistics_list):
     
     PredPercentile = [average_low, average_high]
     return PredPercentile
-
-    # return average_low, average_high
-
-    # return PerdPercentile_low, PerdPercentile_high
 
 def calculate_student_ratio(Score, test_index):
     if test_index == 'suneung':
@@ -216,15 +186,3 @@ def calculate_math_ability_list(OX_list, prob_type_list):
             math_ability_scores[ability_index] += 4  # 해당 능력 점수에 4점을 더함
     return math_ability_scores
         
-
-
-# 각 중학년 평균 변화 : 중 1, 2, 3의 평균과 해당 초등학년의 평균의 차이를 계산 ( 초등학년 평균 - 중등 평균)
-# 각 중학년 표준편차 변화 : 중 1, 2, 3의 평균과 해당 초등학년의 평균의 비율을 계산 ( 초등학년 평균 / 중등 평균)
-# 각 중학년 평균변화 보정 : 평균 변화 * 표준편차 변화
-# 각 중학년 점수 변화 : 각 중학년 당 점수 변화 환산 ( 해당 점수 * ( 1 + 평균변화보정 ) )
-# 각 중학년 Z값 하한 : ( {점수변화 - 각 중등학년 평균} / 각 중등학년 표편 )
-# 각 중학년 Z값 상한 : ( {점수변화 - 각 중등학년 평균} / 해당 초등학년 표편 )
-# 예측 백분위 하한 : 가우스분포의 Z값하한
-# 예측 백분위 상한 : 가우스분포의 Z값상한
-
-

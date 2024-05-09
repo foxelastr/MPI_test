@@ -145,7 +145,6 @@ class BaseReportView(ListView):
         
         match_statistics = utils.get_statistics(test_result.ExamYearSemester, test_result.ExamGrade)
 
-        # 추가 데이터 : 점수 / 예측 백분위 상한 및 하한 / 정답 / 학생답 / OX리스트 / 고등예상등급 / 강점 및 약점 / 인지적행동영역(요건 좀 나중에) / 
         # 정답 리스트
         numeric_statistics_answerlist = match_statistics[0].first().Statistics_AnswerList
         statistics_answerlist = [int(item) for item in numeric_statistics_answerlist]
@@ -153,8 +152,6 @@ class BaseReportView(ListView):
         # 학생 원점수 계산
         student_score = utils.calculate_score(test_result=test_result, statistics_answerlist=statistics_answerlist)
         
-        # 예측 백분위 상한 및 하한 계산 : 강남서초 기준
-        # 평균편차치 계산 -> 표준편차 비율 계산 -> 중학교 점수 예측치 계산 -> 중학교 예상 백분위 계산
         # 평균편차치 계산
         average_diff = utils.average_diff(statistics_list=match_statistics)
         
