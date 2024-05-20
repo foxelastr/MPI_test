@@ -136,12 +136,15 @@ class BaseReportView(ListView):
     def get_report_data(self, student_id, year_semester, test_grade):
         # 학생 ID로부터 Student 객체 조회
         student = get_object_or_404(Student, id=student_id)
-
+        
         # User 객체를 통해 UserProfile 객체 조회
         user_profile = student.user.profile
-
+        
         # utils.get_std_result 함수를 사용하여 테스트 결과 객체를 가져옵니다.
         test_result = utils.get_std_result(student_id, year_semester, test_grade)
+
+        # 진단일 조회
+        test_date = test_result.test_date
         
         match_statistics = utils.get_statistics(test_result.ExamYearSemester, test_result.ExamGrade)
 
@@ -195,6 +198,8 @@ class BaseReportView(ListView):
         response_data = {
             'StudentId': test_result.StudentId,                 # 학생 Id
             'StudentName' : student.name,                       # 학생 이름
+            'StudentGrade' : student.grade,                     # 학생 학년
+            'TestDate' : test_date,                             # 진단일
             'StudentRegion': user_profile.region,               # 학생의 지역 정보 추가
             'ExamYearSemester': test_result.ExamYearSemester,   # 시험시기
             'ExamGrade': test_result.ExamGrade,                 # 시험학년

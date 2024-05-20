@@ -9,7 +9,7 @@ django.setup()
 from report.models import TestStatistics  # 모델 임포트
 
 # 데이터가 있는 디렉토리 경로
-base_dir = r"E:\PNS\MPI_test\media\data\2021_2_HME_DATA"  # 'r'을 사용하여 raw string으로 처리
+base_dir = r"E:\PNS\MPI_test\media\data\2022_2_HME_DATA"  # 'r'을 사용하여 raw string으로 처리
 
 # Seoul_Average.txt에서 서울 평균 점수 읽기
 seoul_average_path = os.path.join(base_dir, "Seoul_Average", "Seoul_Average.txt")
@@ -27,8 +27,8 @@ with open(seoul_average_path, 'r') as file:
 # 1부터 9까지 각 학년에 대해 처리
 for grade in range(1, 10):
     # 각 파일의 경로 설정
-    # accumulated_number_path = os.path.join(base_dir, f"Accumulated_Number\\{grade}.txt")
-    # accumulated_ratio_path = os.path.join(base_dir, f"Accumulated_Ratio\\{grade}.txt")
+    accumulated_number_path = os.path.join(base_dir, f"Accumulated_Number\\{grade}.txt")
+    accumulated_ratio_path = os.path.join(base_dir, f"Accumulated_Ratio\\{grade}.txt")
     answer_list_path = os.path.join(base_dir, f"Answer_list\\{grade}.txt")
     type_list_path = os.path.join(base_dir, f"Type_list\\{grade}.txt")
     score_list_path = os.path.join(base_dir, f"Score_list\\{grade}.txt")
@@ -38,8 +38,8 @@ for grade in range(1, 10):
     weak_point_path = os.path.join(base_dir, f"WeakPoint\\{grade}.txt")
 
     # 파일에서 데이터를 불러옴
-    # accumulated_number = read_data_to_list(accumulated_number_path)
-    # accumulated_ratio = read_data_to_list(accumulated_ratio_path)
+    accumulated_number = read_data_to_list(accumulated_number_path)
+    accumulated_ratio = read_data_to_list(accumulated_ratio_path)
     answer_list = read_data_to_list(answer_list_path)
     type_list = read_data_to_list(type_list_path)
     score_list = read_data_to_list(score_list_path)
@@ -50,14 +50,14 @@ for grade in range(1, 10):
 
     # TestReport 인스턴스 생성 및 저장
     report = TestStatistics(
-        Statistics_YearSemester=20212,
+        Statistics_YearSemester=20222,
         Statistics_TestGrade=grade,
         Statistics_AnswerList=answer_list,
         Statistics_ProblemType=type_list,
         Statistics_StrongPoint=strong_point,
         Statistics_WeakPoint=weak_point,
-        Statistics_AccumulatedNumber=[],
-        Statistics_AccumulatedRatio=[],
+        Statistics_AccumulatedNumber=accumulated_number,
+        Statistics_AccumulatedRatio=accumulated_ratio,
         Statistics_NationalAverage=national_average,
         Statistics_SeoulAverage=seoul_averages[grade - 1],  # 서울 평균
         Statistics_SeoulRegionAverage=seoul_region_average,

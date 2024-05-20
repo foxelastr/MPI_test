@@ -16,6 +16,12 @@
     box-sizing: border-box;
   }
 
+  .inside-area {
+    width: 872px;
+    height: 1250px;
+    background-color: rgba(100, 100, 100, 255);
+  }
+
   .bg-yellow-200 {
     background-color: #FEF9C3;
   }
@@ -49,20 +55,67 @@
     height: 60px;
   }
 
+  .footer-container{
+    display: flex;
+    justify-content: center; /* 가로 방향 중앙 정렬 */
+    align-items: center; /* 세로 방향 중앙 정렬 */
+  }
+
   #footer {
     background-image: url("{% static 'assets/pns_footer_logo.png' %}");
     padding: 10px 0px 10px 0px;
     background-repeat: no-repeat;
     background-position: center;
     background-size: contain;
+    height: 60px
   }
   
   #logo {
     background-image: url("{% static 'assets/pns_logo.jpg' %}");
     background-repeat: no-repeat;
     background-position: center;
-    background-size: contain;
-    height: 40px
+    background-size: cover;
+    margin: 15px 5px;
+    display: block;
+    height: 60px;
+    width: 60px;
+  }
+
+  .headerbox{
+    height: 100px;
+  }
+
+  #mpi-title{
+    font-size: 80px;
+    line-height: 80px;
+    margin: 0px;
+    padding: 0px;
+  }
+
+  #top-mpi-title {
+    font-size: 45px;
+    line-height: 45px;
+    margin-top: 10px;
+    padding: 0px;
+  }
+
+  #mpi-mean{
+    font-size: 25px;
+    line-height: 25px;
+  }
+
+  #total-score{
+    font-size: 130px;
+    line-height: 100px;
+    margin-top: 10px;
+    padding-top: 0px;
+  }
+
+  #national-percentile {
+    font-size: 70px;
+    line-height: 70px;
+    margin-top: 20px;
+    padding: 0px;
   }
 </style>
 {% endblock %}
@@ -79,125 +132,202 @@
         </button>
       </div>
     </div>
+
     <div class="d-flex flex-column">
       <div id="carouseldark" class="carousel carousel-dark slide">
         <div class="carousel-inner">
+
+          <!-- 결과 페이지 커버 -->
+          <div class="carousel-item active">
+            <div class="d-flex justify-content-center" v-if="carouselPage == 0" data-carousel-item>
+              <div id="capture-area0" class="A4plus-size">
+                <div class="d-flex flex-column justify-content-center px-4 shadow bg-dark w-100 h-100">
+                  <div class="inside-area border border-light rounded bg-white d-flex flex-column">
+
+                    <!-- header -->
+                    <div class="d-flex justify-content-center m-5 border-gray-400">
+                      <div class="d-flex">
+                        <div id="logo"></div>
+                        <div class="fs-1 fw-bold pt-3">
+                          PNS수학
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- base score and ratio -->
+                    <div class="w-100 text-center">
+                      <div id="mpi-title" class="fw-border text-info">MPI TEST</div>
+                      <div id="mpi-mean" class="fw-medium">Mathematical Potential Index</div>
+                    </div>
+                    
+                    <!-- intro -->
+                    <div class="d-flex justify-content-center m-5 p-5">
+                      <div id="mpi-title" class="fw-bold">결과지</div>
+                    </div>
+            
+                    <!-- predict high school ratios -->
+                    <div class="d-flex flex-column my-5 py-5 mx-3 px-5 bg-info-subtle">
+                      <div class="d-flex flex-column justify-content-start py-3 mt-1">
+                        <span class="fw-bold fs-4 mt-3">▶ MPI Test를 통해 수학적 잠재 능력을 분석할 수 있습니다.</span>
+                        <span class="fw-border mt-3">MPI Test를 통해 기초적인 수리 능력을 진단하고 계산력, 이해력, 추론력, 문제해결력의<br> 네 가지 요인별로 수리적 정보 처리 능력을 측정합니다.</span>
+                      </div>
+                      <div class="d-flex flex-column justify-content-start py-3 mt-1">
+                        <span class="fw-bold fs-4 mt-3">▶ MPI Test의 특징은 다음과 같습니다.</span>
+                        <span class="fw-border mt-3">첫째, 수학적인 원리와 개념을 정확히 알고 있는지 평가하도록 하였습니다.</span>
+                        <span class="fw-border mt-3">둘째, 교육과정의 내용을 잘 이해하고 있는지 평가하도록 하였습니다.</span>
+                        <span class="fw-border mt-3">셋째, 수학적 사고력, 창의력, 문제해결력의 척도를 평가하도록 하였습니다.</span>
+                        <span class="fw-border mt-3">넷째, 개인별 추후 예상 등급을 제시하여 학습 방향을 제시하고 있습니다.</span>
+                      </div>
+                    </div>
+            
+                    <!-- footer -->
+                    <div class="footer-container flex justify-content-center">
+                      <div id="footer" class="whfooter border-t-2 py-2 mt-4"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 보고서 1면 -->
           <div class="carousel-item active">
             <div class="d-flex justify-content-center" v-if="carouselPage == 1" data-carousel-item>
               <div id="capture-area1" class="A4plus-size">
                 <div class="d-flex flex-column justify-content-center px-4 shadow bg-dark w-100 h-100">
-                  <div class="border border-light rounded bg-white d-flex flex-column">
+                  <div class="inside-area border border-light rounded bg-white d-flex flex-column">
+
                     <!-- header -->
-                    <div class="d-flex justify-content-between border-bottom border-4 border-gray-400">
-                      <div class="d-flex">
-                        <div id="logo" class="fs-4 fw-bold mt-3 ms-5 px-4"></div>
-                        <div class="fs-4 fw-bold pt-3">
-                          PNS수학
+                    <div class="headerbox d-flex justify-content-between bg-secondary mb-2">
+                      <div class="d-flex flex-column">
+                        <div id="top-mpi-title" class="fw-border text-center pt-2">
+                          <span class="text-white">MPI</span> <span class="text-secondary-emphasis">TEST</span>
+                        </div>
+                        <div class="fs-6 fw-bolder text-center text-black" style="padding-top: 0; padding-bottom: 0.25rem;">
+                          Mathematical Potential Index
                         </div>
                       </div>          
-                      <div class="#">
-                        <p class="fs-4 fw-bold pt-3 px-5">
-                          수학 완전학습
-                        </p>
+                      <div class="d-flex flex-column justify-content-center pt-1">
+                        <div class="fs-1 fw-medium text-center text-warning">
+                          수학적 잠재역량 평가
+                        </div>
                       </div>
-                    </div>
-                    {% comment %} MPI(Mathematical Potential Index) test
-                    수리적 능력. 즉,  기초적인 수리 능력을 진단하고 그 요인이 되는 계산력, 이해력, 추론력, 문제해결력의 네 가지 요인별로 수리적 정보 처리 능력을 측정합니다. 학생의 현재 수리언어의 처리 능력을 종합적으로 진단합니다. 이 결과와 본 연구소의 통계 데이터를 기반으로 자체 개발한 AI가 중·고등학교에서의 성적을 정밀 예측합니다.{% endcomment %}
-            
-                    <!-- base score and ratio -->
-                    <div class="d-flex justify-content-around border-bottom border-2">
-                      <div class="w-25 border-3 border-bottom mb-1 pb-1 text-center">
-                        <span class="fw-bold fs-4">원점수</span> :
-                        <span class="fw-bold fs-3 text-danger">[[ Score ]]</span>
-                      </div>
-                      <div class="w-25 border-3 border-bottom mb-1 pb-1 text-center">
-                        <span class="fw-bold fs-4">전국 백분위</span> :
-                        <span class="fw-bold fs-3 text-primary">[[ NationalPredictRatio ]]</span>
-                      </div>
-                    </div>
-                    
-                    <!-- intro -->
-                    <div class="d-flex justify-content-center border-bottom border-2">
-                      <div class="w-75 p-3 my-2 pb-3">
-                        <div class="d-flex justify-content-center mt-1">
-                          <div class="d-flex flex-column justify-content-center align-items-start w-83">
-                            <div>
-                              ● <span class="fw-bold">MPI 학력평가</span>는
-                              교육과정에 맞추어 학생들의 실력을 측정하여 예상
-                              데이터를<br />&ensp;&ensp;제시하고자 합니다.<br />
+                      <div class="d-flex flex-column justify-content-center">
+                        <div class="d-flex justify-content-center text-center text-white">
+                          <div class="d-flex flex-column justify-content-center">
+                            <div class="">
+                              초등학교 <span class="text-info">[[ StudentGrade ]]</span>학년
                             </div>
-                            <div class="mt-2">
-                              ● <span class="fw-bold">기초적인 수리 능력</span>을 진단하고
-                              네 가지 요인별로 수리적 정보 처리 능력을<br />&ensp;&ensp;측정합니다.<br />
+                            <div class="">
+                              <span class="text-warning">[[ ExamGrade ]]</span>학년 시험지
                             </div>
-                            <div class="mt-4">
-                              ● 아울러 <span class="fw-bold">MPI 학력평가</span>의
-                              특징을 살펴보면 다음과 같습니다.<br />
-                            </div>
+                          </div>
+                          <div class="fs-2 fw-bold text-center">
+                            [[ StudentName ]]
                           </div>
                         </div>
-                        <div class="d-flex justify-content-center mt-2">
-                          <div class="d-flex flex-column justify-content-center align-items-start w-83">
-                            <div>
-                              <span class="fw-bold">첫째,</span> 수학적인
-                              원리와 개념을 정확히 알고 있는지 평가하도록 하였습니다.<br />
-                              <span class="fw-bold">둘째,</span>
-                              교육과정의 내용을 잘 이해하고 있는지 평가하도록 하였습니다.<br />
-                              <span class="fw-bold">셋째,</span> 수학적
-                              사고력, 창의력, 문제해결력의 척도를 평가하도록 하였습니다.<br />
-                              <span class="fw-bold">넷째,</span> 개인별
-                              추후 예상 등급을 주어 학습방향을 제시해 주고 있습니다.<br />
-                            </div>
-                          </div>
+                        <div class="fs-6 fw-bold text-center bg-white text-secondary">
+                          진단일 : [[ TestDate ]]
                         </div>
                       </div>
                     </div>
-            
-                    <!-- predict high school ratios -->
-                    <div class="d-flex justify-content-evenly">
-                      <div class="d-flex flex-column justify-content-start w-50 border-bottom border-2 py-3 mt-1 text-center">
-                        <span class="fw-bold fs-4" style="color: #4a5568;">수 능 &ensp; 예 상 &ensp; 등 급</span>
+
+                    <!-- Main : Score / Math Ability / Predict Grades -->
+                    <div class="d-flex justify-content-around p-5">
+                      <!-- 원점수 / 백분위 -->
+                      <div class="d-flex flex-column mt-5">
+                        <div class="d-flex flex-column pb-3 text-center">
+                          <div class="fw-bold fs-2">원점수</div>
+                          <div id="total-score" class="fw-bold text-danger">[[ Score ]]</div>
+                        </div>
+                        <div class="d-flex flex-column pt-3 text-center">
+                          <div class="fw-bold fs-2">전국 백분위</div>
+                          <div id="national-percentile" class="fw-bold text-primary">[[ NationalPredictRatio ]]</div>
+                        </div>
+                      </div>
+                      <!-- 종합적 수학 능력 -->
+                      <div class="d-flex flex-column py-4 px-3">
+                        <div class="fw-bolder fs-4 text-center">종합적 수학 능력</div>
+                        <div>
+                          <div class="fw-bolder fs-5 pb-2">종합 능력</div>
+                          <div class="d-flex pb-1">
+                            <div id="score-low" ref="totalScoreLow" class="fw-bolder px-4">하</div>
+                            <div id="score-low-mid" ref="totalScoreLowMid" class="fw-bolder px-3">중하</div>
+                            <div id="score-mid" ref="totalScoreMid" class="fw-bolder px-4">중</div>
+                            <div id="score-mid-high" ref="totalScoreMidHigh" class="fw-bolder px-3">중상</div>
+                            <div id="score-high" ref="totalScoreHigh" class="fw-bolder px-4">상</div>
+                          </div>
+                        </div>
+                        <div>
+                          <div class="fw-bolder fs-5 py-2">세부 능력</div>
+                          <div class="fw-bolder fs-6 py-1">계산력</div>
+                          <div class="d-flex">
+                            <div id="score-low" ref="calculScoreLow" class="fw-bolder px-4">하</div>
+                            <div id="score-low-mid" ref="calculScoreLowMid" class="fw-bolder px-3">중하</div>
+                            <div id="score-mid" ref="calculScoreMid" class="fw-bolder px-4">중</div>
+                            <div id="score-mid-high" ref="calculScoreMidHigh" class="fw-bolder px-3">중상</div>
+                            <div id="score-high" ref="calculScoreHigh" class="fw-bolder px-4">상</div>
+                          </div>
+                          <div class="fw-bolder fs-6 py-1">이해력</div>
+                          <div class="d-flex">
+                            <div id="score-low" ref="understandingScoreLow" class="fw-bolder px-4">하</div>
+                            <div id="score-low-mid" ref="understandingScoreLowMid" class="fw-bolder px-3">중하</div>
+                            <div id="score-mid" ref="understandingScoreMid" class="fw-bolder px-4">중</div>
+                            <div id="score-mid-high" ref="understandingScoreMidHigh" class="fw-bolder px-3">중상</div>
+                            <div id="score-high" ref="understandingScoreHigh" class="fw-bolder px-4">상</div>
+                          </div>
+                          <div class="fw-bolder fs-6 py-1">추론력</div>
+                          <div class="d-flex">
+                            <div id="score-low" ref="inferenceScoreLow" class="fw-bolder px-4">하</div>
+                            <div id="score-low-mid" ref="inferenceScoreLowMid" class="fw-bolder px-3">중하</div>
+                            <div id="score-mid" ref="inferenceScoreMid" class="fw-bolder px-4">중</div>
+                            <div id="score-mid-high" ref="inferenceScoreMidHigh" class="fw-bolder px-3">중상</div>
+                            <div id="score-high" ref="inferenceScoreHigh" class="fw-bolder px-4">상</div>
+                          </div>
+                          <div class="fw-bolder fs-6 py-1">문제해결력</div>
+                          <div class="d-flex">
+                            <div id="score-low" ref="probsolScoreLow" class="fw-bolder px-4">하</div>
+                            <div id="score-low-mid" ref="probsolScoreLowMid" class="fw-bolder px-3">중하</div>
+                            <div id="score-mid" ref="probsolScoreMid" class="fw-bolder px-4">중</div>
+                            <div id="score-mid-high" ref="probsolScoreMidHigh" class="fw-bolder px-3">중상</div>
+                            <div id="score-high" ref="probsolScoreHigh" class="fw-bolder px-4">상</div>
+                          </div>
+                        </div>
+                      </div>
+                      <!-- 학업적 예상 위치 -->
+                      <div class="d-flex flex-column py-4 px-3">
+                        <div class="fw-bolder fs-4 text-center">학업적 예상 위치</div>
+                        <div class="fw-bolder fs-5 py-2">중학교 내신 예상 백분위</div>
                         <div class="d-flex justify-content-center">
-                          <div class="w-25">
-                            <span class="fw-bold fs-3" style="color: #ec4899;">[[ SuneungPredictGrade ]]</span>
-                          </div>
+                          <div class="fw-bold fs-3" style="color: #06b6d4;">[[ selectedTerritory_low ]]</div>
+                          <div class="fw-bold fs-3" style="color: #06b6d4;">~</div>
+                          <div class="fw-bold fs-3" style="color: #06b6d4;">[[ selectedTerritory_high ]]</div>
                         </div>
-                      </div>
-                      <div class="d-flex flex-column w-50 border-start border-bottom border-2 py-3 mt-1 text-center">
-                        <span class="fw-bold fs-4" style="color: #4a5568;">고 1 &ensp; 내 신 &ensp; 예 상 &ensp; 등 급</span>
-                        <div class="d-flex justify-content-center">
-                          <div class="w-25">
-                            <span class="fw-bold fs-3" style="color: #ec4899;">[[ HighSchoolPredictGrade[1] ]] ~ [[ HighSchoolPredictGrade[0] ]]</span>
-                          </div>
+                        <div class="d-flex bg-warning align-items-center" style="height:20px">
+                          <div ref="midbarElement" class="midperleft h-75" style="background-color: #06b6d4;"></div>
                         </div>
-                      </div>
-                    </div>
-            
-                    <!-- predict middle school ratios -->
-                    <div class="d-flex justify-content-evenly border-bottom border-2 py-3">
-                      <div class="d-flex flex-column w-50 p-2 text-center" style="height: 5rem;">
-                        <span class="fw-bold fs-4">중학교 &ensp; 내신 &ensp; 예상 &ensp; 백분위</span>
-                        <div class="w-100 d-flex justify-content-center">
-                          <div class="w-50 align-items-center">
-                            <div class="d-flex justify-content-between">
-                              <div class="fw-bold fs-3" style="color: #06b6d4;">[[ selectedTerritory_low ]]</div>
-                              <div>~</div>
-                              <div class="fw-bold fs-3" style="color: #06b6d4;">[[ selectedTerritory_high ]]</div>
-                            </div>
-                          </div>
+                        <div class="fw-bolder fs-5 py-2">고1 내신 예상 등급</div>
+                        <div class="fw-bold fs-3 text-center" style="color: #ec4899;">[[ HighSchoolPredictGrade[1] ]] ~ [[ HighSchoolPredictGrade[0] ]]</div>
+                        <div class="d-flex bg-warning align-items-center" style="height:20px">
+                          <div ref="highbarElement" class="highperleft h-75" style="background-color: #06b6d4; width:90%;"></div>
+                        </div>
+                        <div class="fw-bolder fs-5 py-2">수능 예상 등급</div>
+                        <div class="fw-bold fs-3 text-center" style="color: #ec4899;">[[ SuneungPredictGrade ]]</div>
+                        <div class="d-flex bg-warning align-items-center" style="height:20px">
+                          <div ref="suneungbarElement" class="suneungperleft h-75" style="background-color: #06b6d4;"></div>
                         </div>
                       </div>
                     </div>
-            
-                    <!-- math ability -->
-                    <div class="d-flex justify-content-center w-100 border-bottom border-2">
+
+                    <!-- Graph : Math Ability Detail -->
+                    <div class="d-flex justify-content-center w-100 mt-3 mb-4">
                       <div class="d-flex flex-column pb-3 mx-1 mb-0" style="margin-bottom: 0.125rem !important;">
 
                         <!-- math ability data numbers -->
                         <div class="d-flex justify-content-center">
                           <div class="d-flex flex-column w-75 pb-3 mx-1 mb-0" style="margin-bottom: 0.125rem !important;">
                             <div class="d-flex justify-content-center">
-                              <div class="mt-3 mb-2 fs-3 fw-bold align-items-center">수학적 능력 분석</div>
+                              <div class="mt-3 mb-2 fs-2 fw-bold align-items-center">수학적 잠재역량 분석</div>
                             </div>
                             <div class="mb-1 d-flex justify-content-around">
                               <div class="d-flex flex-column align-items-center">
@@ -291,7 +421,7 @@
                     </div>
             
                     <!-- footer -->
-                    <div class="flex justify-content-center">
+                    <div class="footer-container flex justify-content-center border-top border-2 ">
                       <div id="footer" class="whfooter border-t-2 py-2 my-1"></div>
                     </div>
                   </div>
@@ -299,11 +429,13 @@
               </div>
             </div>
           </div>
+
+          <!-- 보고서 2면 -->
           <div class="carousel-item active">
             <div class="d-flex justify-content-center" v-if="carouselPage == 2" data-carousel-item>
               <div id="capture-area2" class="A4plus-size">
                 <div class="d-flex flex-column justify-content-center px-4 shadow bg-dark w-100 h-100">
-                  <div class="border border-light rounded bg-white d-flex flex-column">
+                  <div class="inside-area border border-light rounded bg-white d-flex flex-column">
             
                     <!-- header -->
                     <div class="d-flex justify-content-between border-bottom border-4 border-gray-400">
@@ -426,7 +558,7 @@
                       </div>
                     </div>
                     <!-- footer -->
-                    <div class="flex justify-content-center">
+                    <div class="footer-container flex justify-content-center">
                       <div id="footer" class="whfooter border-t-2 my-1"></div>
                     </div>
                   </div>
@@ -435,15 +567,12 @@
             </div>
           </div>
 
-          <!-- ####################################### -->
-          <!-- 해당 백분위 바챠트 만들기-->
-          <!-- ####################################### -->
-          
+          <!-- 보고서 3면 -->
           <div class="carousel-item active">
             <div class="d-flex justify-content-center" v-if="carouselPage == 3" data-carousel-item>
               <div id="capture-area3" class="A4plus-size">
                 <div class="d-flex flex-column justify-content-center px-4 shadow bg-dark w-100 h-100">
-                  <div class="border border-light rounded bg-white d-flex flex-column">
+                  <div class="inside-area border border-light rounded bg-white d-flex flex-column">
             
                     <!-- header -->
                     <div class="d-flex justify-content-between border-bottom border-4 border-gray-400">
@@ -494,7 +623,7 @@
                     </div>
             
                     <!-- footer -->
-                    <div class="flex justify-content-center">
+                    <div class="footer-container flex justify-content-center">
                       <div id="footer" class="whfooter border-t-2 py-2 my-1"></div>
                     </div>
                   </div>

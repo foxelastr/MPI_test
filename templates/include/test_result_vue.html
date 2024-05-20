@@ -14,6 +14,8 @@
         csrfToken: document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
         StudentId: 0,
         StudentName: "",
+        StudentGrade: 0,
+        TestDate: "",
         ExamYearSemester: 0,
         ExamGrade: 0,
         ExamResults: [],
@@ -22,11 +24,14 @@
         Score: 0,
         selectedTerritory_low: 0,
         selectedTerritory_high: 0,
+        MiddleSchoolPredictBar: 0,
         otherTerritories_low: [],
         otherTerritories_high: [],
         OX_list: [],
         HighSchoolPredictGrade: [],
+        HighSchoolPredictGradeBar: 0,
         SuneungPredictGrade:0,
+        SuneungPredictGradeBar:0,
         NationalPredictRatio: 0,
         StrongPoint: [],
         WeakPoint: [],
@@ -78,7 +83,7 @@
         AnswerList2: [],
         ExamResults1: [],
         ExamResults2: [],
-        carouselPage: 1,
+        carouselPage: 0,
         rangeNumbers: this.range(15, 25),
       };
     },
@@ -102,7 +107,10 @@
     watch: {
       carouselPage(newVal) {
         if (newVal === 1) {
-          this.renderRadarChart();
+          this.$nextTick(() => {
+            this.renderPredictBar();
+          });
+        this.renderRadarChart();
         }
         if (this.carouselPage === 3) {
           this.$nextTick(() => {
@@ -119,6 +127,8 @@
             console.log("FETCH REPORTDETAIL GET RES", res);
             this.StudentId = res.data.StudentId;
             this.StudentName = res.data.StudentName;
+            this.StudentGrade = res.data.StudentGrade;
+            this.TestDate = res.data.TestDate;
             this.ExamYearSemester = res.data.ExamYearSemester;
             this.ExamGrade = res.data.ExamGrade;
             this.ExamResults = res.data.ExamResults;
@@ -126,6 +136,8 @@
             this.Score = res.data.Score;
             this.StudentRegion = res.data.StudentRegion;
             this.MathAbility = res.data.MathAbility
+
+            console.log("math abli : ", this.MathAbility[0])
 
             this.AnswerList1 = this.AnswerList.slice(0, 14)
             this.AnswerList2 = this.AnswerList.slice(14)
@@ -150,14 +162,13 @@
             
             this.selectedTerritory_low = parseFloat(res.data.PredPercentile_low[selectedIndex] * 100).toFixed(2);
             this.selectedTerritory_high = parseFloat(res.data.PredPercentile_high[selectedIndex] * 100).toFixed(2);
+            this.MiddleSchoolPredictBar = ((parseFloat(this.selectedTerritory_high) + parseFloat(this.selectedTerritory_low))/2).toFixed(0)
             
             this.otherTerritories_low = res.data.PredPercentile_low.map((value, index) => ({
               territory: territoryOrder[index],
               value: parseFloat(value * 100).toFixed(2)
             })).filter((_, index) => index !== selectedIndex);
             
-            console.log("other territory low data : ", this.otherTerritories_low)
-
             this.otherTerritories_high = res.data.PredPercentile_high.map((value, index) => ({
               territory: territoryOrder[index],
               value: parseFloat(value * 100).toFixed(2)
@@ -166,7 +177,11 @@
             this.OX_list = res.data.OX_list;
             this.NationalPredictRatio = (res.data.NationalPredictRatio*100).toFixed(2)
             this.HighSchoolPredictGrade = res.data.HighSchoolPredictGrade;
-            this.SuneungPredictGrade = res.data.SuneungPredictGrade
+            this.SuneungPredictGrade = res.data.SuneungPredictGrade;
+
+            this.HighSchoolPredictGradeBar = (10 - Object.keys(this.HighSchoolPredictGrade).reduce((acc, key, _, { length }) => acc + this.HighSchoolPredictGrade[key] / length, 0)) * 10;
+            this.SuneungPredictGradeBar = (10 - parseFloat(this.SuneungPredictGrade))*10;
+            
             this.StrongPoint = res.data.StrongPoint;
             this.WeakPoint = res.data.WeakPoint;
             this.OfficeRegion = territoryOrder.filter(region => region !== this.StudentRegion);
@@ -181,6 +196,53 @@
             console.log("FETCH STUDENTDETAIL GET ERR.RESPONSE", err.response);
             // alert(`${err.response.status} ${err.response.statusText}`);
           });
+      },
+      calculatePercentile(score, maxScore) {
+        return (score / maxScore) * 100;
+      },
+      setGrade(percentile, category) {
+        this.$nextTick(() => {
+          const elements = [
+            { ref: `${category}ScoreLow`, min: 0, max: 20 },
+            { ref: `${category}ScoreLowMid`, min: 21, max: 40 },
+            { ref: `${category}ScoreMid`, min: 41, max: 60 },
+            { ref: `${category}ScoreMidHigh`, min: 61, max: 80 },
+            { ref: `${category}ScoreHigh`, min: 81, max: 100 }
+          ];
+
+          elements.forEach(element => {
+            const el = this.$refs[element.ref];
+            console.log("el is : ", el)
+            if(el){
+              if (percentile >= element.min && percentile <= element.max) {
+                el.classList.add('bg-info');
+              } else {
+                el.classList.add('bg-warning');
+              }
+            }
+          });
+        })
+      },
+      renderPredictBar() {
+        this.$nextTick(() => {
+          if (this.$refs.midbarElement) {
+            this.$refs.midbarElement.style.width = `${this.MiddleSchoolPredictBar}%`;
+          }
+          
+          if (this.$refs.highbarElement) {
+            this.$refs.highbarElement.style.width = `${this.HighSchoolPredictGradeBar}%`;
+          }
+          
+          if (this.$refs.suneungbarElement) {
+            this.$refs.suneungbarElement.style.width = `${this.SuneungPredictGradeBar}%`;
+          }
+
+          this.setGrade(this.Score, 'total');
+          this.setGrade(this.calculatePercentile(parseFloat(this.MathAbility[0]), 28), 'calcul');
+          this.setGrade(this.calculatePercentile(parseFloat(this.MathAbility[1]), 32), 'understanding');
+          this.setGrade(this.calculatePercentile(parseFloat(this.MathAbility[2]), 20), 'inference');
+          this.setGrade(this.calculatePercentile(parseFloat(this.MathAbility[3]), 16), 'probsol');
+        });
       },
       renderRadarChart() {
         this.$nextTick(() => {
@@ -337,7 +399,7 @@
                         useCORS: true
                     }).then((canvas) => {
                         const imgData = canvas.toDataURL('image/png');
-                        if (pageNumber > 1) pdf.addPage();
+                        if (pageNumber > 0) pdf.addPage();
                         pdf.addImage(imgData, 'PNG', 0, 0, 210, 297);
                         resolve();
                     }).catch(error => {
@@ -349,6 +411,7 @@
         };
     
         // 각 페이지를 순차적으로 처리
+        await setPageAndCapture(0, 'capture-area0');
         await setPageAndCapture(1, 'capture-area1');
         await setPageAndCapture(2, 'capture-area2');
         await setPageAndCapture(3, 'capture-area3');
@@ -362,17 +425,17 @@
         pdf.save(pdfName);
         
         // 상태 복원
-        this.carouselPage = 1;
+        this.carouselPage = 0;
       },    
       carouselPageRight() {
         this.carouselPage += 1;
         if (this.carouselPage == 4) {
-          this.carouselPage = 1;
+          this.carouselPage = 0;
         }
       },
       carouselPageLeft() {
         this.carouselPage -= 1;
-        if (this.carouselPage == 0) {
+        if (this.carouselPage == -1) {
           this.carouselPage = 3;
         }
       },
@@ -387,7 +450,6 @@
     },
 
     mounted() {
-      this.renderRadarChart()
       if (this.carouselPage === 3) {
         this.$nextTick(() => {
           this.initHorizontalBarCharts();

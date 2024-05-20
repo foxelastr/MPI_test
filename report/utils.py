@@ -8,7 +8,7 @@ def get_std_result(student_id, year_semester, test_grade):
     test_result = TestResult.objects.filter(
         StudentId=student_id,
         ExamYearSemester=year_semester,
-        ExamGrade=test_grade
+        ExamGrade=test_grade,
     ).first()
 
     if not test_result:
