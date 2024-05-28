@@ -1,6 +1,6 @@
 MPI_VENV/
 
-media/
+media/data
 
 users/__pycache__/
 
@@ -11,3 +11,5 @@ mpitest/__pycache__/
 dashboard/__pycache__/
 
 api/__pycache__/
+
+MPI_TEST_EC2_KEY.pem

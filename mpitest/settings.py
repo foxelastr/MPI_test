@@ -26,8 +26,8 @@ SECRET_KEY = 'django-insecure-o$cqaae=&!17b*4pfi(#ymw2v9!ml2@!7_0(wf9n6*$)546wq0
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-# ALLOWED_HOSTS = []
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', '[::1]']
+ALLOWED_HOSTS = ['43.203.49.150', 'bestscoring.pro', 'www.bestscoring.pro', 'localhost', '127.0.0.1']
+# ALLOWED_HOSTS = ['localhost', '127.0.0.1', '[::1]']
 
 
 # Application definition
@@ -136,7 +136,7 @@ STATICFILES_DIRS = [
     BASE_DIR / 'static',
 ]
 
-# STATIC_ROOT = 
+# STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 # 미디어 파일 설정
 MEDIA_URL = '/media/'

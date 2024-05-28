@@ -1,10 +1,28 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h2>학생 정보 수정</h2>
-<form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">저장하기</button>
-</form>
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-6 offset-md-3">
+            <div class="card card-body">
+                <h2 class="text-center mb-4">학생 정보 수정</h2>
+                <form method="post">
+                    {% csrf_token %}
+                    {% for field in form %}
+                        <div class="mb-3">
+                            <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+                            <input type="{{ field.field.widget.input_type }}" id="{{ field.id_for_label }}" name="{{ field.html_name }}" class="form-control {% if field.errors %}is-invalid{% endif %}" value="{{ field.value|default_if_none:'' }}">
+                            {% for error in field.errors %}
+                                <div class="invalid-feedback">
+                                    {{ error }}
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endfor %}
+                    <button type="submit" class="btn btn-primary w-100">저장하기</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}

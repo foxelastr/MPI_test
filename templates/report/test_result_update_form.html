@@ -1,11 +1,65 @@
 {% extends 'base.html' %}
 
-{% block content %}
-<h2>시험 결과 정보 수정</h2>
-<form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">저장하기</button>
-</form>
-{% endblock %}
+{% load custom_tags %}
 
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card card-body">
+                <h2 class="text-center mb-4">시험 결과 정보 수정</h2>
+                <form method="post">
+                    {% csrf_token %}
+                    <!-- ExamYearSemester 필드 -->
+                    <div class="mb-3">
+                        <label for="{{ form.ExamYearSemester.id_for_label }}" class="form-label fs-5 fw-bolder">시험지 년도 및 반기</label>
+                        <input type="{{ form.ExamYearSemester.field.widget.input_type }}" id="{{ form.ExamYearSemester.id_for_label }}" name="{{ form.ExamYearSemester.html_name }}" class="form-control {% if form.ExamYearSemester.errors %}is-invalid{% endif %}" value="{{ form.ExamYearSemester.value|default_if_none:'' }}">
+                        {% for error in form.ExamYearSemester.errors %}
+                        <div class="invalid-feedback">
+                            {{ error }}
+                        </div>
+                        {% endfor %}
+                    </div>
+
+                    <!-- ExamGrade 필드 -->
+                    <div class="mb-3">
+                        <label for="{{ form.ExamGrade.id_for_label }}" class="form-label fs-5 fw-bolder">시험 학년</label>
+                        <input type="{{ form.ExamGrade.field.widget.input_type }}" id="{{ form.ExamGrade.id_for_label }}" name="{{ form.ExamGrade.html_name }}" class="form-control {% if form.ExamGrade.errors %}is-invalid{% endif %}" value="{{ form.ExamGrade.value|default_if_none:'' }}">
+                        {% for error in form.ExamGrade.errors %}
+                        <div class="invalid-feedback">
+                            {{ error }}
+                        </div>
+                        {% endfor %}
+                    </div>
+
+                    <!-- ExamArea 필드 -->
+                    <div class="mb-3">
+                        <label for="{{ form.ExamArea.id_for_label }}" class="form-label fs-5 fw-bolder">시험 지역</label>
+                        <input type="{{ form.ExamArea.field.widget.input_type }}" id="{{ form.ExamArea.id_for_label }}" name="{{ form.ExamArea.html_name }}" class="form-control {% if form.ExamArea.errors %}is-invalid{% endif %}" value="{{ form.ExamArea.value|default_if_none:'' }}">
+                        {% for error in form.ExamArea.errors %}
+                        <div class="invalid-feedback">
+                            {{ error }}
+                        </div>
+                        {% endfor %}
+                    </div>
+
+                    <!-- ExamResult 필드 -->
+                    <div class="mb-3">
+                        <label for="{{ form.EXAM_RESULT.id_for_label }}" class="form-label fs-5 fw-bolder">시험 결과</label>
+                        <div class="row d-flex justify-content-around">
+                            {% for index, value in exam_results %}
+                            <div class="col-2 mb-2 mx-2">
+                                <label class="form-label">{{ index }}번</label>
+                                <input type="text" id="exam_result_{{ index }}" name="ExamResults_{{ index }}" class="form-control" value="{{ value }}">
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                   
+                    <button type="submit" class="btn btn-primary w-100">저장하기</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
