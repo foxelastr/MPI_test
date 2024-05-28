@@ -35,5 +35,20 @@ class TestResultUV(UpdateView):
     fields = ['ExamYearSemester', 'ExamGrade', 'ExamArea', 'ExamResults']
     template_name = 'report/test_result_update_form.html'
     
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        if self.object.ExamResults:
+            # 인덱스와 값의 쌍을 리스트로 변환하여 전달
+            context['exam_results'] = list(enumerate(self.object.ExamResults, start=1))
+        else:
+            context['exam_results'] = list(enumerate([0] * 25, start=1))  # 기본값으로 0이 채워진 25개의 리스트 제공
+        return context
+    
     def get_success_url(self):
         return reverse_lazy('dashboard:student_detail', kwargs={'pk': self.object.student.pk})
+    
+def my_view(request):
+    context = {
+        'input_numbers': list(range(1, 26))  # 1부터 25까지의 숫자 리스트를 생성
+    }
+    return render(request, 'my_template.html', context)

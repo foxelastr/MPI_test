@@ -28,7 +28,6 @@ urlpatterns = [
     path('api/', include('api.urls')),
     path('report/', include('report.urls')),
     path('users/', include('users.urls')),
-    path('health/', include('health.urls')),
 ]
 
 urlpatterns += static(
