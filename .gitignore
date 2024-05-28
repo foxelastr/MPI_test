@@ -1,6 +1,6 @@
 MPI_VENV/
 
-media/data
+media/
 
 users/__pycache__/
 
