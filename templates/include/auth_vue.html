@@ -1,10 +1,18 @@
 <script>
+  document.getElementById('signupForm').addEventListener('submit', function(event) {
+    // Make sure the telephone_part1 is included in the form submission
+    var telephone_part1 = document.createElement('input');
+    telephone_part1.setAttribute('type', 'hidden');
+    telephone_part1.setAttribute('name', 'telephone_part1');
+    telephone_part1.setAttribute('value', '010');
+    this.appendChild(telephone_part1);
+  });
     // HTML5 폼 유효성 검사가 비활성화된 경우, 이를 다시 활성화합니다.
-    document.getElementById('signupForm').addEventListener('submit', function(e) {
-      if (!this.checkValidity()) {
-        e.preventDefault(); // 폼 제출 방지
-        e.stopPropagation(); // 상위 요소로의 이벤트 전파 중지
-      }
-      this.classList.add('was-validated');
-    }, false);
+  document.getElementById('signupForm').addEventListener('submit', function(e) {
+    if (!this.checkValidity()) {
+      e.preventDefault(); // 폼 제출 방지
+      e.stopPropagation(); // 상위 요소로의 이벤트 전파 중지
+    }
+    this.classList.add('was-validated');
+  }, false);
 </script>

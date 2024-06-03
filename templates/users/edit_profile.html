@@ -8,11 +8,11 @@
                 <h2 class="text-center mb-4">프로필 수정</h2>
                 <form method="post">
                     {% csrf_token %}
-                    <div class="mb-3">
+                    <div class="form-group">
                         <label for="id_affiliation" class="form-label">학원명</label>
                         <input type="text" name="affiliation" id="id_affiliation" class="form-control" value="{{ form.affiliation.value|default_if_none:'' }}">
                     </div>
-                    <div class="mb-3">
+                    <div class="form-group">
                         <label for="id_region" class="form-label">지역권역</label>
                         <select name="region" id="id_region" class="form-control">
                             <option value="">교육청 권역을 선택해주세요</option>
@@ -21,9 +21,13 @@
                             {% endfor %}
                         </select>
                     </div>
-                    <div class="mb-3">
+                    <div class="form-group">
                         <label for="id_region_detail" class="form-label">세부주소</label>
                         <input type="text" name="region_detail" id="id_region_detail" class="form-control" value="{{ form.region_detail.value|default_if_none:'' }}">
+                    </div>
+                    <div class="form-group">
+                        <label for="telephone" class="mt-3 mb-1">{{ form.telephone.label }}</label>
+                        <input type="text" class="form-control" id="telephone" name="{{ form.telephone.name }}" value="{{ form.telephone.value|default_if_none:'' }}" placeholder="000-0000-0000" required pattern="\d{3}-\d{4}-\d{4}" title="Phone number must be entered in the format: 000-0000-0000" oninvalid="this.setCustomValidity('핸드폰 번호를 입력해주세요')" oninput="this.setCustomValidity('')">
                     </div>
                     <button type="submit" class="btn btn-primary">변경 사항 저장</button>
                 </form>
@@ -31,8 +35,4 @@
         </div>
     </div>
 </div>
-{% endblock %}
-
-{% block extra_script %}
-{% include 'include/edit_profile_vue.html'%}
 {% endblock %}

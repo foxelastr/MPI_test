@@ -1,0 +1,54 @@
+<script src="https://cdn.iamport.kr/v1/iamport.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    function initiatePayment() {
+        var paymentType = document.getElementById('paymentType').value;
+        var amount = paymentType === 'single' ? 1000 : 10000; // 단일 결제는 1000원, 대량 결제는 10000원
+        var merchantUid = `payment-${crypto.randomUUID()}`;
+
+        var IMP = window.IMP;
+        IMP.init('{{ api_key }}');  // 가맹점 식별코드 설정에서 가져오기
+        IMP.request_pay({
+            pg: 'html5_inicis'.'INIpayTest',
+            pay_method: 'card',
+            merchant_uid: merchantUid,
+            name: paymentType === 'single' ? '단일 결제' : '대량 결제',
+            amount: amount,
+            buyer_email: '{{ user.email }}',
+            buyer_name: '{{ user.username }}',
+            buyer_tel: '{{ user_profile.telephone }}',
+            buyer_addr: '{{ user_profile.region_detail}}',
+            buyer_postcode: '00000'
+        }, function (rsp) {
+            if (rsp.success) {
+                fetch("{% url 'users:payment_result' %}", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRFToken": "{{ csrf_token }}"
+                    },
+                    body: JSON.stringify({
+                        imp_uid: rsp.imp_uid,
+                        merchant_uid: rsp.merchant_uid,
+                        payment_type: paymentType
+                    })
+                }).then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        alert('결제가 완료되었습니다.');
+                        window.location.href = "{% url 'users:payment_success' %}";
+                    } else {
+                        alert('결제에 실패했습니다: ' + data.message);
+                    }
+                });
+            } else {
+                alert('결제에 실패했습니다. 에러 내용: ' + rsp.error_msg);
+            }
+        });
+    }
+    window.initiatePayment = initiatePayment;
+});
+
+// 나중에 결제 붙일 때 써먹기
+</script>
+

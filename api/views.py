@@ -1,8 +1,10 @@
+import json
 from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import CreateView, ListView
 from django.http import HttpResponse, JsonResponse
+from users.models import UserProfile
 from api.utils import obj_to_student, obj_to_test
 from django.template.loader import get_template
 from dashboard.forms import StudentForm
@@ -72,10 +74,19 @@ class ApiSubmitCV(CreateView):
     
     def get(self, request, *args, **kwargs):
         student_id = self.kwargs.get('student_id')
+        student = Student.objects.get(id=student_id)
+        user_profile = UserProfile.objects.get(user=student.user)
+
+        # 사용자의 license 값을 확인합니다.
+        if user_profile.license == 0:
+            return JsonResponse({'status': 'error', 'message': '보고서 생성 가능 횟수가 초과되었습니다. 결제가 필요합니다.'}, status=200)
+
+        # license 값이 0보다 큰 경우, 데이터 반환 로직을 수행합니다.
         queryset = TestResult.objects.filter(student__id=student_id)
         data = list(queryset.values())  # 또는 적절한 데이터 변환 로직
-        return JsonResponse(data, safe=False)
-    
+        print("json respose is : ", JsonResponse({'status': 'success', 'data': data}, safe=False))
+        return JsonResponse({'status': 'success', 'data': data}, safe=False)
+
     def form_valid(self, form):
         # 폼 데이터가 유효하면 데이터 저장
         self.object = form.save()
@@ -101,8 +112,17 @@ class ApiResultLV(CreateView):
         # StudentId를 사용하여 Student 인스턴스를 찾습니다.
         student_id = form.cleaned_data.get('StudentId')
         student = Student.objects.get(id=student_id)
-        print("\nstudent id : ", student_id)
-        print("\nstudent name : ", student)
+        user_profile = UserProfile.objects.get(user=student.user)
+
+        # 사용자의 license 값을 확인합니다.
+        if user_profile.license == 0:
+            return JsonResponse({'status': 'error', 'message': '보고서 생성 가능 횟수가 초과되었습니다.'}, status=200)
+        
+        elif user_profile.license > 0:
+            # license 값을 1 감소시키고 total_report_gen 값을 1 증가시킵니다.
+            user_profile.license -= 1
+            user_profile.total_report_gen += 1
+            user_profile.save()
         
         # TestResult 인스턴스를 생성하고, student 필드를 설정합니다.
         test_result = form.save(commit=False)

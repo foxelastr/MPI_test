@@ -10,6 +10,7 @@
         studentname: '',
         TestList: {},
         studentId: '',
+        errorMessage: [],
       }
     },
     created() {
@@ -50,13 +51,25 @@
         console.log("submitTest() with studentId:", this.studentId);
         // studentId를 포함한 API 요청을 보내는 로직
         axios.get(`/api/report/submit/${this.studentId}/`, {})
-        .then(res => {
-          console.log("Submit response:", res);
-          window.location.href = `/report/submit/${this.studentId}`;
+          .then(res => {
+            if (res.data.status === 'error') {
+              this.errorMessage = this.parseMessage(res.data.message);
+
+              var paymentModal = new bootstrap.Modal(document.getElementById('paymentModal'), {});
+              paymentModal.show();
+            } else {
+              window.location.href = `/report/submit/${this.studentId}`;
+            }
           })
           .catch(err => {
-            console.error("Submit error:", err.response);
-            alert(`${err.response.status} ${err.response.statusText}`);
+            if (err.response && err.response.data && err.response.data.message) {
+              this.errorMessage = err.response.data.message;
+            } else {
+              this.errorMessage = `${err.response.status} ${err.response.statusText}`;
+            }
+            this.errorMessage = this.parseMessage(res.data.message);
+            var paymentModal = new bootstrap.Modal(document.getElementById('paymentModal'), {});
+            paymentModal.show();
           });
       },
       navigateToReport(test){
@@ -69,7 +82,18 @@
         console.log("test result id : ", testResultId)
         // 시험 결과 수정 페이지로 리다이렉트
         window.location.href = `/report/result/update/${testResultId}/`;
-      }
+      },
+      parseMessage(message) {
+        // 메시지를 문장 단위로 분할하여 배열로 반환
+        return message.split('.').filter(sentence => sentence.trim().length > 0).map(sentence => sentence.trim());
+      },
+      goToPayment() {
+//        window.location.href = '{% url "users:payment" %}';
+//        나중에 결제 붙일 때 써먹기
+        const modal = document.getElementById('paymentModal');
+        const bootstrapModal = bootstrap.Modal.getInstance(modal);
+        bootstrapModal.hide();
+      },
     }
   }
   Vue.createApp(StudentDetailApp).mount('#page-top');

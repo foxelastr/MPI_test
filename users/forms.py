@@ -29,10 +29,14 @@ class CustomUserCreationForm(UserCreationForm):
     affiliation = forms.CharField(required=True, label='소속 학원 이름')
     region = forms.ChoiceField(required=True, label='교육청 지역 권역', choices=REGION_CHOICES)
     region_detail = forms.CharField(required=True, label='세부주소')
+    terms_agreed = forms.BooleanField(required=True, label='전자상거래 표준약관 동의')
+    telephone_part1 = forms.CharField(max_length=3, required=True, label='핸드폰 번호 앞자리', initial='010', widget=forms.TextInput(attrs={'readonly': 'readonly'}))
+    telephone_part2 = forms.CharField(max_length=4, required=True, label='핸드폰 번호 중간자리')
+    telephone_part3 = forms.CharField(max_length=4, required=True, label='핸드폰 번호 뒷자리')
 
     class Meta:
         model = User
-        fields = ('username', 'email', 'password1', 'password2', 'affiliation', 'region', 'region_detail')
+        fields = ('username', 'email', 'password1', 'password2', 'affiliation', 'region', 'region_detail', 'terms_agreed')
         
     def clean_region_detail(self):
         region_detail = self.cleaned_data.get('region_detail')
@@ -42,6 +46,24 @@ class CustomUserCreationForm(UserCreationForm):
         if not pattern.match(region_detail):
             raise forms.ValidationError('올바른 형태의 세부주소를 입력하세요. 예: 강남구 개포동')
         return region_detail
+    
+    def clean(self):
+        cleaned_data = super().clean()
+        telephone_part1 = cleaned_data.get('telephone_part1') or '010'
+        print("part1 : ", telephone_part1)
+        telephone_part2 = cleaned_data.get('telephone_part2')
+        print("part2 : ", telephone_part2)
+        telephone_part3 = cleaned_data.get('telephone_part3')
+        print("part3 : ", telephone_part3)
+        
+        if telephone_part1 and telephone_part2 and telephone_part3:
+            telephone = f'{telephone_part1}-{telephone_part2}-{telephone_part3}'
+            cleaned_data['telephone'] = telephone
+        else:
+            raise forms.ValidationError('핸드폰 번호를 올바르게 입력해주세요.')
+
+        return cleaned_data
+
     
     def save(self, commit=True):
         user = super().save(commit=False)
@@ -55,6 +77,8 @@ class CustomUserCreationForm(UserCreationForm):
                     affiliation=self.cleaned_data['affiliation'],
                     region=self.cleaned_data['region'],
                     region_detail=self.cleaned_data['region_detail'],
+                    terms_agreed=self.cleaned_data['terms_agreed'],
+                    telephone=self.cleaned_data['telephone'],
                 )
         return user
 
@@ -63,11 +87,19 @@ class UserProfileForm(forms.ModelForm):
 
     class Meta:
         model = UserProfile
-        fields = ['affiliation', 'region', 'region_detail']
+        fields = ['affiliation', 'region', 'region_detail', 'telephone', 'terms_agreed']
         labels = {
             'affiliation': '학원명',
             'region': '지역권역',
-            'region_detail': '세부주소'
+            'region_detail': '세부주소',
+            'telephone': '핸드폰 번호',
+        }
+        widgets = {
+            'telephone': forms.TextInput(attrs={
+                'placeholder': '000-0000-0000',
+                'pattern': r'\d{3}-\d{4}-\d{4}',
+                'title': '핸드폰 번호는 다음의 형식이어야 합니다 : 000-0000-0000'
+            }),
         }
 
 class CustomPasswordChangeForm(PasswordChangeForm):

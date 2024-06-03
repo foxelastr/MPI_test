@@ -24,7 +24,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-o$cqaae=&!17b*4pfi(#ymw2v9!ml2@!7_0(wf9n6*$)546wq0'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['43.203.49.150', 'bestscoring.pro', 'www.bestscoring.pro', 'localhost', '127.0.0.1']
 # ALLOWED_HOSTS = ['localhost', '127.0.0.1', '[::1]']
@@ -147,3 +147,7 @@ LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/users/login/'
 
 # LOGGING = 
+
+# PortOne API credentials
+PORTONE_API_KEY = 'ItEQKi3rY7uvDS8l'
+PORTONE_API_SECRET = 'your_portone_api_secret'

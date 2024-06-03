@@ -5,6 +5,20 @@
 {% block title %}student_detail.html{% endblock %}
 
 {% block content %}
+<style>
+  .modal-content-custom {
+    max-width: 150%;  /* 가로 크기를 1.5배로 설정 */
+    height: calc(2 * 100vh);  /* 세로 크기를 2배로 설정 */
+    margin: auto;  /* 중앙에 배치 */
+  }
+
+  /* "결제하러 가기" 버튼 크기 조정 */
+  .btn-lg-custom {
+    padding: 1rem 2rem;  /* 패딩을 크게 설정 */
+    font-size: 1.25rem;  /* 글꼴 크기를 크게 설정 */
+  }
+</style>
+
 <!-- Student Detail Grid-->
 <div class="page-section bg-light" id="student">
   <div class="container mt-5">
@@ -59,6 +73,28 @@
             <hr>
           </div>
         </div>
+
+        <div class="modal fade" id="paymentModal" data-bs-backdrop="static" tabindex="-1" aria-labelledby="paymentModalLabel" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-centered">
+              <div class="modal-content modal-content-custom">
+                  <div class="modal-header">
+                      <h5 class="modal-title fs-2" id="paymentModalLabel">결제가 필요합니다</h5>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>
+                  <div class="modal-body mt-3 fs-4">
+                    <div class="modal-content-custom">
+                      <p v-for="sentence in errorMessage" :key="sentence">[[ sentence ]]</p>
+                      <p></p>
+                    </div>
+                  </div>
+                  <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary btn-lg" data-bs-dismiss="modal">취소</button>
+                      <button type="button" class="btn btn-primary btn-lg m-3" @click="goToPayment">확인</button>
+                  </div>
+              </div>
+          </div>
+      </div>
+        
         <!-- Test Lists footer -->
         <footer class="mb-4">
           <!-- Student Name -->
@@ -73,6 +109,7 @@
     </div>
   </div>
 </div>
+
 {% endblock %}
 
 {% block extra-script %}

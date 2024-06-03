@@ -12,6 +12,17 @@
           <input type="text" class="form-control" id="username" class="form-control" name="{{ form.username.name }}" placeholder="사용자 이름을 입력하세요" required oninvalid="this.setCustomValidity('사용자 이름을 입력해주세요')" 
           oninput="this.setCustomValidity('')">
         </div>
+
+        <div class="form-group">
+          <label for="telephone" class="mt-3 mb-1">핸드폰 번호</label>
+          <div class="d-flex">
+              <input type="text" class="form-control" id="telephone_part1" name="telephone_part1" maxlength="3" placeholder="010" readonly>
+              <span class="mx-2">-</span>
+              <input type="text" class="form-control" id="telephone_part2" name="telephone_part2" maxlength="4" required oninvalid="this.setCustomValidity('핸드폰 번호를 입력해주세요')" oninput="this.setCustomValidity('')">
+              <span class="mx-2">-</span>
+              <input type="text" class="form-control" id="telephone_part3" name="telephone_part3" maxlength="4" required oninvalid="this.setCustomValidity('핸드폰 번호를 입력해주세요')" oninput="this.setCustomValidity('')">
+          </div>
+      </div>
         
         <div class="form-group">
           <label for="email" class="mt-3 mb-1">{{ form.email.label }}</label>
@@ -46,12 +57,43 @@
           </select>
         </div>
         
-        
         <div class="form-group">
           <label for="region_detail" class="mt-3 mb-1">{{ form.region_detail.label }}</label>
           <input type="text" class="form-control" id="region_detail" class="form-control" name="{{ form.region_detail.name }}" placeholder="상세 지역을 동까지 입력하세요(예 : 강남구 개포동)" required oninvalid="this.setCustomValidity('상세 지역을 입력해주세요')" oninput="this.setCustomValidity('')">
         </div>
         
+
+        <div class="form-group">
+          <div class="form-check mt-3 mb-1">
+              <input class="form-check-input" type="checkbox" id="termsAgreement" name="terms_agreed" required>
+              <label class="form-check-label" for="termsAgreement">
+                  <a href="#" data-toggle="modal" data-target="#termsModal">전자상거래 표준약관</a>에 동의합니다
+              </label>
+            </div>
+        </div>
+
+        <div class="modal fade" id="termsModal" tabindex="-1" role="dialog" aria-labelledby="termsModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="termsModalLabel">전자상거래 표준약관</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        {% block file_content %}
+                            {{ file_content|linebreaks }}
+                        {% endblock %}
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
         <button type="submit" class="btn btn-primary w-100 mt-3">회원가입</button>
       </form>
     </div>

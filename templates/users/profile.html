@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <h1 class="mb-3 text-center">{{ user.username }}님의 프로필</h1>
+      <div class="card card-body">
+        <form method="post" id="profileForm" class="needs-validation" novalidate>
+          {% csrf_token %}
+          
+          <div class="form-group">
+            <label for="affiliation" class="mt-3 mb-1">{{ form.affiliation.label }}</label>
+            <input type="text" class="form-control" id="affiliation" name="{{ form.affiliation.name }}" value="{{ form.affiliation.value }}" placeholder="학원명을 입력하세요" required oninvalid="this.setCustomValidity('학원명을 입력해주세요')" oninput="this.setCustomValidity('')">
+          </div>
+          
+          <div class="form-group">
+            <label for="region" class="mt-3 mb-1">{{ form.region.label }}</label>
+            <input type="text" class="form-control" id="region" name="{{ form.region.name }}" value="{{ form.region.value }}" placeholder="지역권역을 입력하세요" required oninvalid="this.setCustomValidity('지역권역을 입력해주세요')" oninput="this.setCustomValidity('')">
+          </div>
+
+          <div class="form-group">
+            <label for="region_detail" class="mt-3 mb-1">{{ form.region_detail.label }}</label>
+            <input type="text" class="form-control" id="region_detail" name="{{ form.region_detail.name }}" value="{{ form.region_detail.value }}" placeholder="세부주소를 입력하세요" required oninvalid="this.setCustomValidity('세부주소를 입력해주세요')" oninput="this.setCustomValidity('')">
+          </div>
+
+          <div class="form-group">
+            <label for="telephone" class="mt-3 mb-1">{{ form.telephone.label }}</label>
+            <div class="d-flex">
+                <input type="text" class="form-control" id="telephone_part1" name="telephone_part1" maxlength="3" value="{{ form.initial.telephone_part1 }}" readonly>
+                <span class="mx-2">-</span>
+                <input type="text" class="form-control" id="telephone_part2" name="telephone_part2" maxlength="4" value="{{ form.initial.telephone_part2 }}" required oninvalid="this.setCustomValidity('핸드폰 번호를 입력해주세요')" oninput="this.setCustomValidity('')">
+                <span class="mx-2">-</span>
+                <input type="text" class="form-control" id="telephone_part3" name="telephone_part3" maxlength="4" value="{{ form.initial.telephone_part3 }}" required oninvalid="this.setCustomValidity('핸드폰 번호를 입력해주세요')" oninput="this.setCustomValidity('')">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <div class="d-flex justify-content-around mt-3 mb-1">
+                <div class="d-flex justify-content-between my-3 mx-4">
+                    <div class="mx-5 pt-3 pb-2">사용권(남은 횟수)</div>
+                    <div class="card px-5 py-2 text-primary fs-4 fw-bolder">{{ user_profile.license }}</div>
+                </div>
+                <div class="d-flex justify-content-between my-3 mx-4">
+                    <div class="mx-5 pt-3 pb-2">보고서 생성 횟수</div>
+                    <div class="card px-5 py-2 text-success fs-4 fw-bolder">{{ user_profile.total_report_gen }}</div>
+                </div>
+            </div>
+          </div>
+
+          <button type="submit" class="btn btn-primary w-100 mt-3">프로필 업데이트</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra-script %}
+<script>
+  // Custom validation script if needed
+  (function() {
+    'use strict';
+    window.addEventListener('load', function() {
+      var forms = document.getElementsByClassName('needs-validation');
+      var validation = Array.prototype.filter.call(forms, function(form) {
+        form.addEventListener('submit', function(event) {
+          if (form.checkValidity() === false) {
+            event.preventDefault();
+            event.stopPropagation();
+          }
+          form.classList.add('was-validated');
+        }, false);
+      });
+    }, false);
+  })();
+</script>
+{% endblock %}
