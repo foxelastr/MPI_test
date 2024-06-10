@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-o$cqaae=&!17b*4pfi(#ymw2v9!ml2@!7_0(wf9n6*$)546wq0
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['43.203.49.150', 'bestscoring.pro', 'www.bestscoring.pro', 'localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['43.203.49.150', 'pnsedu.com', 'www.pnsedu.com', 'localhost', '127.0.0.1']
 # ALLOWED_HOSTS = ['localhost', '127.0.0.1', '[::1]']
 
 
@@ -137,7 +137,7 @@ STATICFILES_DIRS = [
     BASE_DIR / 'static',
 ]
 
-# STATIC_ROOT = BASE_DIR / 'staticfiles'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 # 미디어 파일 설정
 MEDIA_URL = '/media/'
@@ -148,7 +148,22 @@ LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/users/login/'
 
 # LOGGING = 
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'file': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': '/home/ec2-user/MPI_test/logs/debug.log',
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['file'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+    },
+}
 
-# PortOne API credentials
-PORTONE_API_KEY = 'ItEQKi3rY7uvDS8l'
-PORTONE_API_SECRET = 'your_portone_api_secret'

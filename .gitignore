@@ -13,3 +13,7 @@ dashboard/__pycache__/
 api/__pycache__/
 
 MPI_TEST_EC2_KEY.pem
+
+logs/
+
+nohup*
