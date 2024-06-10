@@ -81,10 +81,10 @@
                       <h5 class="modal-title fs-2" id="paymentModalLabel">결제가 필요합니다</h5>
                       <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                   </div>
-                  <div class="modal-body mt-3 fs-4">
+                  <div class="modal-body">
                     <div class="modal-content-custom">
-                      <p v-for="sentence in errorMessage" :key="sentence">[[ sentence ]]</p>
-                      <p></p>
+                      <p class=" mt-3 fs-4" v-for="sentence in errorMessage" :key="sentence">[[ sentence ]]</p>
+                      <p>&#160;* 현재는 계좌이체로만 결제가 가능합니다.<br>&#160;* 무통장 입금 계좌번호 안내입니다.<br>&#160;* 우리 1005-204-469946 &#40;예금주 : 배동성	&#41;<br>&#160;* 입금 후 아이디와 학원명을 카톡 오픈채팅으로 보내주세요.<br>&#160;* 오픈채팅 아이디는 MPItest입니다.</p>
                     </div>
                   </div>
                   <div class="modal-footer">
