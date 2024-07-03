@@ -38,7 +38,7 @@ for grade in range(1, 10):
     modified_type_list = modify_data_list(type_list)
 
     # 해당 학년의 TestStatistics 객체 가져오기
-    report = TestStatistics.objects.get(Statistics_YearSemester=20211, Statistics_TestGrade=grade)
+    report = TestStatistics.objects.get(Statistics_YearSemester=20222, Statistics_TestGrade=grade)
 
     # 데이터 수정 및 저장
     report.Statistics_AnswerList = modified_answer_list
