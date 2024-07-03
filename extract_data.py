@@ -2,9 +2,9 @@ import pandas as pd
 import os
 
 # 지정된 디렉토리 경로
-MPI_directory = 'E:/PNS/MCLS/TCNP_data/통계 자료 추출 데이터/2022_2_HME_DATA/'
-media_directory = 'E:/PNS/MPI_test/media/data/2022_2_HME_DATA/'
-type_directory = 'E:/PNS/MPI_test/media/data/2022_2_HME_DATA/Type_list'
+MPI_directory = 'E:/PNS/MCLS/TCNP_data/통계 자료 추출 데이터/2021_1_HME_DATA/'
+media_directory = 'E:/PNS/MPI_test/media/data/2021_1_HME_DATA/'
+type_directory = 'E:/PNS/MPI_test/media/data/2021_1_HME_DATA/Type_list'
 
 # ***** 점수 / 인원 / 누적인원 / 비율 *****
 # 결과 저장 폴더 생성
@@ -29,7 +29,7 @@ for filename in os.listdir(MPI_directory):
         df = pd.read_csv(file_path, header=0)  # 첫 행을 헤더로 사용
 
         # 파일 이름에서 학년 추출
-        base_filename = filename.replace('20222_hme_', '').replace('_statistics.csv', '')
+        base_filename = filename.replace('20211_hme_', '').replace('_statistics.csv', '')
         file_number = grade_to_file_number[base_filename]  # 학년에 따른 파일 번호 매핑
 
         # 파일 이름 설정
@@ -55,7 +55,7 @@ print("모든 데이터가 성공적으로 저장되었습니다.")
 
 # ***** 서울 평균 *****
 # 파일 경로 설정
-csv_file_path = os.path.join(MPI_directory, '2022_2_HME_DATA - 학년별 지역별 평균 점수.csv')
+csv_file_path = os.path.join(MPI_directory, '2021_1_HME_DATA - 학년별 지역별 평균 점수.csv')
 output_directory = os.path.join(media_directory, 'Seoul_Average')
 
 # 출력 디렉터리 생성 (존재하지 않는 경우)
@@ -85,7 +85,7 @@ print("서울 지역 평균 점수가 성공적으로 저장되었습니다.")
 
 # ***** 서울 주요 지역 *****
 # 파일 경로 지정
-file_path = os.path.join(MPI_directory, '2022_2_HME_DATA - 서울주요지역.csv')
+file_path = os.path.join(MPI_directory, '2021_1_HME_DATA - 서울주요지역.csv')
 
 # 생성하고자 하는 폴더의 경로
 folder_path = os.path.join(media_directory, 'Seoul_Region_Average')
@@ -128,7 +128,7 @@ for remainder, items in remainder_lists.items():
 base_directory = media_directory
 
 # 파일 경로
-file_path = 'E:/PNS/MCLS/TCNP_data/통계 자료 추출 데이터/2022_2_HME_DATA/2022_2_HME_DATA - 답 유형 출제의도.csv'
+file_path = 'E:/PNS/MCLS/TCNP_data/통계 자료 추출 데이터/2021_1_HME_DATA/2021_1_HME_DATA - 답 유형 출제의도.csv'
 
 # 폴더 생성을 위한 함수
 def create_directory(directory_path):
@@ -178,7 +178,7 @@ print("모든 파일이 성공적으로 생성되었습니다.")
 
 # ***** 수학적 능력 *****
 # 파일 경로 및 디렉터리 설정
-csv_file_path = os.path.join(MPI_directory, '2022_2_HME_DATA - 학년별 전국 평균 점수.csv')
+csv_file_path = os.path.join(MPI_directory, '2021_1_HME_DATA - 학년별 전국 평균 점수.csv')
 National_Average = os.path.join(media_directory, 'National_Average')
 
 # 디렉터리가 없으면 생성
@@ -216,7 +216,7 @@ for grade in grades:
 
 # ***** 약점 *****
 # 파일 경로 지정
-input_file_path = MPI_directory + '2022_2_weak_point.txt'  # 이 부분을 실제 파일 경로로 변경하세요.
+input_file_path = MPI_directory + '2021_1_weak_point.txt'  # 이 부분을 실제 파일 경로로 변경하세요.
 output_directory = media_directory + 'WeakPoint' # 저장할 디렉터리의 경로
 
 # 출력 디렉터리가 없다면 생성
